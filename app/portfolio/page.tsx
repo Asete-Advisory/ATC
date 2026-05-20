@@ -22,6 +22,7 @@ const portfolioCopy: Record<
     eyebrow: string;
     deckLabel: string;
     downloadLabel: string;
+    generatingLabel: string;
     backLabel: string;
     companyTitle: string;
     companyText: string;
@@ -39,6 +40,7 @@ const portfolioCopy: Record<
     eyebrow: "Apresentação institucional",
     deckLabel: "Portfolio ATC China Brasil",
     downloadLabel: "Baixar PDF em alta resolução",
+    generatingLabel: "Gerando PDF...",
     backLabel: "Voltar ao site",
     companyTitle: "Estrutura internacional para importar, exportar e negociar com segurança",
     companyText:
@@ -57,6 +59,7 @@ const portfolioCopy: Record<
     eyebrow: "Company presentation",
     deckLabel: "ATC China Brasil Portfolio",
     downloadLabel: "Download high-resolution PDF",
+    generatingLabel: "Generating PDF...",
     backLabel: "Back to website",
     companyTitle: "International structure to import, export and negotiate safely",
     companyText:
@@ -75,6 +78,7 @@ const portfolioCopy: Record<
     eyebrow: "公司介绍",
     deckLabel: "ATC China Brasil 作品集",
     downloadLabel: "下载高清 PDF",
+    generatingLabel: "正在生成 PDF...",
     backLabel: "返回网站",
     companyTitle: "以国际化架构安全开展进口、出口与商务谈判",
     companyText:
@@ -148,13 +152,20 @@ export default async function PortfolioPage({ searchParams }: PortfolioPageProps
                 </a>
               ))}
             </div>
-            <PortfolioDownloadButton label={portfolio.downloadLabel} />
+            <PortfolioDownloadButton
+              label={portfolio.downloadLabel}
+              loadingLabel={portfolio.generatingLabel}
+              fileName={`portfolio-atc-china-brasil-${lang}.pdf`}
+            />
           </div>
         </div>
       </div>
 
       <div className="portfolio-deck mx-auto flex max-w-6xl flex-col gap-8 px-4 py-8 print:block print:max-w-none print:p-0">
-        <section className="portfolio-slide portfolio-slide-dark relative overflow-hidden bg-[#071625]">
+        <section
+          data-portfolio-slide
+          className="portfolio-slide portfolio-slide-dark relative overflow-hidden bg-[#071625]"
+        >
           <Image
             src="/hero-section/stats/containers-port.jpg"
             alt=""
@@ -196,7 +207,10 @@ export default async function PortfolioPage({ searchParams }: PortfolioPageProps
           <SlideNumber current={1} total={totalSlides} />
         </section>
 
-        <section className="portfolio-slide relative overflow-hidden bg-[#f7fbff] p-12 text-primary">
+        <section
+          data-portfolio-slide
+          className="portfolio-slide relative overflow-hidden bg-[#f7fbff] p-12 text-primary"
+        >
           <div className="flex items-start justify-between gap-8">
             <div className="max-w-3xl">
               <BrandMark dark />
@@ -226,7 +240,10 @@ export default async function PortfolioPage({ searchParams }: PortfolioPageProps
           <SlideNumber current={2} total={totalSlides} />
         </section>
 
-        <section className="portfolio-slide relative overflow-hidden bg-white p-12 text-primary">
+        <section
+          data-portfolio-slide
+          className="portfolio-slide relative overflow-hidden bg-white p-12 text-primary"
+        >
           <p className="text-sm font-semibold uppercase tracking-[0.28em] text-[#2f6fd6]">
             {portfolio.servicesLabel}
           </p>
@@ -246,7 +263,10 @@ export default async function PortfolioPage({ searchParams }: PortfolioPageProps
           <SlideNumber current={3} total={totalSlides} />
         </section>
 
-        <section className="portfolio-slide portfolio-slide-dark relative overflow-hidden bg-[#071625] p-12">
+        <section
+          data-portfolio-slide
+          className="portfolio-slide portfolio-slide-dark relative overflow-hidden bg-[#071625] p-12"
+        >
           <Image
             src="/how-it-works/estrategico-1.webp"
             alt=""
@@ -277,54 +297,60 @@ export default async function PortfolioPage({ searchParams }: PortfolioPageProps
           <SlideNumber current={4} total={totalSlides} />
         </section>
 
-        <section className="portfolio-slide relative overflow-hidden bg-[#f7fbff] p-12 text-primary">
+        <section
+          data-portfolio-slide
+          className="portfolio-slide relative overflow-hidden bg-[#f7fbff] p-10 text-primary"
+        >
           <p className="text-sm font-semibold uppercase tracking-[0.28em] text-[#2f6fd6]">
             {portfolio.modelLabel}
           </p>
-          <h2 className="mt-4 max-w-4xl text-5xl font-semibold leading-tight">{content.operationModels.title}</h2>
-          <p className="mt-5 max-w-3xl text-lg leading-relaxed text-slate-600">{content.operationModels.description}</p>
-          <div className="mt-10 grid grid-cols-2 gap-6">
+          <h2 className="mt-3 max-w-4xl text-4xl font-semibold leading-tight">{content.operationModels.title}</h2>
+          <p className="mt-4 max-w-3xl text-base leading-relaxed text-slate-600">{content.operationModels.description}</p>
+          <div className="mt-7 grid grid-cols-2 gap-5">
             {content.operationModels.items.map((item) => (
-              <div key={item.title} className="rounded-2xl border border-slate-200 bg-white p-7 shadow-sm">
-                <h3 className="text-3xl font-semibold">{item.title}</h3>
-                <p className="mt-5 text-base leading-relaxed text-slate-600">{item.desc}</p>
-                <p className="mt-6 rounded-xl bg-[#eaf5ff] p-4 text-sm font-semibold leading-relaxed text-primary">
+              <div key={item.title} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <h3 className="text-2xl font-semibold">{item.title}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-slate-600">{item.desc}</p>
+                <p className="mt-4 rounded-xl bg-[#eaf5ff] p-3 text-xs font-semibold leading-relaxed text-primary">
                   {item.highlight}
                 </p>
               </div>
             ))}
           </div>
-          <div className="mt-8 grid grid-cols-4 gap-4">
+          <div className="mt-6 grid grid-cols-4 gap-3">
             {content.differentials.items.map((item) => (
-              <div key={item.title} className="rounded-2xl border border-slate-200 bg-white p-5">
-                <h3 className="text-base font-semibold">{item.title}</h3>
-                <p className="mt-2 text-xs leading-relaxed text-slate-600">{item.desc}</p>
+              <div key={item.title} className="rounded-2xl border border-slate-200 bg-white p-4">
+                <h3 className="text-sm font-semibold leading-snug">{item.title}</h3>
+                <p className="mt-2 text-[11px] leading-relaxed text-slate-600">{item.desc}</p>
               </div>
             ))}
           </div>
           <SlideNumber current={5} total={totalSlides} />
         </section>
 
-        <section className="portfolio-slide relative overflow-hidden bg-white p-12 text-primary">
+        <section
+          data-portfolio-slide
+          className="portfolio-slide relative overflow-hidden bg-white p-10 text-primary"
+        >
           <p className="text-sm font-semibold uppercase tracking-[0.28em] text-[#2f6fd6]">
             {portfolio.catalogLabel}
           </p>
-          <h2 className="mt-4 max-w-4xl text-5xl font-semibold leading-tight">{catalog.title}</h2>
-          <p className="mt-5 max-w-3xl text-lg leading-relaxed text-slate-600">{catalog.description}</p>
-          <div className="mt-9 grid grid-cols-2 gap-5">
+          <h2 className="mt-3 max-w-4xl text-4xl font-semibold leading-tight">{catalog.title}</h2>
+          <p className="mt-4 max-w-3xl text-base leading-relaxed text-slate-600">{catalog.description}</p>
+          <div className="mt-6 grid grid-cols-2 gap-5">
             {catalog.categories.slice(0, 2).map((category) => (
-              <div key={category.id} className="rounded-2xl border border-slate-200 bg-[#f7fbff] p-6">
-                <h3 className="text-2xl font-semibold">{category.title}</h3>
+              <div key={category.id} className="rounded-2xl border border-slate-200 bg-[#f7fbff] p-5">
+                <h3 className="text-xl font-semibold">{category.title}</h3>
                 <p className="mt-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#2f6fd6]">
                   {category.tagline}
                 </p>
-                <p className="mt-3 text-sm leading-relaxed text-slate-600">{category.description}</p>
-                <h4 className="mt-6 text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+                <p className="mt-2 text-xs leading-relaxed text-slate-600">{category.description}</p>
+                <h4 className="mt-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
                   {portfolio.productsLabel}
                 </h4>
-                <ul className="mt-3 grid gap-2">
+                <ul className="mt-2 grid gap-1.5">
                   {category.products.map((product) => (
-                    <li key={product} className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700">
+                    <li key={product} className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700">
                       {product}
                     </li>
                   ))}
@@ -335,7 +361,10 @@ export default async function PortfolioPage({ searchParams }: PortfolioPageProps
           <SlideNumber current={6} total={totalSlides} />
         </section>
 
-        <section className="portfolio-slide relative overflow-hidden bg-white p-12 text-primary">
+        <section
+          data-portfolio-slide
+          className="portfolio-slide relative overflow-hidden bg-white p-12 text-primary"
+        >
           <p className="text-sm font-semibold uppercase tracking-[0.28em] text-[#2f6fd6]">
             {portfolio.catalogLabel}
           </p>
@@ -364,7 +393,10 @@ export default async function PortfolioPage({ searchParams }: PortfolioPageProps
           <SlideNumber current={7} total={totalSlides} />
         </section>
 
-        <section className="portfolio-slide portfolio-slide-dark relative overflow-hidden bg-[#071625]">
+        <section
+          data-portfolio-slide
+          className="portfolio-slide portfolio-slide-dark relative overflow-hidden bg-[#071625]"
+        >
           <Image
             src="/cta-section/banner-atc.webp"
             alt=""
