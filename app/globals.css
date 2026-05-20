@@ -231,6 +231,64 @@
         height: 100%;
     }
 
+    .portfolio-slide {
+        aspect-ratio: 297 / 210;
+        min-height: 0;
+        border-radius: 1.5rem;
+        box-shadow: 0 28px 90px -52px rgba(0, 0, 0, 0.72);
+    }
+
+    .portfolio-slide,
+    .portfolio-slide * {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+    }
+
+    .portfolio-slide .absolute.bottom-7.right-9 {
+        color: rgb(15 23 42 / 0.36);
+    }
+
+    .portfolio-slide-dark .absolute.bottom-7.right-9 {
+        color: rgb(255 255 255 / 0.45);
+    }
+
+    @page {
+        size: A4 landscape;
+        margin: 0;
+    }
+
+    @media print {
+        html,
+        body {
+            width: 297mm;
+            min-height: 210mm;
+            background: white !important;
+        }
+
+        body {
+            margin: 0;
+        }
+
+        .portfolio-deck {
+            gap: 0 !important;
+        }
+
+        .portfolio-slide {
+            width: 297mm !important;
+            height: 210mm !important;
+            overflow: hidden !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            page-break-after: always;
+            break-after: page;
+        }
+
+        .portfolio-slide:last-child {
+            page-break-after: auto;
+            break-after: auto;
+        }
+    }
+
     @keyframes media-marquee {
         from {
             transform: translateX(0);

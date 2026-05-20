@@ -19,15 +19,15 @@ type CommodityTickerProps = {
 
 const statusText: Record<Language, { loading: string; unavailable: string }> = {
   pt: {
-    loading: "Carregando commodities",
+    loading: "Carregando...",
     unavailable: "Cotações indisponíveis no momento",
   },
   en: {
-    loading: "Loading commodities",
+    loading: "Loading...",
     unavailable: "Quotes unavailable right now",
   },
   zh: {
-    loading: "正在加载商品行情",
+    loading: "加载中...",
     unavailable: "当前行情不可用",
   },
 };
