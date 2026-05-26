@@ -208,7 +208,7 @@ export const copy = {
       eyebrow: "Notícias",
       title: "Mercado e economia em tempo real",
       description:
-        "Acompanhe notícias recentes do InfoMoney sobre mercados, empresas, commodities e indicadores que impactam decisões internacionais.",
+        "Acompanhe as principais notícias sobre mercados, empresas, commodities e indicadores que impactam decisões internacionais.",
       sourceLabel: "Ver no InfoMoney",
       readMoreLabel: "Ler notícia",
       emptyLabel: "Notícias indisponíveis no momento.",
@@ -471,7 +471,7 @@ export const copy = {
       eyebrow: "News",
       title: "Markets and economy in real time",
       description:
-        "Follow recent InfoMoney coverage on markets, companies, commodities and indicators that affect international decisions.",
+        "Follow the latest news on markets, companies, commodities and indicators that affect international decisions.",
       sourceLabel: "View on InfoMoney",
       readMoreLabel: "Read article",
       emptyLabel: "News unavailable right now.",
@@ -728,7 +728,7 @@ export const copy = {
       eyebrow: "新闻",
       title: "实时市场与经济动态",
       description:
-        "关注 InfoMoney 关于市场、企业、大宗商品和影响国际决策的指标的最新报道。",
+        "关注市场、企业、大宗商品和影响国际决策的指标的最新报道。",
       sourceLabel: "在 InfoMoney 查看",
       readMoreLabel: "阅读新闻",
       emptyLabel: "当前新闻不可用。",

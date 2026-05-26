@@ -19,7 +19,7 @@ export function NewsSection({
   content,
   news,
 }: NewsSectionProps) {
-  const dateFormatter = new Intl.DateTimeFormat(
+  const dateTimeFormatter = new Intl.DateTimeFormat(
     lang === "pt" ? "pt-BR" : lang === "zh" ? "zh-CN" : "en-US",
     {
       day: "2-digit",
@@ -28,6 +28,18 @@ export function NewsSection({
       minute: "2-digit",
     },
   );
+
+  function formatNewsDate(date: Date): string {
+    const parts = dateTimeFormatter.formatToParts(date);
+    // Rebuild without trailing dots on abbreviated month names
+    const cleaned = parts.map((p) => {
+      if (p.type === "month") return p.value.replace(/\.$/, "");
+      // Replace the literal separator between date and time with double space
+      if (p.type === "literal" && p.value.trim() === ",") return "  ";
+      return p.value;
+    });
+    return cleaned.join("").trim();
+  }
   const getFeedHref = (feed: InfoMoneyFeedKey) =>
     feed === "latest"
       ? `/news?lang=${lang}`
@@ -51,16 +63,6 @@ export function NewsSection({
               {content.description}
             </p>
           </div>
-
-          <a
-            href="https://www.infomoney.com.br/mercados/"
-            target="_blank"
-            rel="noreferrer"
-            className="motion-reveal inline-flex h-10 w-fit items-center gap-2 rounded-full border border-primary/12 px-4 text-sm font-medium text-primary transition-colors hover:border-primary/24 hover:bg-primary/5"
-          >
-            {content.sourceLabel}
-            <ArrowUpRight className="size-4" aria-hidden />
-          </a>
         </div>
 
         <div className="mt-8 flex flex-wrap gap-2">
@@ -89,7 +91,7 @@ export function NewsSection({
               key={item.url}
               item={item}
               animationDelay={index * 80}
-              dateFormatter={dateFormatter}
+              formatDate={formatNewsDate}
               readMoreLabel={content.readMoreLabel}
             />
           ))}
@@ -108,12 +110,12 @@ export function NewsSection({
 function NewsCard({
   item,
   animationDelay,
-  dateFormatter,
+  formatDate,
   readMoreLabel,
 }: {
   item: NewsItem;
   animationDelay: number;
-  dateFormatter: Intl.DateTimeFormat;
+  formatDate: (date: Date) => string;
   readMoreLabel: string;
 }) {
   const publishedAt = item.publishedAt ? new Date(item.publishedAt) : null;
@@ -140,10 +142,11 @@ function NewsCard({
         </div>
 
         <div className="flex min-h-52 flex-col p-5 sm:p-6">
-          <div className="flex flex-wrap items-center gap-2 text-[11px] font-mono uppercase tracking-[0.14em] text-muted-foreground">
-            <span>{item.source}</span>
+          <div className="flex flex-col gap-0.5 text-[11px] font-mono uppercase tracking-[0.14em] text-muted-foreground">
             {item.category ? <span>{item.category}</span> : null}
-            {publishedAt ? <span>{dateFormatter.format(publishedAt)}</span> : null}
+            {publishedAt ? (
+              <span>{formatDate(publishedAt)}</span>
+            ) : null}
           </div>
 
           <h3 className="mt-3 text-lg font-semibold leading-tight text-foreground text-balance group-hover:text-primary">
