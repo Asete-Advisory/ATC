@@ -1,8 +1,11 @@
-import { Factory, ShieldCheck, Truck } from "lucide-react";
 import Image from "next/image";
 import { copy, type Language } from "@/lib/i18n";
 
-const caseIcons = [Factory, Truck, ShieldCheck];
+const caseImages = [
+  "/cases-section/automotive-industry.webp",
+  "/cases-section/commodity-export.webp",
+  "/cases-section/complex-industrial-operations.webp",
+];
 
 type CasesSectionProps = {
   content: (typeof copy)[Language]["cases"];
@@ -12,24 +15,10 @@ export function CasesSection({ content }: CasesSectionProps) {
   return (
     <section
       id="casos"
-      className="relative overflow-hidden bg-[linear-gradient(180deg,hsl(from_var(--primary)_h_s_l_/_0.16),hsl(from_var(--primary)_h_s_l_/_0.1)_48%,hsl(from_var(--accent)_h_s_l_/_0.09))] py-16 md:py-32"
+      className="relative overflow-hidden bg-[linear-gradient(180deg,hsl(from_var(--primary)_h_s_l_/_0.08),hsl(from_var(--background)_h_s_l)_44%,hsl(from_var(--accent)_h_s_l_/_0.08))] py-16 md:py-32"
     >
-      <Image
-        src="/global/industry.jpg"
-        alt=""
-        fill
-        aria-hidden
-        className="object-cover opacity-40"
-        loading="eager"
-        sizes="100vw"
-      />
-      <div className="absolute inset-0 bg-primary/24" aria-hidden />
       <div
-        className="absolute inset-0 bg-gradient-to-b from-background/78 via-background/26 to-primary/18"
-        aria-hidden
-      />
-      <div
-        className="absolute inset-0 bg-[linear-gradient(90deg,hsl(from_var(--primary)_h_s_l_/_0.12),transparent_48%,hsl(from_var(--primary)_h_s_l_/_0.16))]"
+        className="absolute inset-0 bg-[linear-gradient(90deg,hsl(from_var(--primary)_h_s_l_/_0.08),transparent_46%,hsl(from_var(--primary)_h_s_l_/_0.06))]"
         aria-hidden
       />
       <div
@@ -55,23 +44,48 @@ export function CasesSection({ content }: CasesSectionProps) {
           </p>
         </div>
 
-        <div className="mt-10 grid gap-6 md:grid-cols-3">
+        <div className="mt-10 grid gap-5 lg:grid-cols-12 lg:grid-rows-2">
           {content.items.map((item, index) => {
-            const Icon = caseIcons[index];
-
             return (
               <article
                 key={item.title}
-                className="motion-card motion-reveal-soft rounded-3xl border border-primary/10 bg-background/90 p-6 sm:p-8 shadow-sm shadow-primary/5 hover:border-accent/35"
+                className={[
+                  "motion-card motion-reveal-soft group relative min-h-[340px] overflow-hidden rounded-lg border border-white/18 bg-primary shadow-sm shadow-primary/10",
+                  "hover:border-accent/45",
+                  index === 0
+                    ? "lg:col-span-7 lg:row-span-2 lg:min-h-[560px]"
+                    : "lg:col-span-5 lg:min-h-[268px]",
+                ].join(" ")}
                 style={{ animationDelay: `${index * 90}ms` }}
               >
-                <Icon className="motion-icon size-6 text-accent" aria-hidden />
-                <h3 className="mt-6 text-lg font-semibold text-foreground">
-                  {item.title}
-                </h3>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                  {item.desc}
-                </p>
+                <Image
+                  src={caseImages[index]}
+                  alt={item.title}
+                  fill
+                  loading={index === 0 ? "eager" : "lazy"}
+                  className="object-cover transition duration-700 group-hover:scale-[1.035]"
+                  sizes={
+                    index === 0
+                      ? "(min-width: 1024px) 58vw, 100vw"
+                      : "(min-width: 1024px) 42vw, 100vw"
+                  }
+                />
+                <div
+                  className="absolute inset-0 bg-gradient-to-t from-primary/92 via-primary/36 to-primary/4"
+                  aria-hidden
+                />
+                <div
+                  className="absolute inset-0 bg-[linear-gradient(90deg,hsl(from_var(--primary)_h_s_l_/_0.42),transparent_62%)]"
+                  aria-hidden
+                />
+                <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8">
+                  <h3 className="max-w-xl text-xl font-semibold tracking-tight text-white sm:text-2xl">
+                    {item.title}
+                  </h3>
+                  <p className="mt-3 max-w-xl text-sm leading-relaxed text-white/78 sm:text-base">
+                    {item.desc}
+                  </p>
+                </div>
               </article>
             );
           })}

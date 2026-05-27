@@ -1,8 +1,6 @@
-import { ClipboardList, Handshake, Ship } from "lucide-react";
 import Image from "next/image";
 import { copy, type Language } from "@/lib/i18n";
 
-const stepIcons = [ClipboardList, Handshake, Ship];
 const stepImages = [
   "/how-it-works/estrategico-1.webp",
   "/how-it-works/validacao-1.webp",
@@ -38,8 +36,6 @@ export function HowItWorks({ content }: HowItWorksProps) {
 
         <ol className="mt-10 sm:mt-14 grid gap-5 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
           {content.steps.map((step, i) => {
-            const Icon = stepIcons[i];
-
             return (
               <li
                 key={step.title}
@@ -60,11 +56,6 @@ export function HowItWorks({ content }: HowItWorksProps) {
                     className="absolute inset-0 bg-gradient-to-t from-primary/55 via-primary/5 to-transparent"
                     aria-hidden
                   />
-                  <div className="absolute bottom-4 left-4">
-                    <div className="motion-icon inline-flex size-11 items-center justify-center rounded-xl border border-white/18 bg-primary/70 text-white backdrop-blur-sm">
-                      <Icon className="size-5" aria-hidden />
-                    </div>
-                  </div>
                 </div>
                 <div className="p-6 sm:p-7">
                   <h3 className="text-lg font-semibold text-foreground">
