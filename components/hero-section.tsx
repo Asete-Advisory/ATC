@@ -1,9 +1,8 @@
 import Image from "next/image";
-import { ArrowRight, ChevronDown } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { HeroVideoBackground } from "@/components/hero-video-background";
-import { buildWhatsAppUrl } from "@/lib/contact";
-import { copy, localizedHref, localizedPath, type Language } from "@/lib/i18n";
+import { copy, localizedPath, type Language } from "@/lib/i18n";
 
 type HeroSectionProps = {
   lang: Language;
@@ -59,9 +58,7 @@ export function HeroSection({ lang, content }: HeroSectionProps) {
               className="rounded-full px-6 h-12 bg-white text-foreground hover:bg-white/90"
             >
               <a
-                href={buildWhatsAppUrl(content.primaryCtaMessage)}
-                target="_blank"
-                rel="noreferrer"
+                href={localizedPath(lang, "/catalogo")}
                 className="inline-flex items-center gap-2"
               >
                 {content.primaryCtaLabel}
@@ -74,7 +71,7 @@ export function HeroSection({ lang, content }: HeroSectionProps) {
               variant="ghost"
               className="rounded-full px-6 h-12 text-white hover:bg-white/10 hover:text-white"
             >
-              <a href={localizedHref(lang, "#como-funciona")}>
+              <a href={localizedPath(lang, "/news")}>
                 {content.secondaryCtaLabel}
               </a>
             </Button>
@@ -114,21 +111,7 @@ export function HeroSection({ lang, content }: HeroSectionProps) {
           </div>
         </div>
 
-        <div className="hero-scroll-cue relative mx-auto mt-auto flex w-fit flex-col items-center gap-2 px-5 pt-8 text-center sm:pt-10">
-          <a
-            href={localizedPath(lang, "/news")}
-            className="max-w-[calc(100vw-2.5rem)] text-balance text-[0.68rem] font-medium uppercase leading-snug tracking-[0.16em] text-white/72 transition-colors hover:text-white sm:whitespace-nowrap sm:text-xs sm:tracking-[0.18em]"
-          >
-            {content.newsCtaLabel}
-          </a>
-          <a
-            href={localizedPath(lang, "/news")}
-            className="mt-1 flex size-11 items-center justify-center rounded-full border border-white/18 bg-white/10 text-white shadow-[0_18px_45px_-24px_rgba(0,0,0,0.9)] backdrop-blur-md transition-colors hover:border-white/34 hover:bg-white/16 sm:mt-2"
-            aria-label={content.newsCtaLabel}
-          >
-            <ChevronDown className="size-5" aria-hidden />
-          </a>
-        </div>
+        <div className="mt-auto pt-8 sm:pt-10" />
       </div>
     </section>
   );

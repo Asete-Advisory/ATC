@@ -37,10 +37,9 @@ export const copy = {
       title: "Trading, Sourcing & Inteligência Comercial Internacional",
       description:
         "Soluções estruturadas para empresas que desejam importar, exportar e operar no mercado global com segurança, estratégia e escala.",
-      primaryCtaLabel: "Falar com nosso time",
+      primaryCtaLabel: "Catálogos",
       primaryCtaMessage: "Olá, quero falar com o time da ATC.",
-      secondaryCtaLabel: "Como funciona",
-      newsCtaLabel: "Clique e acompanhe as notícias do mercado",
+      secondaryCtaLabel: "Notícias",
       stats: [
         { value: "+R$1 BILHÃO", label: "em operações e valores negociados" },
         {
@@ -300,10 +299,9 @@ export const copy = {
       title: "International import, export and sourcing solutions",
       description:
         "We connect your company directly with the world's best factories, combining security, strategy and local presence in China.",
-      primaryCtaLabel: "Talk to our team",
+      primaryCtaLabel: "Catalogs",
       primaryCtaMessage: "Hello, I would like to talk to the ATC team.",
-      secondaryCtaLabel: "How it works",
-      newsCtaLabel: "Click to follow market news",
+      secondaryCtaLabel: "News",
       stats: [
         { value: "+R$1 BILLION", label: "in negotiated operations and values" },
         {
@@ -563,10 +561,9 @@ export const copy = {
       title: "国际进口、出口与采购解决方案",
       description:
         "我们将您的企业直接连接到全球优质工厂，以安全、策略和中国本地执行能力推动业务发展。",
-      primaryCtaLabel: "联系我们的团队",
+      primaryCtaLabel: "产品目录",
       primaryCtaMessage: "您好，我想与 ATC 团队沟通。",
-      secondaryCtaLabel: "运作方式",
-      newsCtaLabel: "点击关注市场新闻",
+      secondaryCtaLabel: "新闻",
       stats: [
         { value: "+10亿+雷亚尔", label: "成交金额与运营价值" },
         {
