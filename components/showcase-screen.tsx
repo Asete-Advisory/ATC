@@ -175,16 +175,16 @@ export function ShowcaseScreen({ lang }: ShowcaseScreenProps) {
           />
         </div>
 
-        <div className="absolute inset-x-5 top-[clamp(8.75rem,19svh,14rem)] bottom-[clamp(7.5rem,13svh,9.25rem)] grid content-center gap-5 sm:inset-x-8 md:gap-6 lg:inset-x-12 lg:grid-cols-[minmax(0,1fr)_clamp(19rem,28vw,30rem)] lg:items-center xl:gap-8">
-          <div className="min-w-0 max-w-[74rem]">
+        <div className="absolute inset-x-5 top-[clamp(8.5rem,18svh,12.5rem)] bottom-[clamp(6.75rem,11svh,8.25rem)] grid content-center gap-5 sm:inset-x-8 md:gap-6 lg:inset-x-12 lg:grid-cols-[minmax(0,1fr)_clamp(18rem,25vw,27rem)] lg:items-center xl:gap-8">
+          <div className="min-w-0 max-w-[70rem]">
             <div className="mb-[clamp(0.9rem,2.1svh,1.75rem)] inline-flex max-w-full items-center gap-3 rounded-full border border-white/16 bg-white/10 px-4 py-2 text-[clamp(0.68rem,0.85vw,0.9rem)] font-semibold uppercase tracking-[0.18em] text-white/78 backdrop-blur-md sm:px-5 sm:py-3">
               <Globe2 className="size-4 text-cyan-200" />
               <span className="truncate">Operacao internacional em movimento</span>
             </div>
-            <h1 className="max-w-[74rem] text-[clamp(3rem,6.2vw,7.15rem)] font-semibold leading-[0.92] tracking-tight text-white lg:text-[clamp(3.5rem,5.25vw,6.2rem)] 2xl:text-[clamp(4.25rem,5vw,6.9rem)]">
+            <h1 className="max-w-[70rem] text-[clamp(2.85rem,5.5vw,6.25rem)] font-semibold leading-[0.95] tracking-tight text-white lg:text-[clamp(3.15rem,4.7vw,5.55rem)] 2xl:text-[clamp(3.65rem,4.45vw,6.05rem)]">
               {content.hero.title}
             </h1>
-            <p className="mt-[clamp(1rem,2.2svh,1.75rem)] max-w-[64rem] text-[clamp(1.1rem,1.65vw,2rem)] leading-snug text-white/78">
+            <p className="mt-[clamp(0.9rem,2svh,1.5rem)] max-w-[58rem] text-[clamp(1.05rem,1.42vw,1.72rem)] leading-snug text-white/78">
               {content.hero.description}
             </p>
           </div>
@@ -193,12 +193,12 @@ export function ShowcaseScreen({ lang }: ShowcaseScreenProps) {
             {content.hero.stats.map((stat) => (
               <article
                 key={stat.label}
-                className="min-h-24 rounded-xl border border-white/14 bg-[#071625]/64 p-4 shadow-[0_22px_80px_-54px_rgba(0,0,0,0.95)] backdrop-blur-md sm:p-5"
+                className="min-h-20 rounded-xl border border-white/14 bg-[#071625]/64 p-4 shadow-[0_22px_80px_-54px_rgba(0,0,0,0.95)] backdrop-blur-md"
               >
-                <p className="font-mono text-[clamp(1.75rem,2.3vw,3rem)] font-semibold leading-none text-white">
+                <p className="font-mono text-[clamp(1.65rem,2vw,2.55rem)] font-semibold leading-none text-white">
                   {stat.value}
                 </p>
-                <p className="mt-3 text-[clamp(0.86rem,1.05vw,1.12rem)] leading-snug text-white/64">
+                <p className="mt-2.5 text-[clamp(0.82rem,0.92vw,1rem)] leading-snug text-white/64">
                   {stat.label}
                 </p>
               </article>
@@ -206,15 +206,15 @@ export function ShowcaseScreen({ lang }: ShowcaseScreenProps) {
           </div>
         </div>
 
-        <div className="absolute inset-x-0 bottom-0 grid gap-0 border-t border-white/12 bg-[#071625]/86 backdrop-blur-md lg:grid-cols-[1fr_auto]">
-          <div className="overflow-hidden py-4 sm:py-5">
+        <div className="absolute inset-x-0 bottom-0 grid gap-0 border-t border-white/12 bg-[#071625]/86 backdrop-blur-md">
+          <div className="overflow-hidden py-4 md:hidden">
             <div className="commodity-marquee">
               <PhraseGroup />
               <PhraseGroup ariaHidden />
             </div>
           </div>
 
-          <div className="hidden min-w-[42rem] grid-cols-4 border-l border-white/12 md:grid">
+          <div className="hidden min-w-0 grid-cols-4 md:grid">
             {featuredQuotes.length > 0 ? (
               featuredQuotes.map((quote) => (
                 <FeaturedQuote
@@ -306,12 +306,12 @@ function FeaturedQuote({
   numberFormatter: Intl.NumberFormat;
 }) {
   return (
-    <article className="flex min-h-24 flex-col justify-center border-r border-white/12 px-5 last:border-r-0">
-      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/50">
+    <article className="flex min-h-20 flex-col justify-center border-r border-white/12 px-5 py-3 last:border-r-0">
+      <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-white/50">
         {quote.label}
       </p>
-      <div className="mt-3 flex items-end justify-between gap-3">
-        <p className="font-mono text-2xl font-semibold leading-none text-white">
+      <div className="mt-2.5 flex items-end justify-between gap-3">
+        <p className="font-mono text-[clamp(1.35rem,1.65vw,2rem)] font-semibold leading-none text-white">
           {quote.currency} {numberFormatter.format(quote.price)}
         </p>
         <TrendValue value={quote.changePercent ?? 0} numberFormatter={numberFormatter} />
