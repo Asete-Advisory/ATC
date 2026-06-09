@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
-import { Globe2, RadioTower, TrendingUp } from "lucide-react";
+import { RadioTower, TrendingUp } from "lucide-react";
 import { HeroVideoBackground } from "@/components/hero-video-background";
 import { copy, type Language } from "@/lib/i18n";
 
@@ -194,10 +194,6 @@ export function ShowcaseScreen({ lang }: ShowcaseScreenProps) {
 
         <div className="absolute inset-x-5 top-[clamp(11.25rem,23svh,15rem)] bottom-[clamp(6.75rem,11svh,8.25rem)] grid content-center gap-5 sm:inset-x-8 md:gap-6 lg:inset-x-12 lg:grid-cols-[minmax(0,1fr)_clamp(18rem,25vw,27rem)] lg:items-center xl:gap-8">
           <div className="min-w-0 max-w-[70rem]">
-            <div className="mb-[clamp(0.9rem,2.1svh,1.75rem)] inline-flex max-w-full items-center gap-3 rounded-full border border-white/16 bg-white/10 px-4 py-2 text-[clamp(0.68rem,0.85vw,0.9rem)] font-semibold uppercase tracking-[0.18em] text-white/78 backdrop-blur-md sm:px-5 sm:py-3">
-              <Globe2 className="size-4 text-cyan-200" />
-              <span className="truncate">Operacao internacional em movimento</span>
-            </div>
             <h1 className="max-w-[70rem] text-[clamp(2.85rem,5.5vw,6.25rem)] font-semibold leading-[0.95] tracking-tight text-white lg:text-[clamp(3.15rem,4.7vw,5.55rem)] 2xl:text-[clamp(3.65rem,4.45vw,6.05rem)]">
               {content.hero.title}
             </h1>

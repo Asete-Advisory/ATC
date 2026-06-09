@@ -34,7 +34,7 @@ export const copy = {
       ctaMessage: "Olá, quero solicitar uma cotação internacional.",
     },
     hero: {
-      title: "Trading, Sourcing & Inteligência Comercial Internacional",
+      title: "Trading, Sourcing & Comercial Internacional",
       description:
         "Soluções estruturadas para empresas que desejam importar, exportar e operar no mercado global com segurança, estratégia e escala.",
       primaryCtaLabel: "Catálogos",
@@ -724,8 +724,7 @@ export const copy = {
     news: {
       eyebrow: "新闻",
       title: "实时市场与经济动态",
-      description:
-        "关注市场、企业、大宗商品和影响国际决策的指标的最新报道。",
+      description: "关注市场、企业、大宗商品和影响国际决策的指标的最新报道。",
       sourceLabel: "在 InfoMoney 查看",
       readMoreLabel: "阅读新闻",
       emptyLabel: "当前新闻不可用。",
