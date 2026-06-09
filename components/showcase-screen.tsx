@@ -135,7 +135,7 @@ export function ShowcaseScreen({ lang }: ShowcaseScreenProps) {
 
       <section className="relative z-10 h-full">
         <div className="absolute inset-x-0 top-0 border-b border-white/12 bg-[#071625]/82 backdrop-blur-md">
-          <div className="flex h-16 items-center gap-6 px-8 lg:px-12">
+          <div className="flex h-16 items-center gap-4 px-5 sm:gap-6 sm:px-8 lg:px-12">
             <div className="flex min-w-0 items-center gap-4">
               <Image
                 src="/global/atc-light.png"
@@ -146,17 +146,17 @@ export function ShowcaseScreen({ lang }: ShowcaseScreenProps) {
                 className="size-11 rounded-full"
               />
               <div className="min-w-0">
-                <p className="text-sm font-semibold uppercase tracking-[0.28em] text-white">
+                <p className="truncate text-xs font-semibold uppercase tracking-[0.22em] text-white sm:text-sm sm:tracking-[0.28em]">
                   ATC China Brasil
                 </p>
-                <p className="text-xs uppercase tracking-[0.18em] text-white/54">
+                <p className="hidden text-xs uppercase tracking-[0.18em] text-white/54 sm:block">
                   Trading • Sourcing • Commodities
                 </p>
               </div>
             </div>
 
-            <div className="ml-auto flex items-center gap-5 text-sm text-white/70">
-              <span className="inline-flex items-center gap-2 uppercase tracking-[0.18em]">
+            <div className="ml-auto flex items-center gap-3 text-sm text-white/70 sm:gap-5">
+              <span className="hidden items-center gap-2 uppercase tracking-[0.18em] sm:inline-flex">
                 <RadioTower className="size-4 text-emerald-300" />
                 {statusText[lang].live}
               </span>
@@ -175,7 +175,7 @@ export function ShowcaseScreen({ lang }: ShowcaseScreenProps) {
           />
         </div>
 
-        <div className="absolute inset-x-5 top-[clamp(8.75rem,19svh,14rem)] bottom-[clamp(7.5rem,13svh,9.25rem)] grid gap-5 sm:inset-x-8 lg:inset-x-12 lg:grid-cols-[minmax(0,1fr)_clamp(19rem,28vw,30rem)] lg:items-center xl:gap-8">
+        <div className="absolute inset-x-5 top-[clamp(8.75rem,19svh,14rem)] bottom-[clamp(7.5rem,13svh,9.25rem)] grid content-center gap-5 sm:inset-x-8 md:gap-6 lg:inset-x-12 lg:grid-cols-[minmax(0,1fr)_clamp(19rem,28vw,30rem)] lg:items-center xl:gap-8">
           <div className="min-w-0 max-w-[74rem]">
             <div className="mb-[clamp(0.9rem,2.1svh,1.75rem)] inline-flex max-w-full items-center gap-3 rounded-full border border-white/16 bg-white/10 px-4 py-2 text-[clamp(0.68rem,0.85vw,0.9rem)] font-semibold uppercase tracking-[0.18em] text-white/78 backdrop-blur-md sm:px-5 sm:py-3">
               <Globe2 className="size-4 text-cyan-200" />
@@ -189,7 +189,7 @@ export function ShowcaseScreen({ lang }: ShowcaseScreenProps) {
             </p>
           </div>
 
-          <div className="grid min-w-0 gap-3 self-end md:grid-cols-3 lg:grid-cols-1 lg:self-center">
+          <div className="hidden min-w-0 gap-3 self-end md:grid md:grid-cols-3 lg:grid-cols-1 lg:self-center">
             {content.hero.stats.map((stat) => (
               <article
                 key={stat.label}
@@ -207,14 +207,14 @@ export function ShowcaseScreen({ lang }: ShowcaseScreenProps) {
         </div>
 
         <div className="absolute inset-x-0 bottom-0 grid gap-0 border-t border-white/12 bg-[#071625]/86 backdrop-blur-md lg:grid-cols-[1fr_auto]">
-          <div className="overflow-hidden py-5">
+          <div className="overflow-hidden py-4 sm:py-5">
             <div className="commodity-marquee">
               <PhraseGroup />
               <PhraseGroup ariaHidden />
             </div>
           </div>
 
-          <div className="grid min-w-[42rem] grid-cols-4 border-l border-white/12">
+          <div className="hidden min-w-[42rem] grid-cols-4 border-l border-white/12 md:grid">
             {featuredQuotes.length > 0 ? (
               featuredQuotes.map((quote) => (
                 <FeaturedQuote
