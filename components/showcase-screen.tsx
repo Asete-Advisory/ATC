@@ -194,6 +194,14 @@ export function ShowcaseScreen({ lang }: ShowcaseScreenProps) {
 
         <div className="absolute inset-x-5 top-[clamp(11.25rem,23svh,15rem)] bottom-[clamp(6.75rem,11svh,8.25rem)] grid content-center gap-5 sm:inset-x-8 md:gap-6 lg:inset-x-12 lg:grid-cols-[minmax(0,1fr)_clamp(18rem,25vw,27rem)] lg:items-center xl:gap-8">
           <div className="min-w-0 max-w-[70rem]">
+            <Image
+              src="/global/atc-icon-white.svg"
+              alt="ATC China Brasil"
+              width={1205}
+              height={375}
+              priority
+              className="mb-[clamp(1rem,2.2svh,1.7rem)] h-auto w-[clamp(6rem,9vw,10rem)]"
+            />
             <h1 className="max-w-[70rem] text-[clamp(2.85rem,5.5vw,6.25rem)] font-semibold leading-[0.95] tracking-tight text-white lg:text-[clamp(3.15rem,4.7vw,5.55rem)] 2xl:text-[clamp(3.65rem,4.45vw,6.05rem)]">
               {content.hero.title}
             </h1>
