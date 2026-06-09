@@ -206,16 +206,25 @@
         animation-play-state: paused;
     }
 
-    .commodity-marquee {
+    .commodity-marquee,
+    .commodity-marquee-reverse {
         display: inline-flex;
         width: max-content;
         height: 100%;
         white-space: nowrap;
-        animation: commodity-marquee 120s linear infinite;
         will-change: transform;
     }
 
-    .commodity-marquee:hover {
+    .commodity-marquee {
+        animation: commodity-marquee 120s linear infinite;
+    }
+
+    .commodity-marquee-reverse {
+        animation: commodity-marquee-reverse 120s linear infinite;
+    }
+
+    .commodity-marquee:hover,
+    .commodity-marquee-reverse:hover {
         animation-play-state: paused;
     }
 
@@ -303,6 +312,16 @@
         }
     }
 
+    @keyframes commodity-marquee-reverse {
+        from {
+            transform: translateX(-50%);
+        }
+
+        to {
+            transform: translateX(0);
+        }
+    }
+
     @keyframes motion-reveal {
         from {
             opacity: 0;
@@ -352,7 +371,8 @@
             animation-duration: 200s;
         }
 
-        .commodity-marquee {
+        .commodity-marquee,
+        .commodity-marquee-reverse {
             animation-duration: 160s;
         }
     }

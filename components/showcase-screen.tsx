@@ -30,6 +30,15 @@ const marketPhrases = [
   "China Brasil",
 ] as const;
 
+function rotateQuotes(quotes: CommodityQuote[], offset: number) {
+  if (quotes.length === 0) {
+    return [];
+  }
+
+  const normalizedOffset = offset % quotes.length;
+  return [...quotes.slice(normalizedOffset), ...quotes.slice(0, normalizedOffset)];
+}
+
 const statusText: Record<Language, { live: string; loading: string; updated: string }> = {
   pt: {
     live: "Mercado ao vivo",
@@ -123,6 +132,8 @@ export function ShowcaseScreen({ lang }: ShowcaseScreenProps) {
   }, [lang]);
 
   const marqueeQuotes = quotes.length > 0 ? quotes : [];
+  const topTickerQuotes = rotateQuotes(marqueeQuotes, 0);
+  const bottomTickerQuotes = rotateQuotes(marqueeQuotes, Math.ceil(marqueeQuotes.length / 2));
   const featuredQuotes = marqueeQuotes.slice(0, 4);
 
   return (
@@ -169,13 +180,19 @@ export function ShowcaseScreen({ lang }: ShowcaseScreenProps) {
           </div>
 
           <QuoteMarquee
-            quotes={marqueeQuotes}
+            quotes={topTickerQuotes}
             numberFormatter={numberFormatter}
             loadingLabel={statusText[lang].loading}
           />
+          <QuoteMarquee
+            quotes={bottomTickerQuotes}
+            numberFormatter={numberFormatter}
+            loadingLabel={statusText[lang].loading}
+            reverse
+          />
         </div>
 
-        <div className="absolute inset-x-5 top-[clamp(8.5rem,18svh,12.5rem)] bottom-[clamp(6.75rem,11svh,8.25rem)] grid content-center gap-5 sm:inset-x-8 md:gap-6 lg:inset-x-12 lg:grid-cols-[minmax(0,1fr)_clamp(18rem,25vw,27rem)] lg:items-center xl:gap-8">
+        <div className="absolute inset-x-5 top-[clamp(11.25rem,23svh,15rem)] bottom-[clamp(6.75rem,11svh,8.25rem)] grid content-center gap-5 sm:inset-x-8 md:gap-6 lg:inset-x-12 lg:grid-cols-[minmax(0,1fr)_clamp(18rem,25vw,27rem)] lg:items-center xl:gap-8">
           <div className="min-w-0 max-w-[70rem]">
             <div className="mb-[clamp(0.9rem,2.1svh,1.75rem)] inline-flex max-w-full items-center gap-3 rounded-full border border-white/16 bg-white/10 px-4 py-2 text-[clamp(0.68rem,0.85vw,0.9rem)] font-semibold uppercase tracking-[0.18em] text-white/78 backdrop-blur-md sm:px-5 sm:py-3">
               <Globe2 className="size-4 text-cyan-200" />
@@ -252,22 +269,26 @@ function QuoteMarquee({
   quotes,
   numberFormatter,
   loadingLabel,
+  reverse = false,
 }: {
   quotes: CommodityQuote[];
   numberFormatter: Intl.NumberFormat;
   loadingLabel: string;
+  reverse?: boolean;
 }) {
   if (quotes.length === 0) {
     return (
-      <div className="flex h-12 items-center px-8 text-sm font-semibold uppercase tracking-[0.18em] text-white/60 lg:px-12">
+      <div className="flex h-10 items-center px-8 text-sm font-semibold uppercase tracking-[0.18em] text-white/60 lg:px-12">
         {loadingLabel}
       </div>
     );
   }
 
   return (
-    <div className="flex h-12 overflow-hidden">
-      <div className="commodity-marquee">
+    <div className="flex h-10 overflow-hidden border-t border-white/8 first:border-t-0">
+      <div
+        className={reverse ? "commodity-marquee-reverse" : "commodity-marquee"}
+      >
         <QuoteGroup quotes={quotes} numberFormatter={numberFormatter} />
         <QuoteGroup quotes={quotes} numberFormatter={numberFormatter} ariaHidden />
       </div>
@@ -289,7 +310,7 @@ function QuoteGroup({
       {quotes.map((quote) => (
         <div
           key={quote.symbol}
-          className="flex h-full shrink-0 items-center border-r border-white/12 px-5 text-sm leading-none"
+          className="flex h-full shrink-0 items-center border-r border-white/12 px-5 text-[0.82rem] leading-none"
         >
           <QuoteText quote={quote} numberFormatter={numberFormatter} />
         </div>
