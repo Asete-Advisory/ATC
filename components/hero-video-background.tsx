@@ -13,9 +13,7 @@ export function HeroVideoBackground() {
   const [activeVideo, setActiveVideo] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
   const requestPlaybackRef = useRef<() => void>(() => undefined);
-  const retryTimerRef = useRef<ReturnType<typeof window.setTimeout> | null>(
-    null,
-  );
+  const retryTimerRef = useRef<number | null>(null);
 
   const prepareVideo = useCallback((video: HTMLVideoElement) => {
     video.muted = true;
