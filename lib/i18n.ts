@@ -34,7 +34,7 @@ export const copy = {
       ctaMessage: "Olá, quero solicitar uma cotação internacional.",
     },
     hero: {
-      title: "Trading, Sourcing & Comercial Internacional",
+      title: "Trading, Sourcing & Comercio Internacional",
       description:
         "Soluções estruturadas para empresas que desejam importar, exportar e operar no mercado global com segurança, estratégia e escala.",
       primaryCtaLabel: "Catálogos",
