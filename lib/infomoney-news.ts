@@ -1,5 +1,5 @@
 const INFOMONEY_FEEDS = {
-  latest: "https://www.infomoney.com.br/mercados/feed/",
+  latest: "https://www.infomoney.com.br/feed/",
   imports: "https://www.infomoney.com.br/tudo-sobre/importacoes/feed/",
   exports: "https://www.infomoney.com.br/tudo-sobre/exportacoes/feed/",
   commodities: "https://www.infomoney.com.br/tudo-sobre/commodities/feed/",
