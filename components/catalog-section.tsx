@@ -1,8 +1,24 @@
 import type { Language } from "@/lib/i18n";
 import { productCatalog } from "@/lib/product-catalog";
+import Image from "next/image";
 
 type CatalogSectionProps = {
   lang: Language;
+};
+
+const electronicsProductImages = [
+  "/catalog/electronics-mobile-accessories/phone-cases.jpg",
+  "/catalog/electronics-mobile-accessories/screen-protectors.jpg",
+  "/catalog/electronics-mobile-accessories/cables.jpg",
+  "/catalog/electronics-mobile-accessories/chargers.jpg",
+  "/catalog/electronics-mobile-accessories/earphones.jpg",
+  "/catalog/electronics-mobile-accessories/creator-lighting.jpg",
+  "/catalog/electronics-mobile-accessories/led-strips.jpg",
+];
+
+const categoryProductImages: Record<string, string[]> = {
+  "eletronicos-acessorios-mobile": electronicsProductImages,
+  "electronics-mobile-accessories": electronicsProductImages,
 };
 
 export function CatalogSection({ lang }: CatalogSectionProps) {
@@ -43,17 +59,44 @@ export function CatalogSection({ lang }: CatalogSectionProps) {
               </div>
 
               <ul className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {category.products.map((product, productIndex) => (
-                  <li
-                    key={product}
-                    className="motion-reveal-soft flex min-h-14 items-center rounded-xl border border-border/70 bg-background/70 px-4 py-3 text-sm font-medium leading-snug text-foreground shadow-sm transition-colors hover:border-accent/35 hover:bg-background"
-                    style={{
-                      animationDelay: `${index * 90 + productIndex * 35}ms`,
-                    }}
-                  >
-                    {product}
-                  </li>
-                ))}
+                {category.products.map((product, productIndex) => {
+                  const imageSrc =
+                    categoryProductImages[category.id]?.[productIndex];
+
+                  return (
+                    <li
+                      key={product}
+                      className={
+                        imageSrc
+                          ? "motion-reveal-soft group overflow-hidden rounded-xl border border-border/70 bg-background/85 text-sm font-medium leading-snug text-foreground shadow-sm transition-colors hover:border-accent/35 hover:bg-background"
+                          : "motion-reveal-soft flex min-h-14 items-center rounded-xl border border-border/70 bg-background/70 px-4 py-3 text-sm font-medium leading-snug text-foreground shadow-sm transition-colors hover:border-accent/35 hover:bg-background"
+                      }
+                      style={{
+                        animationDelay: `${index * 90 + productIndex * 35}ms`,
+                      }}
+                    >
+                      {imageSrc ? (
+                        <>
+                          <div className="aspect-[16/9] overflow-hidden bg-primary/5">
+                            <Image
+                              src={imageSrc}
+                              alt=""
+                              width={1200}
+                              height={675}
+                              className="size-full object-cover transition duration-500 group-hover:scale-[1.03]"
+                              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                            />
+                          </div>
+                          <div className="flex min-h-20 items-center px-4 py-3">
+                            {product}
+                          </div>
+                        </>
+                      ) : (
+                        product
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             </section>
           ))}
