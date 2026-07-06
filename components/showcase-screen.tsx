@@ -370,7 +370,7 @@ function FinanceMapLayer({ active }: { active: boolean }) {
     <div
       aria-hidden={!active}
       className={cn(
-        "pointer-events-none absolute inset-x-5 top-[clamp(11.25rem,23svh,15rem)] bottom-[clamp(6.75rem,11svh,8.25rem)] z-20 overflow-hidden bg-black transition-opacity duration-1000 sm:inset-x-8 lg:inset-x-12",
+        "pointer-events-none absolute inset-x-0 top-36 bottom-20 z-20 overflow-hidden bg-black transition-opacity duration-1000",
         active ? "opacity-100" : "opacity-0",
       )}
     >
