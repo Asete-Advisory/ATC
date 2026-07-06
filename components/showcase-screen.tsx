@@ -4,7 +4,9 @@ import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { RadioTower, TrendingUp } from "lucide-react";
 import { HeroVideoBackground } from "@/components/hero-video-background";
+import { Button } from "@/components/ui/button";
 import { copy, type Language } from "@/lib/i18n";
+import { cn } from "@/lib/utils";
 
 type CommodityQuote = {
   symbol: string;
@@ -20,6 +22,8 @@ type ShowcaseScreenProps = {
   lang: Language;
 };
 
+type DisplayMode = "cycle" | "original" | "map";
+
 const marketPhrases = [
   "Sourcing internacional",
   "Trading estruturado",
@@ -29,6 +33,10 @@ const marketPhrases = [
   "Inteligencia comercial",
   "China Brasil",
 ] as const;
+
+const slideDurationMs = 120_000;
+const financeMonitorEmbedUrl =
+  "https://finance.worldmonitor.app/embed.html?layers=stockExchanges,financialCenters,centralBanks,commodityHubs,gulfInvestments,tradeRoutes,cables,waterways&center=18,8&zoom=1.45&theme=dark&variant=finance";
 
 function rotateQuotes(quotes: CommodityQuote[], offset: number) {
   if (quotes.length === 0) {
@@ -58,6 +66,76 @@ const statusText: Record<Language, { live: string; loading: string; updated: str
 };
 
 export function ShowcaseScreen({ lang }: ShowcaseScreenProps) {
+  const [displayMode, setDisplayMode] = useState<DisplayMode>("cycle");
+  const [cycleShowsFinanceMap, setCycleShowsFinanceMap] = useState(false);
+
+  useEffect(() => {
+    if (displayMode !== "cycle") {
+      return;
+    }
+
+    setCycleShowsFinanceMap(false);
+
+    const interval = window.setInterval(() => {
+      setCycleShowsFinanceMap((current) => !current);
+    }, slideDurationMs);
+
+    return () => window.clearInterval(interval);
+  }, [displayMode]);
+
+  const showFinanceMap =
+    displayMode === "map" || (displayMode === "cycle" && cycleShowsFinanceMap);
+
+  return (
+    <main className="relative isolate h-svh min-h-[640px] overflow-hidden bg-[#071625] text-white">
+      <InstitutionalSlide lang={lang} showFinanceMap={showFinanceMap} />
+      <DisplayModeControl mode={displayMode} onModeChange={setDisplayMode} />
+    </main>
+  );
+}
+
+function DisplayModeControl({
+  mode,
+  onModeChange,
+}: {
+  mode: DisplayMode;
+  onModeChange: (mode: DisplayMode) => void;
+}) {
+  const options: Array<{ value: DisplayMode; label: string }> = [
+    { value: "cycle", label: "Auto" },
+    { value: "original", label: "Original" },
+    { value: "map", label: "Mapa" },
+  ];
+
+  return (
+    <div className="absolute bottom-2 left-2 z-30 flex rounded-md border border-white/10 bg-[#071625]/38 p-1 opacity-15 shadow-[0_12px_42px_-24px_rgba(0,0,0,0.95)] backdrop-blur-md transition-opacity duration-200 hover:opacity-100 focus-within:opacity-100">
+      {options.map((option) => (
+        <Button
+          key={option.value}
+          type="button"
+          size="sm"
+          variant="ghost"
+          aria-pressed={mode === option.value}
+          onClick={() => onModeChange(option.value)}
+          className={cn(
+            "h-7 rounded px-2 text-[0.68rem] uppercase tracking-[0.16em] text-white/60 hover:bg-white/10 hover:text-white",
+            mode === option.value && "bg-white/14 text-white",
+          )}
+        >
+          {option.label}
+        </Button>
+      ))}
+    </div>
+  );
+}
+
+function InstitutionalSlide({
+  lang,
+  showFinanceMap,
+}: {
+  lang: Language;
+  showFinanceMap: boolean;
+}) {
   const content = copy[lang];
   const [quotes, setQuotes] = useState<CommodityQuote[]>([]);
   const [updatedAt, setUpdatedAt] = useState<string | null>(null);
@@ -137,10 +215,16 @@ export function ShowcaseScreen({ lang }: ShowcaseScreenProps) {
   const featuredQuotes = marqueeQuotes.slice(0, 4);
 
   return (
-    <main className="relative isolate h-svh min-h-[640px] overflow-hidden bg-[#071625] text-white">
-      <div className="absolute inset-0 -z-20">
+    <div className="absolute inset-0 isolate">
+      <div
+        className={cn(
+          "absolute inset-0 -z-20 transition-opacity duration-1000",
+          showFinanceMap ? "opacity-0" : "opacity-100",
+        )}
+      >
         <HeroVideoBackground />
       </div>
+      <FinanceMapLayer active={showFinanceMap} />
       <div className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(7,22,37,0.88)_0%,rgba(7,22,37,0.56)_34%,rgba(7,22,37,0.76)_70%,rgba(7,22,37,0.95)_100%)]" />
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_72%_26%,rgba(90,180,210,0.22),transparent_34%),linear-gradient(90deg,rgba(4,14,25,0.64),rgba(4,14,25,0.16)_48%,rgba(4,14,25,0.62))]" />
 
@@ -202,10 +286,22 @@ export function ShowcaseScreen({ lang }: ShowcaseScreenProps) {
               priority
               className="mb-[clamp(1rem,2.2svh,1.7rem)] h-auto w-[clamp(6rem,9vw,10rem)]"
             />
-            <h1 className="max-w-[70rem] text-[clamp(2.85rem,5.5vw,6.25rem)] font-semibold leading-[0.95] tracking-tight text-white lg:text-[clamp(3.15rem,4.7vw,5.55rem)] 2xl:text-[clamp(3.65rem,4.45vw,6.05rem)]">
+            <h1
+              className={cn(
+                "max-w-[70rem] text-[clamp(2.85rem,5.5vw,6.25rem)] font-semibold leading-[0.95] tracking-tight text-white transition-[text-shadow] duration-1000 lg:text-[clamp(3.15rem,4.7vw,5.55rem)] 2xl:text-[clamp(3.65rem,4.45vw,6.05rem)]",
+                showFinanceMap &&
+                  "[text-shadow:0_4px_34px_rgba(0,0,0,0.82),0_2px_12px_rgba(0,0,0,0.86)]",
+              )}
+            >
               {content.hero.title}
             </h1>
-            <p className="mt-[clamp(0.9rem,2svh,1.5rem)] max-w-[58rem] text-[clamp(1.05rem,1.42vw,1.72rem)] leading-snug text-white/78">
+            <p
+              className={cn(
+                "mt-[clamp(0.9rem,2svh,1.5rem)] max-w-[58rem] text-[clamp(1.05rem,1.42vw,1.72rem)] leading-snug text-white/78 transition-[text-shadow] duration-1000",
+                showFinanceMap &&
+                  "[text-shadow:0_3px_22px_rgba(0,0,0,0.86),0_1px_8px_rgba(0,0,0,0.92)]",
+              )}
+            >
               {content.hero.description}
             </p>
           </div>
@@ -265,7 +361,29 @@ export function ShowcaseScreen({ lang }: ShowcaseScreenProps) {
           ).format(new Date(updatedAt))}
         </div>
       ) : null}
-    </main>
+    </div>
+  );
+}
+
+function FinanceMapLayer({ active }: { active: boolean }) {
+  return (
+    <div
+      aria-hidden={!active}
+      className={cn(
+        "pointer-events-none absolute inset-x-5 top-[clamp(11.25rem,23svh,15rem)] bottom-[clamp(6.75rem,11svh,8.25rem)] z-20 overflow-hidden bg-black transition-opacity duration-1000 sm:inset-x-8 lg:inset-x-12",
+        active ? "opacity-100" : "opacity-0",
+      )}
+    >
+      <iframe
+        title="Finance World Monitor"
+        src={financeMonitorEmbedUrl}
+        loading="eager"
+        tabIndex={-1}
+        className="size-full border-0 bg-black"
+        referrerPolicy="strict-origin-when-cross-origin"
+        allow="autoplay; encrypted-media; fullscreen; geolocation"
+      />
+    </div>
   );
 }
 
