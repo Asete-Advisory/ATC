@@ -261,25 +261,25 @@ function InstitutionalSlide({
       <section className="relative z-10 h-full">
         <div className="absolute inset-x-0 top-0 border-b border-white/12 bg-[#071625]/82 backdrop-blur-md">
           <div className="grid h-16 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4 px-5 sm:gap-6 sm:px-8 lg:px-12">
-            <div className="flex min-w-0 items-center justify-start text-sm text-white/70">
+            <div className="flex min-w-0 items-center justify-start gap-3 text-sm text-white/70">
+              <Image
+                src="/global/atc-light.png"
+                alt="ATC China Brasil"
+                width={72}
+                height={72}
+                priority
+                className="size-[4.5rem] rounded-full"
+              />
               <span className="hidden items-center gap-2 uppercase tracking-[0.18em] sm:inline-flex">
                 <RadioTower className="size-4 text-emerald-300" />
                 {statusText[lang].live}
               </span>
             </div>
 
-            <div className="flex min-w-0 items-center justify-center gap-4">
-              <Image
-                src="/global/atc-light.png"
-                alt="ATC China Brasil"
-                width={44}
-                height={44}
-                priority
-                className="size-11 rounded-full"
-              />
-              <div className="min-w-0">
-                <p className="truncate text-xs font-semibold uppercase tracking-[0.22em] text-white sm:text-sm sm:tracking-[0.28em]">
-                  ATC China Brasil
+            <div className="flex min-w-0 items-center justify-center">
+              <div className="min-w-0 text-center">
+                <p className="truncate text-sm font-semibold uppercase tracking-[0.28em] text-white">
+                  Asete Trading Company
                 </p>
                 <p className="hidden text-xs uppercase tracking-[0.18em] text-white/54 sm:block">
                   Trading • Sourcing • Commodities
@@ -440,13 +440,13 @@ function FinanceMapLayer({
 
 function MapLogoMark() {
   return (
-    <div className="pointer-events-none absolute bottom-0 left-3 z-30 flex h-24 w-48 items-end justify-start">
+    <div className="pointer-events-none absolute -bottom-8 left-3 z-30 h-36 w-44 overflow-hidden">
       <Image
         src="/global/atc-light.png"
         alt="ATC China Brasil"
-        width={192}
-        height={182}
-        className="h-24 w-auto object-contain"
+        width={288}
+        height={273}
+        className="h-36 w-auto max-w-none object-contain"
       />
     </div>
   );
