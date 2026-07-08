@@ -34,7 +34,8 @@ const marketPhrases = [
   "China Brasil",
 ] as const;
 
-const slideDurationMs = 120_000;
+const originalSlideDurationMs = 30_000;
+const mapSlideDurationMs = 300_000;
 const financeMonitorEmbedUrl =
   "https://finance.worldmonitor.app/embed.html?layers=stockExchanges,financialCenters,centralBanks,commodityHubs,gulfInvestments,tradeRoutes,cables,waterways&center=8,8&zoom=1.45&theme=dark&variant=finance";
 const investmentPanelSymbols = ["GC=F", "SI=F", "HG=F", "CL=F", "BZ=F", "ZS=F"];
@@ -77,18 +78,25 @@ export function ShowcaseScreen({ lang }: ShowcaseScreenProps) {
   const [cycleShowsFinanceMap, setCycleShowsFinanceMap] = useState(false);
 
   useEffect(() => {
+    if (displayMode === "cycle") {
+      setCycleShowsFinanceMap(false);
+    }
+  }, [displayMode]);
+
+  useEffect(() => {
     if (displayMode !== "cycle") {
       return;
     }
 
-    setCycleShowsFinanceMap(false);
+    const timeout = window.setTimeout(
+      () => {
+        setCycleShowsFinanceMap((current) => !current);
+      },
+      cycleShowsFinanceMap ? mapSlideDurationMs : originalSlideDurationMs,
+    );
 
-    const interval = window.setInterval(() => {
-      setCycleShowsFinanceMap((current) => !current);
-    }, slideDurationMs);
-
-    return () => window.clearInterval(interval);
-  }, [displayMode]);
+    return () => window.clearTimeout(timeout);
+  }, [cycleShowsFinanceMap, displayMode]);
 
   const showFinanceMap =
     displayMode === "map" || (displayMode === "cycle" && cycleShowsFinanceMap);
