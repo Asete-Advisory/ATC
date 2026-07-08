@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
-import { RadioTower, TrendingUp } from "lucide-react";
+import { RadioTower, TrendingDown, TrendingUp } from "lucide-react";
 import { HeroVideoBackground } from "@/components/hero-video-background";
 import { Button } from "@/components/ui/button";
 import { copy, type Language } from "@/lib/i18n";
@@ -36,7 +36,8 @@ const marketPhrases = [
 
 const slideDurationMs = 120_000;
 const financeMonitorEmbedUrl =
-  "https://finance.worldmonitor.app/embed.html?layers=stockExchanges,financialCenters,centralBanks,commodityHubs,gulfInvestments,tradeRoutes,cables,waterways&center=18,8&zoom=1.45&theme=dark&variant=finance";
+  "https://finance.worldmonitor.app/embed.html?layers=stockExchanges,financialCenters,centralBanks,commodityHubs,gulfInvestments,tradeRoutes,cables,waterways&center=8,8&zoom=1.45&theme=dark&variant=finance";
+const investmentPanelSymbols = ["GC=F", "SI=F", "HG=F", "CL=F", "BZ=F", "ZS=F"];
 
 function rotateQuotes(quotes: CommodityQuote[], offset: number) {
   if (quotes.length === 0) {
@@ -212,7 +213,11 @@ function InstitutionalSlide({
   const marqueeQuotes = quotes.length > 0 ? quotes : [];
   const topTickerQuotes = rotateQuotes(marqueeQuotes, 0);
   const bottomTickerQuotes = rotateQuotes(marqueeQuotes, Math.ceil(marqueeQuotes.length / 2));
-  const featuredQuotes = marqueeQuotes.slice(0, 4);
+  const footerTickerQuotes = rotateQuotes(marqueeQuotes, Math.ceil(marqueeQuotes.length / 3));
+  const footerTickerQuotesReverse = rotateQuotes(
+    marqueeQuotes,
+    Math.ceil((marqueeQuotes.length * 2) / 3),
+  );
 
   return (
     <div className="absolute inset-0 isolate">
@@ -224,7 +229,12 @@ function InstitutionalSlide({
       >
         <HeroVideoBackground />
       </div>
-      <FinanceMapLayer active={showFinanceMap} />
+      <FinanceMapLayer
+        active={showFinanceMap}
+        quotes={marqueeQuotes}
+        numberFormatter={numberFormatter}
+        loadingLabel={statusText[lang].loading}
+      />
       <div className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(7,22,37,0.88)_0%,rgba(7,22,37,0.56)_34%,rgba(7,22,37,0.76)_70%,rgba(7,22,37,0.95)_100%)]" />
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_72%_26%,rgba(90,180,210,0.22),transparent_34%),linear-gradient(90deg,rgba(4,14,25,0.64),rgba(4,14,25,0.16)_48%,rgba(4,14,25,0.62))]" />
 
@@ -331,20 +341,18 @@ function InstitutionalSlide({
             </div>
           </div>
 
-          <div className="hidden min-w-0 grid-cols-4 md:grid">
-            {featuredQuotes.length > 0 ? (
-              featuredQuotes.map((quote) => (
-                <FeaturedQuote
-                  key={quote.symbol}
-                  quote={quote}
-                  numberFormatter={numberFormatter}
-                />
-              ))
-            ) : (
-              <div className="col-span-4 flex items-center justify-center px-8 text-sm uppercase tracking-[0.18em] text-white/54">
-                {statusText[lang].loading}
-              </div>
-            )}
+          <div className="hidden min-w-0 md:block">
+            <QuoteMarquee
+              quotes={footerTickerQuotes}
+              numberFormatter={numberFormatter}
+              loadingLabel={statusText[lang].loading}
+            />
+            <QuoteMarquee
+              quotes={footerTickerQuotesReverse}
+              numberFormatter={numberFormatter}
+              loadingLabel={statusText[lang].loading}
+              reverse
+            />
           </div>
         </div>
       </section>
@@ -365,7 +373,21 @@ function InstitutionalSlide({
   );
 }
 
-function FinanceMapLayer({ active }: { active: boolean }) {
+function FinanceMapLayer({
+  active,
+  quotes,
+  numberFormatter,
+  loadingLabel,
+}: {
+  active: boolean;
+  quotes: CommodityQuote[];
+  numberFormatter: Intl.NumberFormat;
+  loadingLabel: string;
+}) {
+  const panelQuotes = investmentPanelSymbols
+    .map((symbol) => quotes.find((quote) => quote.symbol === symbol))
+    .filter((quote): quote is CommodityQuote => Boolean(quote));
+
   return (
     <div
       aria-hidden={!active}
@@ -383,8 +405,133 @@ function FinanceMapLayer({ active }: { active: boolean }) {
         referrerPolicy="strict-origin-when-cross-origin"
         allow="autoplay; encrypted-media; fullscreen; geolocation"
       />
+      <InvestmentMapPanel
+        quotes={panelQuotes}
+        numberFormatter={numberFormatter}
+        loadingLabel={loadingLabel}
+      />
     </div>
   );
+}
+
+function InvestmentMapPanel({
+  quotes,
+  numberFormatter,
+  loadingLabel,
+}: {
+  quotes: CommodityQuote[];
+  numberFormatter: Intl.NumberFormat;
+  loadingLabel: string;
+}) {
+  return (
+    <aside className="pointer-events-auto absolute right-2 bottom-2 z-30 w-[min(17rem,calc(100vw-1rem))] overflow-hidden rounded-md border border-white/12 bg-[#101316]/94 shadow-[0_18px_56px_-28px_rgba(0,0,0,0.95)] backdrop-blur-md sm:right-3 sm:bottom-3">
+      <div className="flex h-9 items-center justify-between border-b border-white/10 px-3">
+        <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/78">
+          Mercado ATC
+        </p>
+        <span className="text-[0.62rem] uppercase tracking-[0.16em] text-white/36">
+          Live
+        </span>
+      </div>
+      <div className="grid max-h-[min(28rem,calc(100svh-18rem))] overflow-hidden">
+        {quotes.length > 0 ? (
+          quotes.map((quote) => (
+            <InvestmentMapCard
+              key={quote.symbol}
+              quote={quote}
+              numberFormatter={numberFormatter}
+            />
+          ))
+        ) : (
+          <div className="flex min-h-24 items-center px-3 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-white/45">
+            {loadingLabel}
+          </div>
+        )}
+      </div>
+    </aside>
+  );
+}
+
+function InvestmentMapCard({
+  quote,
+  numberFormatter,
+}: {
+  quote: CommodityQuote;
+  numberFormatter: Intl.NumberFormat;
+}) {
+  const trend = quote.changePercent ?? 0;
+  const isPositive = trend >= 0;
+
+  return (
+    <article className="grid min-h-[4.35rem] grid-cols-[minmax(0,1fr)_5.5rem] items-center gap-3 border-b border-white/8 px-3 py-2.5 last:border-b-0">
+      <div className="min-w-0">
+        <p className="truncate text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-white/38">
+          {quote.label}
+        </p>
+        <p className="mt-1 font-mono text-[1.08rem] font-semibold leading-none text-white">
+          {quote.currency} {numberFormatter.format(quote.price)}
+        </p>
+        <p
+          className={cn(
+            "mt-1 font-mono text-[0.72rem] font-semibold leading-none",
+            isPositive ? "text-emerald-300" : "text-red-300",
+          )}
+        >
+          {trend > 0 ? "+" : ""}
+          {numberFormatter.format(trend)}%
+        </p>
+      </div>
+      <Sparkline symbol={quote.symbol} value={trend} />
+    </article>
+  );
+}
+
+function Sparkline({ symbol, value }: { symbol: string; value: number }) {
+  const points = getSparklinePoints(symbol, value);
+  const strokeClass = value >= 0 ? "stroke-emerald-300" : "stroke-red-300";
+  const fillClass = value >= 0 ? "fill-emerald-300/10" : "fill-red-300/10";
+
+  return (
+    <svg
+      viewBox="0 0 96 34"
+      aria-hidden="true"
+      className="h-9 w-full overflow-visible"
+      preserveAspectRatio="none"
+    >
+      <path
+        d={`M0 34 L${points} L96 34 Z`}
+        className={fillClass}
+        vectorEffect="non-scaling-stroke"
+      />
+      <polyline
+        points={points}
+        fill="none"
+        strokeWidth="2"
+        className={strokeClass}
+        vectorEffect="non-scaling-stroke"
+      />
+    </svg>
+  );
+}
+
+function getSparklinePoints(symbol: string, value: number) {
+  const width = 96;
+  const height = 34;
+  const steps = 18;
+  const seed = [...symbol].reduce((total, char) => total + char.charCodeAt(0), 0);
+  const direction = value >= 0 ? -1 : 1;
+
+  return Array.from({ length: steps }, (_, index) => {
+    const progress = index / (steps - 1);
+    const wave =
+      Math.sin(seed * 0.17 + index * 0.85) * 4 +
+      Math.cos(seed * 0.07 + index * 0.42) * 2.5;
+    const trend = direction * progress * Math.min(Math.abs(value), 8) * 1.15;
+    const x = (width / (steps - 1)) * index;
+    const y = Math.max(4, Math.min(height - 4, height / 2 + wave + trend));
+
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(" ");
 }
 
 function QuoteMarquee({
@@ -441,28 +588,6 @@ function QuoteGroup({
   );
 }
 
-function FeaturedQuote({
-  quote,
-  numberFormatter,
-}: {
-  quote: CommodityQuote;
-  numberFormatter: Intl.NumberFormat;
-}) {
-  return (
-    <article className="flex min-h-20 flex-col justify-center border-r border-white/12 px-5 py-3 last:border-r-0">
-      <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-white/50">
-        {quote.label}
-      </p>
-      <div className="mt-2.5 flex items-end justify-between gap-3">
-        <p className="font-mono text-[clamp(1.35rem,1.65vw,2rem)] font-semibold leading-none text-white">
-          {quote.currency} {numberFormatter.format(quote.price)}
-        </p>
-        <TrendValue value={quote.changePercent ?? 0} numberFormatter={numberFormatter} />
-      </div>
-    </article>
-  );
-}
-
 function QuoteText({
   quote,
   numberFormatter,
@@ -492,10 +617,11 @@ function TrendValue({
 }) {
   const directionClass =
     value > 0 ? "text-emerald-300" : value < 0 ? "text-red-300" : "text-white/60";
+  const TrendIcon = value < 0 ? TrendingDown : TrendingUp;
 
   return (
     <span className={`ml-3 inline-flex items-center gap-1 font-semibold ${directionClass}`}>
-      <TrendingUp className="size-4" />
+      <TrendIcon className="size-4" />
       {value > 0 ? "+" : ""}
       {numberFormatter.format(value)}%
     </span>
