@@ -45,12 +45,18 @@ function rotateQuotes(quotes: CommodityQuote[], offset: number) {
   }
 
   const normalizedOffset = offset % quotes.length;
-  return [...quotes.slice(normalizedOffset), ...quotes.slice(0, normalizedOffset)];
+  return [
+    ...quotes.slice(normalizedOffset),
+    ...quotes.slice(0, normalizedOffset),
+  ];
 }
 
-const statusText: Record<Language, { live: string; loading: string; updated: string }> = {
+const statusText: Record<
+  Language,
+  { live: string; loading: string; updated: string }
+> = {
   pt: {
-    live: "Mercado ao vivo",
+    live: "Ao vivo",
     loading: "Cotações em atualização",
     updated: "Atualizado",
   },
@@ -212,8 +218,14 @@ function InstitutionalSlide({
 
   const marqueeQuotes = quotes.length > 0 ? quotes : [];
   const topTickerQuotes = rotateQuotes(marqueeQuotes, 0);
-  const bottomTickerQuotes = rotateQuotes(marqueeQuotes, Math.ceil(marqueeQuotes.length / 2));
-  const footerTickerQuotes = rotateQuotes(marqueeQuotes, Math.ceil(marqueeQuotes.length / 3));
+  const bottomTickerQuotes = rotateQuotes(
+    marqueeQuotes,
+    Math.ceil(marqueeQuotes.length / 2),
+  );
+  const footerTickerQuotes = rotateQuotes(
+    marqueeQuotes,
+    Math.ceil(marqueeQuotes.length / 3),
+  );
   const footerTickerQuotesReverse = rotateQuotes(
     marqueeQuotes,
     Math.ceil((marqueeQuotes.length * 2) / 3),
@@ -240,8 +252,15 @@ function InstitutionalSlide({
 
       <section className="relative z-10 h-full">
         <div className="absolute inset-x-0 top-0 border-b border-white/12 bg-[#071625]/82 backdrop-blur-md">
-          <div className="flex h-16 items-center gap-4 px-5 sm:gap-6 sm:px-8 lg:px-12">
-            <div className="flex min-w-0 items-center gap-4">
+          <div className="grid h-16 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4 px-5 sm:gap-6 sm:px-8 lg:px-12">
+            <div className="flex min-w-0 items-center justify-start text-sm text-white/70">
+              <span className="hidden items-center gap-2 uppercase tracking-[0.18em] sm:inline-flex">
+                <RadioTower className="size-4 text-emerald-300" />
+                {statusText[lang].live}
+              </span>
+            </div>
+
+            <div className="flex min-w-0 items-center justify-center gap-4">
               <Image
                 src="/global/atc-light.png"
                 alt="ATC China Brasil"
@@ -260,11 +279,7 @@ function InstitutionalSlide({
               </div>
             </div>
 
-            <div className="ml-auto flex items-center gap-3 text-sm text-white/70 sm:gap-5">
-              <span className="hidden items-center gap-2 uppercase tracking-[0.18em] sm:inline-flex">
-                <RadioTower className="size-4 text-emerald-300" />
-                {statusText[lang].live}
-              </span>
+            <div className="flex min-w-0 items-center justify-end">
               {currentTime ? (
                 <time className="font-mono text-xl font-semibold text-white">
                   {timeFormatter.format(currentTime)}
@@ -533,7 +548,10 @@ function getSparklinePoints(symbol: string, value: number) {
   const width = 96;
   const height = 34;
   const steps = 18;
-  const seed = [...symbol].reduce((total, char) => total + char.charCodeAt(0), 0);
+  const seed = [...symbol].reduce(
+    (total, char) => total + char.charCodeAt(0),
+    0,
+  );
   const direction = value >= 0 ? -1 : 1;
 
   return Array.from({ length: steps }, (_, index) => {
@@ -574,7 +592,11 @@ function QuoteMarquee({
         className={reverse ? "commodity-marquee-reverse" : "commodity-marquee"}
       >
         <QuoteGroup quotes={quotes} numberFormatter={numberFormatter} />
-        <QuoteGroup quotes={quotes} numberFormatter={numberFormatter} ariaHidden />
+        <QuoteGroup
+          quotes={quotes}
+          numberFormatter={numberFormatter}
+          ariaHidden
+        />
       </div>
     </div>
   );
@@ -618,7 +640,10 @@ function QuoteText({
       <span className="ml-3 text-white/72">
         {quote.currency} {numberFormatter.format(quote.price)}
       </span>
-      <TrendValue value={quote.changePercent ?? 0} numberFormatter={numberFormatter} />
+      <TrendValue
+        value={quote.changePercent ?? 0}
+        numberFormatter={numberFormatter}
+      />
     </>
   );
 }
@@ -631,11 +656,17 @@ function TrendValue({
   numberFormatter: Intl.NumberFormat;
 }) {
   const directionClass =
-    value > 0 ? "text-emerald-300" : value < 0 ? "text-red-300" : "text-white/60";
+    value > 0
+      ? "text-emerald-300"
+      : value < 0
+        ? "text-red-300"
+        : "text-white/60";
   const TrendIcon = value < 0 ? TrendingDown : TrendingUp;
 
   return (
-    <span className={`ml-3 inline-flex items-center gap-1 font-semibold ${directionClass}`}>
+    <span
+      className={`ml-3 inline-flex items-center gap-1 font-semibold ${directionClass}`}
+    >
       <TrendIcon className="size-4" />
       {value > 0 ? "+" : ""}
       {numberFormatter.format(value)}%
