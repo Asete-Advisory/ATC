@@ -405,10 +405,25 @@ function FinanceMapLayer({
         referrerPolicy="strict-origin-when-cross-origin"
         allow="autoplay; encrypted-media; fullscreen; geolocation"
       />
+      <MapLogoMark />
       <InvestmentMapPanel
         quotes={panelQuotes}
         numberFormatter={numberFormatter}
         loadingLabel={loadingLabel}
+      />
+    </div>
+  );
+}
+
+function MapLogoMark() {
+  return (
+    <div className="pointer-events-none absolute bottom-0 left-3 z-30 flex h-24 w-48 items-end justify-start">
+      <Image
+        src="/global/atc-light.png"
+        alt="ATC China Brasil"
+        width={192}
+        height={182}
+        className="h-24 w-auto object-contain"
       />
     </div>
   );
