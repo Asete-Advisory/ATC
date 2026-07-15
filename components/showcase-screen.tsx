@@ -4,7 +4,11 @@ import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { RadioTower, TrendingDown, TrendingUp } from "lucide-react";
 import { HeroVideoBackground } from "@/components/hero-video-background";
-import { Button } from "@/components/ui/button";
+import { MarketBoard } from "@/components/market-board";
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@/components/ui/toggle-group";
 import { copy, type Language } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
@@ -22,7 +26,8 @@ type ShowcaseScreenProps = {
   lang: Language;
 };
 
-type DisplayMode = "cycle" | "original" | "map";
+type PresentationSlide = "original" | "map" | "market";
+type DisplayMode = "auto" | PresentationSlide;
 
 const marketPhrases = [
   "Sourcing internacional",
@@ -36,6 +41,13 @@ const marketPhrases = [
 
 const originalSlideDurationMs = 30_000;
 const mapSlideDurationMs = 300_000;
+const marketSlideDurationMs = 300_000;
+const autoSlideOrder: PresentationSlide[] = ["original", "map", "market"];
+const slideDurations: Record<PresentationSlide, number> = {
+  original: originalSlideDurationMs,
+  map: mapSlideDurationMs,
+  market: marketSlideDurationMs,
+};
 const financeMonitorEmbedUrl =
   "https://finance.worldmonitor.app/embed.html?layers=stockExchanges,financialCenters,centralBanks,commodityHubs,gulfInvestments,tradeRoutes,cables,waterways&center=8,8&zoom=1.45&theme=dark&variant=finance";
 const investmentPanelSymbols = ["GC=F", "SI=F", "HG=F", "CL=F", "BZ=F", "ZS=F"];
@@ -74,37 +86,37 @@ const statusText: Record<
 };
 
 export function ShowcaseScreen({ lang }: ShowcaseScreenProps) {
-  const [displayMode, setDisplayMode] = useState<DisplayMode>("cycle");
-  const [cycleShowsFinanceMap, setCycleShowsFinanceMap] = useState(false);
+  const [displayMode, setDisplayMode] = useState<DisplayMode>("auto");
+  const [autoSlide, setAutoSlide] = useState<PresentationSlide>("original");
 
   useEffect(() => {
-    if (displayMode === "cycle") {
-      setCycleShowsFinanceMap(false);
-    }
-  }, [displayMode]);
-
-  useEffect(() => {
-    if (displayMode !== "cycle") {
+    if (displayMode !== "auto") {
       return;
     }
 
-    const timeout = window.setTimeout(
-      () => {
-        setCycleShowsFinanceMap((current) => !current);
-      },
-      cycleShowsFinanceMap ? mapSlideDurationMs : originalSlideDurationMs,
-    );
+    const timeout = window.setTimeout(() => {
+      setAutoSlide((current) => {
+        const currentIndex = autoSlideOrder.indexOf(current);
+        return autoSlideOrder[(currentIndex + 1) % autoSlideOrder.length];
+      });
+    }, slideDurations[autoSlide]);
 
     return () => window.clearTimeout(timeout);
-  }, [cycleShowsFinanceMap, displayMode]);
+  }, [autoSlide, displayMode]);
 
-  const showFinanceMap =
-    displayMode === "map" || (displayMode === "cycle" && cycleShowsFinanceMap);
+  function handleModeChange(mode: DisplayMode) {
+    setDisplayMode(mode);
+    if (mode === "auto") {
+      setAutoSlide("original");
+    }
+  }
+
+  const activeSlide = displayMode === "auto" ? autoSlide : displayMode;
 
   return (
     <main className="relative isolate h-svh min-h-[640px] overflow-hidden bg-[#071625] text-white">
-      <InstitutionalSlide lang={lang} showFinanceMap={showFinanceMap} />
-      <DisplayModeControl mode={displayMode} onModeChange={setDisplayMode} />
+      <InstitutionalSlide lang={lang} activeSlide={activeSlide} />
+      <DisplayModeControl mode={displayMode} onModeChange={handleModeChange} />
     </main>
   );
 }
@@ -117,39 +129,46 @@ function DisplayModeControl({
   onModeChange: (mode: DisplayMode) => void;
 }) {
   const options: Array<{ value: DisplayMode; label: string }> = [
-    { value: "cycle", label: "Auto" },
+    { value: "auto", label: "Auto" },
     { value: "original", label: "Original" },
     { value: "map", label: "Mapa" },
+    { value: "market", label: "Mercado" },
   ];
 
   return (
-    <div className="absolute bottom-2 left-2 z-30 flex rounded-md border border-white/10 bg-[#071625]/38 p-1 opacity-15 shadow-[0_12px_42px_-24px_rgba(0,0,0,0.95)] backdrop-blur-md transition-opacity duration-200 hover:opacity-100 focus-within:opacity-100">
+    <ToggleGroup
+      type="single"
+      value={mode}
+      onValueChange={(value) => {
+        if (value) {
+          onModeChange(value as DisplayMode);
+        }
+      }}
+      spacing={0}
+      size="sm"
+      aria-label="Modo de exibição"
+      className="absolute bottom-2 left-2 z-30 rounded-md border border-white/10 bg-[#071625]/38 p-1 opacity-15 shadow-[0_12px_42px_-24px_rgba(0,0,0,0.95)] backdrop-blur-md transition-opacity duration-200 hover:opacity-100 focus-within:opacity-100"
+    >
       {options.map((option) => (
-        <Button
+        <ToggleGroupItem
           key={option.value}
-          type="button"
-          size="sm"
-          variant="ghost"
-          aria-pressed={mode === option.value}
-          onClick={() => onModeChange(option.value)}
-          className={cn(
-            "h-7 rounded px-2 text-[0.68rem] uppercase tracking-[0.16em] text-white/60 hover:bg-white/10 hover:text-white",
-            mode === option.value && "bg-white/14 text-white",
-          )}
+          value={option.value}
+          aria-label={option.label}
+          className="h-7 rounded px-2 text-[0.62rem] uppercase tracking-[0.13em] text-white/60 hover:bg-white/10 hover:text-white data-[state=on]:bg-white/14 data-[state=on]:text-white sm:text-[0.68rem] sm:tracking-[0.16em]"
         >
           {option.label}
-        </Button>
+        </ToggleGroupItem>
       ))}
-    </div>
+    </ToggleGroup>
   );
 }
 
 function InstitutionalSlide({
   lang,
-  showFinanceMap,
+  activeSlide,
 }: {
   lang: Language;
-  showFinanceMap: boolean;
+  activeSlide: PresentationSlide;
 }) {
   const content = copy[lang];
   const [quotes, setQuotes] = useState<CommodityQuote[]>([]);
@@ -238,13 +257,15 @@ function InstitutionalSlide({
     marqueeQuotes,
     Math.ceil((marqueeQuotes.length * 2) / 3),
   );
+  const showFinanceMap = activeSlide === "map";
+  const showMarketBoard = activeSlide === "market";
 
   return (
     <div className="absolute inset-0 isolate">
       <div
         className={cn(
           "absolute inset-0 -z-20 transition-opacity duration-1000",
-          showFinanceMap ? "opacity-0" : "opacity-100",
+          activeSlide === "original" ? "opacity-100" : "opacity-0",
         )}
       >
         <HeroVideoBackground />
@@ -255,6 +276,7 @@ function InstitutionalSlide({
         numberFormatter={numberFormatter}
         loadingLabel={statusText[lang].loading}
       />
+      <MarketBoard active={showMarketBoard} lang={lang} />
       <div className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(7,22,37,0.88)_0%,rgba(7,22,37,0.56)_34%,rgba(7,22,37,0.76)_70%,rgba(7,22,37,0.95)_100%)]" />
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_72%_26%,rgba(90,180,210,0.22),transparent_34%),linear-gradient(90deg,rgba(4,14,25,0.64),rgba(4,14,25,0.16)_48%,rgba(4,14,25,0.62))]" />
 
