@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { RadioTower, TrendingDown, TrendingUp } from "lucide-react";
 import { HeroVideoBackground } from "@/components/hero-video-background";
 import { MarketBoard } from "@/components/market-board";
@@ -88,23 +88,39 @@ const statusText: Record<
 export function ShowcaseScreen({ lang }: ShowcaseScreenProps) {
   const [displayMode, setDisplayMode] = useState<DisplayMode>("auto");
   const [autoSlide, setAutoSlide] = useState<PresentationSlide>("original");
+  const autoRotationTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
+    if (autoRotationTimerRef.current !== null) {
+      window.clearTimeout(autoRotationTimerRef.current);
+      autoRotationTimerRef.current = null;
+    }
+
     if (displayMode !== "auto") {
       return;
     }
 
-    const timeout = window.setTimeout(() => {
+    autoRotationTimerRef.current = window.setTimeout(() => {
       setAutoSlide((current) => {
         const currentIndex = autoSlideOrder.indexOf(current);
         return autoSlideOrder[(currentIndex + 1) % autoSlideOrder.length];
       });
     }, slideDurations[autoSlide]);
 
-    return () => window.clearTimeout(timeout);
+    return () => {
+      if (autoRotationTimerRef.current !== null) {
+        window.clearTimeout(autoRotationTimerRef.current);
+        autoRotationTimerRef.current = null;
+      }
+    };
   }, [autoSlide, displayMode]);
 
   function handleModeChange(mode: DisplayMode) {
+    if (autoRotationTimerRef.current !== null) {
+      window.clearTimeout(autoRotationTimerRef.current);
+      autoRotationTimerRef.current = null;
+    }
+
     setDisplayMode(mode);
     if (mode === "auto") {
       setAutoSlide("original");

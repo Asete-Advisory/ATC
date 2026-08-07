@@ -20,6 +20,7 @@ type MarketBoardProps = {
 };
 
 const refreshIntervalMs = 60_000;
+const requestTimeoutMs = 15_000;
 const pageDurationMs = 30_000;
 
 const marketText: Record<
@@ -185,9 +186,16 @@ export function MarketBoard({ active, lang }: MarketBoardProps) {
     let ignore = false;
 
     async function loadInvestments() {
+      const controller = new AbortController();
+      const requestTimeout = window.setTimeout(
+        () => controller.abort(),
+        requestTimeoutMs,
+      );
+
       try {
         const response = await fetch("/api/market-overview", {
           cache: "no-store",
+          signal: controller.signal,
         });
         if (!response.ok) {
           throw new Error(`Market request failed with ${response.status}`);
@@ -195,14 +203,20 @@ export function MarketBoard({ active, lang }: MarketBoardProps) {
 
         const data = (await response.json()) as MarketOverviewResponse;
         if (!ignore) {
-          setInvestments(data.investments ?? []);
-          setHasError(false);
+          const nextInvestments = data.investments ?? [];
+          if (nextInvestments.length > 0) {
+            setInvestments(nextInvestments);
+            setHasError(false);
+          } else {
+            setHasError(true);
+          }
         }
       } catch {
         if (!ignore) {
           setHasError(true);
         }
       } finally {
+        window.clearTimeout(requestTimeout);
         if (!ignore) {
           setIsLoading(false);
         }

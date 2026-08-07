@@ -33,6 +33,20 @@ type HistoricalCacheEntry = {
   references: HistoricalReferences;
 };
 
+type YahooMarketQuote = {
+  symbol?: string;
+  regularMarketPrice?: number;
+  regularMarketDayLow?: number;
+  regularMarketPreviousClose?: number;
+  regularMarketOpen?: number;
+  regularMarketVolume?: number;
+  regularMarketChangePercent?: number;
+  bid?: number;
+  ask?: number;
+  fiftyTwoWeekChangePercent?: number;
+  regularMarketTime?: Date | number | string;
+};
+
 const yahooFinance = new YahooFinance({
   suppressNotices: ["yahooSurvey"],
 });
@@ -213,31 +227,71 @@ function calculateChange(current: number, reference: number | null) {
   return ((current - reference) / reference) * 100;
 }
 
-function positiveOrNull(value: number | undefined) {
-  return value === undefined || value <= 0 ? null : value;
+function numberOrNull(value: unknown) {
+  return typeof value === "number" && Number.isFinite(value) ? value : null;
 }
 
-function toIsoString(value: Date | undefined) {
-  return value instanceof Date ? value.toISOString() : null;
+function positiveOrNull(value: unknown) {
+  const number = numberOrNull(value);
+  return number === null || number <= 0 ? null : number;
+}
+
+function toIsoString(value: unknown) {
+  if (value instanceof Date && !Number.isNaN(value.getTime())) {
+    return value.toISOString();
+  }
+
+  const date =
+    typeof value === "number"
+      ? new Date(value < 1_000_000_000_000 ? value * 1000 : value)
+      : typeof value === "string"
+        ? new Date(value)
+        : null;
+
+  return date && !Number.isNaN(date.getTime()) ? date.toISOString() : null;
+}
+
+async function loadCurrentQuotes() {
+  // Yahoo occasionally omits fields that yahoo-finance2 marks as required for
+  // futures. Runtime validation would reject the entire combined response and
+  // discard otherwise valid assets, so validate the fields we consume below.
+  const result = (await yahooFinance.quote(
+    marketAssets.map((asset) => asset.symbol),
+    {},
+    { validateResult: false },
+  )) as unknown;
+
+  const quotes = Array.isArray(result) ? result : [];
+  return new Map<string, YahooMarketQuote>(
+    quotes.flatMap((quote) => {
+      if (
+        typeof quote !== "object" ||
+        quote === null ||
+        typeof (quote as YahooMarketQuote).symbol !== "string"
+      ) {
+        return [];
+      }
+
+      const marketQuote = quote as YahooMarketQuote;
+      return [[marketQuote.symbol!, marketQuote]];
+    }),
+  );
 }
 
 export async function GET() {
-  const [quoteResults, historicalReferences] = await Promise.all([
-    Promise.allSettled(
-      marketAssets.map((asset) => yahooFinance.quoteCombine(asset.symbol)),
-    ),
+  const [currentQuotes, historicalReferences] = await Promise.all([
+    loadCurrentQuotes(),
     loadHistoricalReferences(),
   ]);
 
-  const investments = quoteResults.flatMap<MarketQuote>((result, index) => {
-    if (result.status !== "fulfilled") {
+  const investments = marketAssets.flatMap<MarketQuote>((asset) => {
+    const quote = currentQuotes.get(asset.symbol);
+    if (!quote) {
       return [];
     }
 
-    const quote = result.value;
-    const asset = marketAssets[index];
-    const price = quote.regularMarketPrice;
-    if (price === undefined) {
+    const price = numberOrNull(quote.regularMarketPrice);
+    if (price === null) {
       return [];
     }
 
@@ -260,14 +314,13 @@ export async function GET() {
         ask: positiveOrNull(quote.ask),
         volume:
           positiveOrNull(quote.regularMarketVolume) ?? references.latestVolume,
-        dayChangePercent: quote.regularMarketChangePercent ?? null,
+        dayChangePercent: numberOrNull(quote.regularMarketChangePercent),
         weekChangePercent: calculateChange(price, references.week),
         monthChangePercent: calculateChange(price, references.month),
         yearChangePercent: calculateChange(price, references.year),
         twelveMonthChangePercent:
           calculateChange(price, references.twelveMonths) ??
-          quote.fiftyTwoWeekChangePercent ??
-          null,
+          numberOrNull(quote.fiftyTwoWeekChangePercent),
         marketTime: toIsoString(quote.regularMarketTime),
       },
     ];
