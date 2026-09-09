@@ -33,6 +33,11 @@ export const copy = {
       ctaLabel: "Falar com nosso time",
       ctaMessage: "Olá, quero solicitar uma cotação internacional.",
     },
+    showcase: {
+      title: "Consultoria\nInternacional",
+      description:
+        "Soluções estruturadas para empresas que desejam importar, exportar e operar no mercado global com segurança, estratégia e escala.",
+    },
     hero: {
       title: "Trading, Sourcing & Comércio Internacional",
       description:
@@ -295,6 +300,11 @@ export const copy = {
       ctaLabel: "Talk to our team",
       ctaMessage: "Hello, I would like to request an international quotation.",
     },
+    showcase: {
+      title: "International\nConsulting",
+      description:
+        "Structured solutions for companies looking to import, export and operate in the global market with confidence, strategy and scale.",
+    },
     hero: {
       title: "International import, export and sourcing solutions",
       description:
@@ -556,6 +566,11 @@ export const copy = {
       ],
       ctaLabel: "联系我们的团队",
       ctaMessage: "您好，我想申请一份国际报价。",
+    },
+    showcase: {
+      title: "国际咨询",
+      description:
+        "为希望开展进出口业务并拓展全球市场的企业提供系统化解决方案，助力企业安全运营、战略布局与规模化发展。",
     },
     hero: {
       title: "国际进口、出口与采购解决方案",

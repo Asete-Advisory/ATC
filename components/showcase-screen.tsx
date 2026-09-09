@@ -351,12 +351,12 @@ function InstitutionalSlide({
             />
             <h1
               className={cn(
-                "max-w-[70rem] text-[clamp(2.85rem,5.5vw,6.25rem)] font-semibold leading-[0.95] tracking-tight text-white transition-[text-shadow] duration-1000 lg:text-[clamp(3.15rem,4.7vw,5.55rem)] 2xl:text-[clamp(3.65rem,4.45vw,6.05rem)]",
+                "max-w-[70rem] whitespace-pre-line text-[clamp(2.85rem,5.5vw,6.25rem)] font-semibold uppercase leading-[0.95] tracking-tight text-white transition-[text-shadow] duration-1000 lg:text-[clamp(3.15rem,4.7vw,5.55rem)] 2xl:text-[clamp(3.65rem,4.45vw,6.05rem)]",
                 showFinanceMap &&
                   "[text-shadow:0_4px_34px_rgba(0,0,0,0.82),0_2px_12px_rgba(0,0,0,0.86)]",
               )}
             >
-              {content.hero.title}
+              {content.showcase.title}
             </h1>
             <p
               className={cn(
@@ -365,7 +365,7 @@ function InstitutionalSlide({
                   "[text-shadow:0_3px_22px_rgba(0,0,0,0.86),0_1px_8px_rgba(0,0,0,0.92)]",
               )}
             >
-              {content.hero.description}
+              {content.showcase.description}
             </p>
           </div>
 
