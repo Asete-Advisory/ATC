@@ -300,29 +300,21 @@ function InstitutionalSlide({
         <div className="absolute inset-x-0 top-0 border-b border-white/12 bg-[#071625]/82 backdrop-blur-md">
           <div className="grid h-16 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4 px-5 sm:gap-6 sm:px-8 lg:px-12">
             <div className="flex min-w-0 items-center justify-start gap-3 text-sm text-white/70">
-              <Image
-                src="/global/atc-light.png"
-                alt="ATC China Brasil"
-                width={72}
-                height={72}
-                priority
-                className="size-[4.5rem] rounded-full"
-              />
-              <span className="hidden items-center gap-2 uppercase tracking-[0.18em] sm:inline-flex">
-                <RadioTower className="size-4 text-emerald-300" />
+              <RadioTower className="size-5 shrink-0 text-emerald-300" aria-hidden="true" />
+              <span className="sr-only uppercase tracking-[0.18em] sm:not-sr-only">
                 {statusText[lang].live}
               </span>
             </div>
 
             <div className="flex min-w-0 items-center justify-center">
-              <div className="min-w-0 text-center">
-                <p className="truncate text-sm font-semibold uppercase tracking-[0.28em] text-white">
-                  Asete Trading Company
-                </p>
-                <p className="hidden text-xs uppercase tracking-[0.18em] text-white/54 sm:block">
-                  Trading • Sourcing • Commodities
-                </p>
-              </div>
+              <Image
+                src="/global/atc-icon-white.svg"
+                alt="ATC China Brasil"
+                width={1205}
+                height={375}
+                priority
+                className="h-auto w-28 sm:w-32"
+              />
             </div>
 
             <div className="flex min-w-0 items-center justify-end">
