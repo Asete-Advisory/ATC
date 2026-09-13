@@ -58,21 +58,11 @@ export function HeroSection({ lang, content }: HeroSectionProps) {
               className="rounded-full px-6 h-12 bg-white text-foreground hover:bg-white/90"
             >
               <a
-                href={localizedPath(lang, "/catalogo")}
+                href={localizedPath(lang, "/news")}
                 className="inline-flex items-center gap-2"
               >
-                {content.primaryCtaLabel}
+                {content.newsCtaLabel}
                 <ArrowRight className="size-4" />
-              </a>
-            </Button>
-            <Button
-              asChild
-              size="lg"
-              variant="ghost"
-              className="rounded-full px-6 h-12 text-white hover:bg-white/10 hover:text-white"
-            >
-              <a href={localizedPath(lang, "/news")}>
-                {content.secondaryCtaLabel}
               </a>
             </Button>
           </div>

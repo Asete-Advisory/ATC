@@ -33,7 +33,7 @@ type DisplayMode = "auto" | PresentationSlide;
 
 const marketPhrases = [
   "Sourcing internacional",
-  "Trading estruturado",
+  "Operações estruturadas",
   "Commodities",
   "Importacao",
   "Exportacao",

@@ -12,6 +12,7 @@ import { FaqSection } from "@/components/faq-section";
 import { CtaSection } from "@/components/cta-section";
 import { SiteFooter } from "@/components/site-footer";
 import { WhatsAppFab } from "@/components/whatsapp-fab";
+import { PortugueseLanguageButton } from "@/components/language-controls";
 import { copy, getLanguage } from "@/lib/i18n";
 
 type PageProps = {
@@ -40,6 +41,7 @@ export default async function Page({ searchParams }: PageProps) {
         <CtaSection content={content.cta} />
       </main>
       <SiteFooter content={content.footer} />
+      <PortugueseLanguageButton lang={lang} />
       <WhatsAppFab
         ariaLabel={content.whatsappAriaLabel}
         content={content.cta}

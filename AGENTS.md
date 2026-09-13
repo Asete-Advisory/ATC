@@ -16,6 +16,8 @@ Este repositório mantém dois sites com evolução independente, conforme decis
 - Não crie PR de `acs-group` para `main` como etapa padrão de conclusão de uma tarefa.
 - A empresa parceira é a **CS Group**, conforme informado pelo usuário. A primeira mudança de identidade solicitada é o logo **ACS**, preservando o A estilizado da ATC e o padrão tipográfico das letras. Contatos e as demais mudanças de identidade ainda serão definidos.
 - A `acs-group` usa o logo ACS, mas ainda contém textos, contatos e configurações da ATC. Isso é conteúdo herdado, não confirmação de que será usado pela joint venture.
+- Não use o termo "Trading" na comunicação do site ACS. Quando a remoção prejudicar a frase, reformule-a com termos naturais ao contexto, como "operações estruturadas". A orientação vale para todos os idiomas e apresentações do site.
+- O catálogo foi removido da `acs-group`, incluindo a rota `/catalogo`, navegação, busca de produtos e páginas de catálogo do portfólio/PDF. Não reintroduza essa funcionalidade sem solicitação do usuário.
 
 ## Produto e arquitetura
 
@@ -25,8 +27,9 @@ Site institucional voltado a comércio internacional, importação, exportação
 - React 19, TypeScript em modo estrito e alias `@/` para a raiz.
 - Tailwind CSS 4, shadcn/ui com Radix, ícones Lucide e utilitário `cn()`.
 - Páginas e seções predominantemente renderizadas no servidor; componentes com estado, efeitos e APIs do navegador usam `"use client"`.
-- Português, inglês e chinês, selecionados por `?lang=pt`, `?lang=en` e `?lang=zh`. O idioma padrão é português.
-- Conteúdo institucional e catálogo mantidos diretamente em arquivos TypeScript.
+- Inglês é o idioma padrão, inclusive quando `lang` está ausente ou é inválido. Português, inglês e mandarim continuam disponíveis por `?lang=pt`, `?lang=en` e `?lang=zh`.
+- Os seletores do cabeçalho, menu mobile e portfólio exibem apenas `EN` e `中文`. O acesso ao português fica em um botão flutuante no canto inferior esquerdo, com bandeira do Brasil e ícone de tradução. A troca de idioma preserva a página, os demais parâmetros e a âncora da URL.
+- Conteúdo institucional mantido diretamente em arquivos TypeScript.
 
 ## Mapa do código
 
@@ -34,19 +37,19 @@ Site institucional voltado a comércio internacional, importação, exportação
 | --- | --- |
 | `app/page.tsx` | Composição da página inicial |
 | `app/layout.tsx` | Layout raiz, metadados, domínio, ícones e analytics |
-| `app/catalogo/page.tsx` | Catálogo com quatro categorias de produtos de referência |
 | `app/news/page.tsx` | Notícias por tema, carregadas no servidor |
-| `app/portfolio/page.tsx` | Apresentação institucional de oito páginas e textos próprios |
+| `app/portfolio/page.tsx` | Apresentação institucional de seis páginas e textos próprios |
 | `app/show/page.tsx` | Tela para monitores, com indexação desativada |
 | `components/` | Seções visuais, navegação e interações |
 | `components/ui/` | Componentes locais do shadcn/ui |
 | `components/brand-logo.tsx` | Aplicação compartilhada do logo ACS em PNG, nas versões preta e branca |
+| `components/language-controls.tsx` | Seletores inglês/mandarim e botão flutuante de português; sincroniza o idioma do documento no navegador |
+| `components/motion-observer.tsx` | Registra elementos animados no carregamento e após atualizações do DOM, incluindo troca de idioma e navegação sem recarregar |
 | `lib/brand.ts` | Caminhos e dimensões dos logos, ícones e imagem de compartilhamento |
 | `components/showcase-screen.tsx` | Alternância entre apresentação, mapa financeiro e mercado |
 | `components/market-board.tsx` | Painel de cotações e paginação automática |
 | `components/portfolio-download-button.tsx` | PDF gerado no navegador com `html-to-image` e `pdf-lib`, carregados sob demanda |
 | `lib/i18n.ts` | Textos principais, idiomas e helpers de URLs localizadas |
-| `lib/product-catalog.ts` | Categorias e produtos nos três idiomas |
 | `lib/contact.ts` | Construção dos links de WhatsApp |
 | `lib/infomoney-news.ts` | Consulta e interpretação dos feeds RSS |
 | `lib/market.ts` | Tipos compartilhados dos dados de mercado |
@@ -58,6 +61,8 @@ Na adaptação de marca, revise também textos locais nos componentes, metadados
 Os logos principais são `public/global/acs-logo-black.png` e `public/global/acs-logo-white.png`, com 4800 × 1500 px e transparência real. O arquivo `public/global/acs-logo.svg` preserva os traçados editáveis usados nos exports; a interface utiliza os PNGs. Consulte `docs/branding/README.md` para os derivados e a origem da arte. Os arquivos ATC antigos permanecem como referência, sem uso nos componentes atuais desta branch.
 
 Use `app/globals.css` como referência de estilos; há outro arquivo em `styles/globals.css`, mas ele não é importado pelo layout atual.
+
+As classes `.motion-reveal` e `.motion-reveal-soft` dependem de `motion-visible` para aparecer. O observador global precisa registrar elementos adicionados após a montagem inicial, pois as traduções podem recriar cards sem remontar o layout. Ao alterar animações ou navegação, valide a visibilidade após trocar de idioma sem usar F5.
 
 ## Integrações
 
@@ -103,8 +108,6 @@ git diff --check
 
 ## Pendências conhecidas da base
 
-- A busca do cabeçalho envia o parâmetro `q`, mas o catálogo ainda não filtra por ele.
-- O HTML raiz mantém `lang="pt-BR"` nas três versões; o seletor de idioma do cabeçalho retorna à página inicial.
 - Textos institucionais, WhatsApp e e-mail ainda pertencem à ATC; a adaptação já alterou os logos, suas descrições acessíveis e o domínio de produção.
 
 Essas pendências são contexto para o trabalho futuro; não ampliam automaticamente o escopo de cada solicitação.

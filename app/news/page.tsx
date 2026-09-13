@@ -2,6 +2,7 @@ import { NewsSection } from "@/components/news-section";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { WhatsAppFab } from "@/components/whatsapp-fab";
+import { PortugueseLanguageButton } from "@/components/language-controls";
 import {
   getInfoMoneyFeedKey,
   getInfoMoneyNews,
@@ -44,6 +45,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
         />
       </main>
       <SiteFooter content={content.footer} />
+      <PortugueseLanguageButton lang={lang} />
       <WhatsAppFab
         ariaLabel={content.whatsappAriaLabel}
         content={content.cta}

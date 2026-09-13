@@ -7,23 +7,24 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "ATC China Brasil",
   description:
-    "Conectamos sua empresa diretamente às melhores fábricas do mundo, com segurança e estratégia. Importação, exportação e sourcing na China.",
+    "We connect your company directly with leading factories worldwide. Import, export and sourcing solutions with local expertise in China.",
   metadataBase: new URL("https://acs.atcchinabrasil.com"),
   openGraph: {
     title: "ATC China Brasil",
     description:
-      "Conectamos sua empresa diretamente às melhores fábricas do mundo, com segurança e estratégia. Importação, exportação e sourcing na China.",
+      "We connect your company directly with leading factories worldwide. Import, export and sourcing solutions with local expertise in China.",
     url: "https://acs.atcchinabrasil.com",
     siteName: "ATC China Brasil",
     images: [brandAssets.social],
-    locale: "pt_BR",
+    locale: "en_US",
+    alternateLocale: ["zh_CN", "pt_BR"],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "ATC China Brasil",
     description:
-      "Conectamos sua empresa diretamente às melhores fábricas do mundo, com segurança e estratégia. Importação, exportação e sourcing na China.",
+      "We connect your company directly with leading factories worldwide. Import, export and sourcing solutions with local expertise in China.",
     images: [brandAssets.social.url],
   },
   icons: {
@@ -53,7 +54,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" className="bg-background">
+    <html lang="en-US" className="bg-background">
       <body className="font-sans antialiased">
         <MotionObserver />
         {children}

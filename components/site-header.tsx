@@ -1,14 +1,14 @@
 "use client";
 
 import { BrandLogo } from "@/components/brand-logo";
+import { LanguageSwitcher } from "@/components/language-controls";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { buildWhatsAppUrl } from "@/lib/contact";
-import { ArrowRight, Menu, Search } from "lucide-react";
+import { ArrowRight, Menu } from "lucide-react";
 import { CommodityTicker } from "@/components/commodity-ticker";
 import {
   copy,
-  languages,
   localizedHref,
   localizedPath,
   type Language,
@@ -17,12 +17,6 @@ import {
 type SiteHeaderProps = {
   lang: Language;
   content: (typeof copy)[Language]["header"];
-};
-
-const searchPlaceholder: Record<Language, string> = {
-  pt: "Buscar produtos, serviços e temas",
-  en: "Search products, services and topics",
-  zh: "搜索产品、服务和主题",
 };
 
 const shortCtaLabel: Record<Language, string> = {
@@ -59,30 +53,10 @@ export function SiteHeader({ lang, content }: SiteHeaderProps) {
 
   return (
     <header className="fixed top-0 inset-x-0 z-50 bg-[#071625]/94 text-white shadow-[0_10px_35px_-30px_rgba(0,0,0,0.75)] backdrop-blur-md">
-      <div className="relative mx-auto flex h-12 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6 md:grid md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:gap-4">
-        <form
-          action={localizedPath(lang, "/catalogo")}
-          className="hidden h-8 w-64 items-center rounded-full border border-white/22 bg-white/5 px-3 text-sm text-white/75 transition-colors focus-within:border-white/50 lg:flex"
-          role="search"
-        >
-          <input
-            type="search"
-            name="q"
-            placeholder={searchPlaceholder[lang]}
-            className="min-w-0 flex-1 bg-transparent text-xs text-white outline-none placeholder:text-white/45"
-          />
-          <button
-            type="submit"
-            className="ml-2 inline-flex size-4 items-center justify-center text-white/55 transition-colors hover:text-white"
-            aria-label={searchPlaceholder[lang]}
-          >
-            <Search className="size-4" aria-hidden />
-          </button>
-        </form>
-
+      <div className="relative mx-auto flex h-12 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6 lg:grid lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:gap-4">
         <a
           href={localizedHref(lang, "#inicio")}
-          className="flex shrink-0 items-center md:justify-self-center"
+          className="flex shrink-0 items-center lg:col-start-2 lg:justify-self-center"
           aria-label="ACS"
         >
           <BrandLogo
@@ -94,22 +68,7 @@ export function SiteHeader({ lang, content }: SiteHeaderProps) {
         </a>
 
         <div className="hidden items-center justify-self-end gap-3 md:flex">
-          <div className="flex h-8 items-center rounded-full border border-white/15 bg-white/8 p-0.5">
-            {languages.map((option) => (
-              <a
-                key={option}
-                href={localizedHref(option, "#inicio")}
-                className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
-                  option === lang
-                    ? "bg-white text-primary"
-                    : "text-white/58 hover:text-white"
-                }`}
-                hrefLang={option}
-              >
-                {option === "pt" ? "PT" : option === "en" ? "EN" : "中文"}
-              </a>
-            ))}
-          </div>
+          <LanguageSwitcher lang={lang} />
           <Button
             asChild
             size="sm"
@@ -150,25 +109,6 @@ export function SiteHeader({ lang, content }: SiteHeaderProps) {
               <span className="sr-only">{content.menuLabel}</span>
             </summary>
             <div className="fixed right-4 top-14 z-50 max-h-[calc(100dvh-4.5rem)] w-[min(21rem,calc(100vw-2rem))] overflow-y-auto rounded-2xl border border-white/10 bg-[#050505] p-4 shadow-xl">
-              <form
-                action={localizedPath(lang, "/catalogo")}
-                className="mb-3 flex h-10 w-full items-center rounded-full border border-white/20 bg-white/5 px-3"
-                role="search"
-              >
-                <input
-                  type="search"
-                  name="q"
-                  placeholder={searchPlaceholder[lang]}
-                  className="w-full min-w-0 flex-1 bg-transparent text-sm text-white outline-none placeholder:text-white/45"
-                />
-                <button
-                  type="submit"
-                  className="ml-2 inline-flex size-5 items-center justify-center text-white/60"
-                  aria-label={searchPlaceholder[lang]}
-                >
-                  <Search className="size-4" aria-hidden />
-                </button>
-              </form>
               <nav className="flex flex-col gap-1" aria-label="Menu mobile">
                 {content.nav.map((item) => (
                   <a
@@ -180,22 +120,7 @@ export function SiteHeader({ lang, content }: SiteHeaderProps) {
                   </a>
                 ))}
               </nav>
-              <div className="mt-4 flex items-center rounded-full border border-white/12 bg-white/8 p-1">
-                {languages.map((option) => (
-                  <a
-                    key={option}
-                    href={localizedHref(option, "#inicio")}
-                    className={`flex-1 rounded-full px-3 py-2 text-center text-xs font-medium transition-colors ${
-                      option === lang
-                        ? "bg-white text-primary"
-                        : "text-white/60 hover:text-white"
-                    }`}
-                    hrefLang={option}
-                  >
-                    {option === "pt" ? "PT" : option === "en" ? "EN" : "中文"}
-                  </a>
-                ))}
-              </div>
+              <LanguageSwitcher lang={lang} className="mt-4 flex h-10 w-full" />
               <Button
                 asChild
                 size="sm"

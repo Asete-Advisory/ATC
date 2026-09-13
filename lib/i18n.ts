@@ -2,8 +2,18 @@ export const languages = ["pt", "en", "zh"] as const;
 
 export type Language = (typeof languages)[number];
 
-export function getLanguage(value?: string): Language {
-  return languages.includes(value as Language) ? (value as Language) : "pt";
+export const defaultLanguage: Language = "en";
+export const navigationLanguages = ["en", "zh"] as const;
+export const languageLocales: Record<Language, string> = {
+  pt: "pt-BR",
+  en: "en-US",
+  zh: "zh-CN",
+};
+
+export function getLanguage(value?: string | null): Language {
+  return languages.includes(value as Language)
+    ? (value as Language)
+    : defaultLanguage;
 }
 
 export function localizedHref(lang: Language, anchor = "") {
@@ -26,7 +36,6 @@ export const copy = {
         { href: "/news", label: "Notícias" },
         { href: "#como-funciona", label: "Como funciona" },
         { href: "#servicos", label: "Serviços" },
-        { href: "/catalogo", label: "Catálogo" },
         { href: "#diferenciais", label: "Diferenciais" },
         { href: "#casos", label: "Casos" },
       ],
@@ -39,12 +48,10 @@ export const copy = {
         "Soluções estruturadas para empresas que desejam importar, exportar e operar no mercado global com segurança, estratégia e escala.",
     },
     hero: {
-      title: "Trading, Sourcing & Comércio Internacional",
+      title: "Sourcing & Comércio Internacional",
       description:
         "Soluções estruturadas para empresas que desejam importar, exportar e operar no mercado global com segurança, estratégia e escala.",
-      primaryCtaLabel: "Catálogos",
-      primaryCtaMessage: "Olá, quero falar com o time da ATC.",
-      secondaryCtaLabel: "Notícias",
+      newsCtaLabel: "Notícias",
       stats: [
         { value: "+R$1 BILHÃO", label: "em operações e valores negociados" },
         {
@@ -293,7 +300,6 @@ export const copy = {
         { href: "/news", label: "News" },
         { href: "#como-funciona", label: "How it works" },
         { href: "#servicos", label: "Services" },
-        { href: "/catalogo", label: "Catalog" },
         { href: "#diferenciais", label: "Differentials" },
         { href: "#casos", label: "Cases" },
       ],
@@ -309,9 +315,7 @@ export const copy = {
       title: "International import, export and sourcing solutions",
       description:
         "We connect your company directly with the world's best factories, combining security, strategy and local presence in China.",
-      primaryCtaLabel: "Catalogs",
-      primaryCtaMessage: "Hello, I would like to talk to the ATC team.",
-      secondaryCtaLabel: "News",
+      newsCtaLabel: "News",
       stats: [
         { value: "+R$1 BILLION", label: "in negotiated operations and values" },
         {
@@ -560,7 +564,6 @@ export const copy = {
         { href: "/news", label: "新闻" },
         { href: "#como-funciona", label: "运作方式" },
         { href: "#servicos", label: "服务" },
-        { href: "/catalogo", label: "目录" },
         { href: "#diferenciais", label: "优势" },
         { href: "#casos", label: "案例" },
       ],
@@ -576,9 +579,7 @@ export const copy = {
       title: "国际进口、出口与采购解决方案",
       description:
         "我们将您的企业直接连接到全球优质工厂，以安全、策略和中国本地执行能力推动业务发展。",
-      primaryCtaLabel: "产品目录",
-      primaryCtaMessage: "您好，我想与 ATC 团队沟通。",
-      secondaryCtaLabel: "新闻",
+      newsCtaLabel: "新闻",
       stats: [
         { value: "+10亿+雷亚尔", label: "成交金额与运营价值" },
         {

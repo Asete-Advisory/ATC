@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { BrandLogo } from "@/components/brand-logo";
 import { PortfolioDownloadButton } from "@/components/portfolio-download-button";
-import { copy, getLanguage, languages, localizedPath, type Language } from "@/lib/i18n";
-import { productCatalog } from "@/lib/product-catalog";
+import { LanguageSwitcher, PortugueseLanguageButton } from "@/components/language-controls";
+import { copy, getLanguage, localizedPath, type Language } from "@/lib/i18n";
 
 export const metadata: Metadata = {
   title: "Portfolio PDF | ATC China Brasil",
   description:
-    "Apresentação institucional da ATC China Brasil em PDF com serviços, diferenciais e catálogo de produtos.",
+    "ATC China Brasil company presentation in PDF, featuring services, capabilities and operating models.",
 };
 
 type PortfolioPageProps = {
@@ -30,11 +30,10 @@ const portfolioCopy: Record<
     servicesLabel: string;
     modelLabel: string;
     proofLabel: string;
-    catalogLabel: string;
-    productsLabel: string;
     closingTitle: string;
     closingText: string;
     contactLabel: string;
+    servicesSummary: string;
   }
 > = {
   pt: {
@@ -49,12 +48,11 @@ const portfolioCopy: Record<
     servicesLabel: "Soluções",
     modelLabel: "Modelos de atuação",
     proofLabel: "Lastro operacional",
-    catalogLabel: "Catálogo de produtos",
-    productsLabel: "Produtos de referência",
     closingTitle: "Transforme comércio internacional em operação previsível",
     closingText:
       "Nossa equipe estrutura o caminho entre produto, fornecedor, negociação, logística e entrega final com governança em cada etapa.",
     contactLabel: "Contato",
+    servicesSummary: "Importação, exportação, sourcing e commodities",
   },
   en: {
     eyebrow: "Company presentation",
@@ -68,12 +66,11 @@ const portfolioCopy: Record<
     servicesLabel: "Solutions",
     modelLabel: "Operating models",
     proofLabel: "Operational backing",
-    catalogLabel: "Product catalog",
-    productsLabel: "Reference products",
     closingTitle: "Turn international trade into a predictable operation",
     closingText:
       "Our team structures the path across product, supplier, negotiation, logistics and final delivery with governance at every stage.",
     contactLabel: "Contact",
+    servicesSummary: "Imports, exports, sourcing and commodities",
   },
   zh: {
     eyebrow: "公司介绍",
@@ -87,12 +84,11 @@ const portfolioCopy: Record<
     servicesLabel: "解决方案",
     modelLabel: "合作模式",
     proofLabel: "运营实力",
-    catalogLabel: "产品目录",
-    productsLabel: "参考产品",
     closingTitle: "让国际贸易成为可预测的业务流程",
     closingText:
       "我们的团队贯穿产品、供应商、谈判、物流与最终交付全过程，并在每个阶段提供治理与控制。",
     contactLabel: "联系方式",
+    servicesSummary: "进口、出口、采购与大宗商品",
   },
 };
 
@@ -120,9 +116,8 @@ export default async function PortfolioPage({ searchParams }: PortfolioPageProps
   const params = await searchParams;
   const lang = getLanguage(params?.lang);
   const content = copy[lang];
-  const catalog = productCatalog[lang];
   const portfolio = portfolioCopy[lang];
-  const totalSlides = 8;
+  const totalSlides = 6;
 
   return (
     <main className="min-h-screen bg-[#071625] text-white">
@@ -138,20 +133,7 @@ export default async function PortfolioPage({ searchParams }: PortfolioPageProps
             >
               {portfolio.backLabel}
             </a>
-            <div className="flex rounded-full border border-white/15 bg-white/8 p-0.5">
-              {languages.map((option) => (
-                <a
-                  key={option}
-                  href={localizedPath(option, "/portfolio")}
-                  className={`rounded-full px-3 py-1.5 text-xs font-semibold ${
-                    option === lang ? "bg-white text-primary" : "text-white/60"
-                  }`}
-                  hrefLang={option}
-                >
-                  {option === "pt" ? "PT" : option === "en" ? "EN" : "中文"}
-                </a>
-              ))}
-            </div>
+            <LanguageSwitcher lang={lang} />
             <PortfolioDownloadButton
               label={portfolio.downloadLabel}
               loadingLabel={portfolio.generatingLabel}
@@ -330,71 +312,6 @@ export default async function PortfolioPage({ searchParams }: PortfolioPageProps
 
         <section
           data-portfolio-slide
-          className="portfolio-slide relative overflow-hidden bg-white p-10 text-primary"
-        >
-          <p className="text-sm font-semibold uppercase tracking-[0.28em] text-[#2f6fd6]">
-            {portfolio.catalogLabel}
-          </p>
-          <h2 className="mt-3 max-w-4xl text-4xl font-semibold leading-tight">{catalog.title}</h2>
-          <p className="mt-4 max-w-3xl text-base leading-relaxed text-slate-600">{catalog.description}</p>
-          <div className="mt-6 grid grid-cols-2 gap-5">
-            {catalog.categories.slice(0, 2).map((category) => (
-              <div key={category.id} className="rounded-2xl border border-slate-200 bg-[#f7fbff] p-5">
-                <h3 className="text-xl font-semibold">{category.title}</h3>
-                <p className="mt-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#2f6fd6]">
-                  {category.tagline}
-                </p>
-                <p className="mt-2 text-xs leading-relaxed text-slate-600">{category.description}</p>
-                <h4 className="mt-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
-                  {portfolio.productsLabel}
-                </h4>
-                <ul className="mt-2 grid gap-1.5">
-                  {category.products.map((product) => (
-                    <li key={product} className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700">
-                      {product}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-          <SlideNumber current={6} total={totalSlides} />
-        </section>
-
-        <section
-          data-portfolio-slide
-          className="portfolio-slide relative overflow-hidden bg-white p-12 text-primary"
-        >
-          <p className="text-sm font-semibold uppercase tracking-[0.28em] text-[#2f6fd6]">
-            {portfolio.catalogLabel}
-          </p>
-          <h2 className="mt-4 max-w-4xl text-5xl font-semibold leading-tight">{catalog.title}</h2>
-          <div className="mt-9 grid grid-cols-2 gap-5">
-            {catalog.categories.slice(2).map((category) => (
-              <div key={category.id} className="rounded-2xl border border-slate-200 bg-[#f7fbff] p-6">
-                <h3 className="text-2xl font-semibold">{category.title}</h3>
-                <p className="mt-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#2f6fd6]">
-                  {category.tagline}
-                </p>
-                <p className="mt-3 text-sm leading-relaxed text-slate-600">{category.description}</p>
-                <h4 className="mt-6 text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
-                  {portfolio.productsLabel}
-                </h4>
-                <ul className="mt-3 grid gap-2">
-                  {category.products.map((product) => (
-                    <li key={product} className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700">
-                      {product}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-          <SlideNumber current={7} total={totalSlides} />
-        </section>
-
-        <section
-          data-portfolio-slide
           className="portfolio-slide portfolio-slide-dark relative overflow-hidden bg-[#071625]"
         >
           <Image
@@ -421,13 +338,14 @@ export default async function PortfolioPage({ searchParams }: PortfolioPageProps
               </div>
               <div className="rounded-2xl border border-white/14 bg-white/8 p-5">
                 <div className="font-semibold text-white">{content.cta.specialistLabel}</div>
-                <div className="mt-2 text-white/58">Importação, exportação, sourcing e commodities</div>
+                <div className="mt-2 text-white/58">{portfolio.servicesSummary}</div>
               </div>
             </div>
           </div>
-          <SlideNumber current={8} total={totalSlides} />
+          <SlideNumber current={6} total={totalSlides} />
         </section>
       </div>
+      <PortugueseLanguageButton lang={lang} />
     </main>
   );
 }

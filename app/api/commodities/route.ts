@@ -1,6 +1,6 @@
 import YahooFinance from "yahoo-finance2";
 import { NextResponse } from "next/server";
-import { type Language } from "@/lib/i18n";
+import { getLanguage, type Language } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -77,10 +77,6 @@ const labels: Record<Language, Record<string, string>> = {
 
 const symbols = Object.keys(labels.pt);
 const brlPairs = new Set(["BRL=X", "CNYBRL=X"]);
-
-function getLanguage(value: string | null): Language {
-  return value === "en" || value === "zh" ? value : "pt";
-}
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);

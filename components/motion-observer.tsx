@@ -6,41 +6,73 @@ const motionSelector = ".motion-reveal, .motion-reveal-soft";
 
 export function MotionObserver() {
   useEffect(() => {
-    const elements = Array.from(document.querySelectorAll(motionSelector));
-
-    if (!elements.length) {
-      return;
-    }
-
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
 
-    if (prefersReducedMotion || !("IntersectionObserver" in window)) {
-      elements.forEach((element) => element.classList.add("motion-visible"));
-      return;
+    const observer =
+      !prefersReducedMotion && "IntersectionObserver" in window
+        ? new IntersectionObserver(
+            (entries, currentObserver) => {
+              entries.forEach((entry) => {
+                if (!entry.isIntersecting) {
+                  return;
+                }
+
+                entry.target.classList.add("motion-visible");
+                currentObserver.unobserve(entry.target);
+              });
+            },
+            {
+              rootMargin: "0px 0px -12% 0px",
+              threshold: 0.16,
+            },
+          )
+        : null;
+
+    function visitMotionElements(node: Node, visit: (element: Element) => void) {
+      if (!(node instanceof Element)) {
+        return;
+      }
+
+      if (node.matches(motionSelector)) {
+        visit(node);
+      }
+
+      node.querySelectorAll(motionSelector).forEach(visit);
     }
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) {
-            return;
-          }
+    function observeElement(element: Element) {
+      if (!element.isConnected || element.classList.contains("motion-visible")) {
+        return;
+      }
 
-          entry.target.classList.add("motion-visible");
-          observer.unobserve(entry.target);
+      if (observer) {
+        observer.observe(element);
+      } else {
+        element.classList.add("motion-visible");
+      }
+    }
+
+    // Client navigation can replace translated cards while the layout stays mounted.
+    const mutations = new MutationObserver((records) => {
+      records.forEach((record) => {
+        record.removedNodes.forEach((node) => {
+          visitMotionElements(node, (element) => observer?.unobserve(element));
         });
-      },
-      {
-        rootMargin: "0px 0px -12% 0px",
-        threshold: 0.16,
-      },
-    );
+        record.addedNodes.forEach((node) => {
+          visitMotionElements(node, observeElement);
+        });
+      });
+    });
 
-    elements.forEach((element) => observer.observe(element));
+    mutations.observe(document.body, { childList: true, subtree: true });
+    visitMotionElements(document.body, observeElement);
 
-    return () => observer.disconnect();
+    return () => {
+      mutations.disconnect();
+      observer?.disconnect();
+    };
   }, []);
 
   return null;
