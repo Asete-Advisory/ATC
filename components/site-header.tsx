@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { BrandLogo } from "@/components/brand-logo";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { buildWhatsAppUrl } from "@/lib/contact";
@@ -83,15 +83,12 @@ export function SiteHeader({ lang, content }: SiteHeaderProps) {
         <a
           href={localizedHref(lang, "#inicio")}
           className="flex shrink-0 items-center md:justify-self-center"
-          aria-label="ATC China Brasil"
+          aria-label="ACS"
         >
-          <Image
-            src="/global/atc-icon-white.svg"
-            alt="ATC China Brasil"
+          <BrandLogo
             loading="eager"
-            width={1205}
-            height={375}
             priority
+            sizes="(min-width: 768px) 90px, 77px"
             className="h-6 w-auto md:h-7"
           />
         </a>

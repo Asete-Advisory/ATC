@@ -1,5 +1,6 @@
 import { Check } from "lucide-react";
 import Image from "next/image";
+import { BrandLogo } from "@/components/brand-logo";
 import { copy, type Language } from "@/lib/i18n";
 
 type DifferentialsSectionProps = {
@@ -21,13 +22,10 @@ export function DifferentialsSection({ content }: DifferentialsSectionProps) {
               sizes="(min-width: 1024px) 50vw, 100vw"
             />
             <div className="absolute inset-0 flex items-center justify-center p-12">
-              <Image
-                src="/global/atc-icon-white.svg"
+              <BrandLogo
                 alt=""
                 loading="eager"
-                width={1205}
-                height={375}
-                aria-hidden
+                sizes="280px"
                 className="w-3/5 max-w-70 h-auto"
               />
             </div>

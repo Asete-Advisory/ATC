@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { BrandLogo } from "@/components/brand-logo";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { RadioTower, TrendingDown, TrendingUp } from "lucide-react";
 import { HeroVideoBackground } from "@/components/hero-video-background";
@@ -11,6 +12,7 @@ import {
 } from "@/components/ui/toggle-group";
 import { copy, type Language } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+import { brandAssets } from "@/lib/brand";
 
 type CommodityQuote = {
   symbol: string;
@@ -307,11 +309,8 @@ function InstitutionalSlide({
             </div>
 
             <div className="flex min-w-0 items-center justify-center">
-              <Image
-                src="/global/atc-icon-white.svg"
-                alt="ATC China Brasil"
-                width={1205}
-                height={375}
+              <BrandLogo
+                sizes="(min-width: 640px) 128px, 112px"
                 priority
                 className="h-auto w-28 sm:w-32"
               />
@@ -341,11 +340,7 @@ function InstitutionalSlide({
 
         <div className="absolute inset-x-5 top-[clamp(11.25rem,23svh,15rem)] bottom-[clamp(6.75rem,11svh,8.25rem)] grid content-center gap-5 sm:inset-x-8 md:gap-6 lg:inset-x-12 lg:grid-cols-[minmax(0,1fr)_clamp(18rem,25vw,27rem)] lg:items-center xl:gap-8">
           <div className="min-w-0 max-w-[70rem]">
-            <Image
-              src="/global/atc-icon-white.svg"
-              alt="ATC China Brasil"
-              width={1205}
-              height={375}
+            <BrandLogo
               priority
               className="mb-[clamp(1rem,2.2svh,1.7rem)] h-auto w-[clamp(6rem,9vw,10rem)]"
             />
@@ -472,10 +467,11 @@ function MapLogoMark() {
   return (
     <div className="pointer-events-none absolute -bottom-8 left-3 z-30 h-36 w-44 overflow-hidden">
       <Image
-        src="/global/atc-light.png"
-        alt="ATC China Brasil"
-        width={288}
-        height={273}
+        src={brandAssets.icons.white}
+        alt={brandAssets.logo.alt}
+        width={512}
+        height={512}
+        sizes="144px"
         className="h-36 w-auto max-w-none object-contain"
       />
     </div>

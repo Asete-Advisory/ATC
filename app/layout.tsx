@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import { MotionObserver } from "@/components/motion-observer";
+import { brandAssets } from "@/lib/brand";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -14,14 +15,7 @@ export const metadata: Metadata = {
       "Conectamos sua empresa diretamente às melhores fábricas do mundo, com segurança e estratégia. Importação, exportação e sourcing na China.",
     url: "https://atcchinabrasil.com",
     siteName: "ATC China Brasil",
-    images: [
-      {
-        url: "/global/atc-dark.png",
-        width: 1205,
-        height: 1205,
-        alt: "ATC China Brasil",
-      },
-    ],
+    images: [brandAssets.social],
     locale: "pt_BR",
     type: "website",
   },
@@ -30,26 +24,26 @@ export const metadata: Metadata = {
     title: "ATC China Brasil",
     description:
       "Conectamos sua empresa diretamente às melhores fábricas do mundo, com segurança e estratégia. Importação, exportação e sourcing na China.",
-    images: ["/global/atc-dark.png"],
+    images: [brandAssets.social.url],
   },
   icons: {
     icon: [
       {
-        url: "/global/atc-dark.png",
+        url: brandAssets.icons.black,
+        type: "image/png",
+      },
+      {
+        url: brandAssets.icons.black,
         media: "(prefers-color-scheme: light)",
         type: "image/png",
       },
       {
-        url: "/global/atc-light.png",
+        url: brandAssets.icons.white,
         media: "(prefers-color-scheme: dark)",
         type: "image/png",
       },
-      {
-        url: "/global/atc-light.png",
-        type: "image/png",
-      },
     ],
-    apple: "/global/atc-light.png",
+    apple: brandAssets.icons.apple,
   },
 };
 

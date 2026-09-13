@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { BrandLogo } from "@/components/brand-logo";
 import { PortfolioDownloadButton } from "@/components/portfolio-download-button";
 import { copy, getLanguage, languages, localizedPath, type Language } from "@/lib/i18n";
 import { productCatalog } from "@/lib/product-catalog";
@@ -105,13 +106,12 @@ function SlideNumber({ current, total }: { current: number; total: number }) {
 
 function BrandMark({ dark = false }: { dark?: boolean }) {
   return (
-    <Image
-      src={dark ? "/global/atc-icon-black.svg" : "/global/atc-icon-white.svg"}
-      alt="ATC China Brasil"
-      width={1205}
-      height={375}
-      className="h-8 w-auto"
+    <BrandLogo
+      variant={dark ? "black" : "white"}
+      sizes="103px"
+      className="h-8 w-auto shrink-0 self-start"
       priority
+      unoptimized
     />
   );
 }
@@ -128,7 +128,7 @@ export default async function PortfolioPage({ searchParams }: PortfolioPageProps
     <main className="min-h-screen bg-[#071625] text-white">
       <div className="sticky top-0 z-40 border-b border-white/10 bg-[#071625]/94 px-4 py-3 backdrop-blur print:hidden">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3">
-          <a href={localizedPath(lang, "/")} aria-label="ATC China Brasil">
+          <a href={localizedPath(lang, "/")} aria-label="ACS">
             <BrandMark />
           </a>
           <div className="flex flex-wrap items-center gap-2">
