@@ -1,6 +1,6 @@
 # Logo ACS
 
-A marca ACS representa a união entre ATC e CS Group. Esta etapa substitui as aplicações gráficas do logo na branch `acs-group`; os textos comerciais, contatos e domínio herdados da ATC serão tratados em alterações posteriores.
+A marca ACS representa a união entre ATC e CS Group. Esta etapa substitui as aplicações gráficas do logo na branch `acs-group`; os textos comerciais e contatos herdados da ATC serão tratados em alterações posteriores. O domínio de publicação está documentado em `DEPLOY.md`, na raiz do projeto.
 
 ## Arquivos finais
 

@@ -13,19 +13,19 @@ services:
       traefik.enable: "true"
       traefik.docker.network: dokploy-network
 
-      traefik.http.routers.atcchinabrasil-http.rule: Host(`atcchinabrasil.com`)
-      traefik.http.routers.atcchinabrasil-http.entrypoints: web
-      traefik.http.routers.atcchinabrasil-http.middlewares: atcchinabrasil-https-redirect
-      traefik.http.routers.atcchinabrasil-http.service: atcchinabrasil
-      traefik.http.middlewares.atcchinabrasil-https-redirect.redirectscheme.scheme: https
-      traefik.http.middlewares.atcchinabrasil-https-redirect.redirectscheme.permanent: "true"
+      traefik.http.routers.acs-group-http.rule: Host(`acs.atcchinabrasil.com`)
+      traefik.http.routers.acs-group-http.entrypoints: web
+      traefik.http.routers.acs-group-http.middlewares: acs-group-https-redirect
+      traefik.http.routers.acs-group-http.service: acs-group
+      traefik.http.middlewares.acs-group-https-redirect.redirectscheme.scheme: https
+      traefik.http.middlewares.acs-group-https-redirect.redirectscheme.permanent: "true"
 
-      traefik.http.routers.atcchinabrasil-https.rule: Host(`atcchinabrasil.com`)
-      traefik.http.routers.atcchinabrasil-https.entrypoints: websecure
-      traefik.http.routers.atcchinabrasil-https.tls: "true"
-      traefik.http.routers.atcchinabrasil-https.tls.certresolver: letsencrypt
-      traefik.http.routers.atcchinabrasil-https.service: atcchinabrasil
-      traefik.http.services.atcchinabrasil.loadbalancer.server.port: "3000"
+      traefik.http.routers.acs-group-https.rule: Host(`acs.atcchinabrasil.com`)
+      traefik.http.routers.acs-group-https.entrypoints: websecure
+      traefik.http.routers.acs-group-https.tls: "true"
+      traefik.http.routers.acs-group-https.tls.certresolver: letsencrypt
+      traefik.http.routers.acs-group-https.service: acs-group
+      traefik.http.services.acs-group.loadbalancer.server.port: "3000"
 
 networks:
   dokploy-network:

@@ -7,14 +7,14 @@ Este repositório mantém dois sites com evolução independente, conforme decis
 | Branch | Finalidade | Domínio |
 | --- | --- | --- |
 | `main` | Site institucional original da ATC China Brasil | `atcchinabrasil.com` |
-| `acs-group` | Site da união entre a ATC e a CS Group | Ainda não informado |
+| `acs-group` | Site da união entre a ATC e a CS Group | `acs.atcchinabrasil.com` |
 
 - `acs-group` foi criada a partir da `main`, após o commit `4ba979d`, que adicionou o deploy Docker/Dokploy. Deve ser tratada como uma linha de desenvolvimento permanente, próxima de um projeto separado, e não como uma feature destinada a merge na `main`.
 - As próximas alterações de identidade, conteúdo e funcionalidades da joint venture pertencem à `acs-group`. Preserve o site original da ATC na `main`.
 - Antes de editar, confira a branch e as alterações existentes com `git status --short --branch`.
 - Não faça merges, rebases ou cherry-picks entre essas duas linhas por iniciativa própria. Uma correção compartilhada deve ter seu destino definido pela solicitação do usuário.
 - Não crie PR de `acs-group` para `main` como etapa padrão de conclusão de uma tarefa.
-- A empresa parceira é a **CS Group**, conforme informado pelo usuário. A primeira mudança de identidade solicitada é o logo **ACS**, preservando o A estilizado da ATC e o padrão tipográfico das letras. Contatos, domínio e as demais mudanças de identidade ainda serão definidos.
+- A empresa parceira é a **CS Group**, conforme informado pelo usuário. A primeira mudança de identidade solicitada é o logo **ACS**, preservando o A estilizado da ATC e o padrão tipográfico das letras. Contatos e as demais mudanças de identidade ainda serão definidos.
 - A `acs-group` usa o logo ACS, mas ainda contém textos, contatos e configurações da ATC. Isso é conteúdo herdado, não confirmação de que será usado pela joint venture.
 
 ## Produto e arquitetura
@@ -75,8 +75,8 @@ Use `app/globals.css` como referência de estilos; há outro arquivo em `styles/
 - `docker-compose.yml`: serviço `web` conectado à rede externa `dokploy-network`; Traefik usa os entrypoints `web`/`websecure` e o certificate resolver `letsencrypt`.
 - Por preferência explícita do usuário, não adicione `ports` ou `expose` ao Compose de produção nem `EXPOSE` ao Dockerfile. A porta 3000 deve permanecer interna, acessada pelo Traefik pela rede Docker e pela label `loadbalancer.server.port`.
 - O roteamento é definido nas labels. O procedimento atual mantém a aba Domains do serviço vazia e Isolated Deployments desativado. Veja `DEPLOY.md`.
-- **A configuração de deploy herdada na `acs-group` ainda aponta para `atcchinabrasil.com` e usa identificadores Traefik `atcchinabrasil-*`. Não a publique como um segundo site com esses mesmos valores.**
-- Ao preparar o deploy da joint venture, use um serviço Dokploy separado, vinculado à branch `acs-group`, e configure seu domínio e identificadores próprios para routers, middlewares e serviço Traefik. Atualize também os metadados e `DEPLOY.md`. Preserve o domínio e o serviço da ATC vinculados à `main`.
+- A `acs-group` usa o domínio `acs.atcchinabrasil.com` nas labels do Compose e nos metadados. Seus routers, middleware e serviço Traefik usam o prefixo `acs-group`, separado dos identificadores `atcchinabrasil-*` do site original.
+- No deploy da joint venture, use um serviço Dokploy separado, vinculado à branch `acs-group`. Preserve o domínio e o serviço da ATC vinculados à `main`. Mantenha Compose, metadados e `DEPLOY.md` coerentes ao alterar o domínio.
 - `.dockerignore` exclui dependências locais, caches, arquivos de ambiente e outras entradas desnecessárias do contexto de build. Não inclua segredos na imagem ou no Git.
 
 ## Dependências e validação
@@ -105,6 +105,6 @@ git diff --check
 
 - A busca do cabeçalho envia o parâmetro `q`, mas o catálogo ainda não filtra por ele.
 - O HTML raiz mantém `lang="pt-BR"` nas três versões; o seletor de idioma do cabeçalho retorna à página inicial.
-- Textos institucionais, WhatsApp, e-mail e URLs de produção ainda pertencem à ATC; a primeira etapa da adaptação alterou os logos e suas descrições acessíveis.
+- Textos institucionais, WhatsApp e e-mail ainda pertencem à ATC; a adaptação já alterou os logos, suas descrições acessíveis e o domínio de produção.
 
 Essas pendências são contexto para o trabalho futuro; não ampliam automaticamente o escopo de cada solicitação.
