@@ -1,0 +1,32 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runner
+    restart: unless-stopped
+    init: true
+    stop_grace_period: 30s
+    networks:
+      - dokploy-network
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: dokploy-network
+
+      traefik.http.routers.atcchinabrasil-http.rule: Host(`atcchinabrasil.com`)
+      traefik.http.routers.atcchinabrasil-http.entrypoints: web
+      traefik.http.routers.atcchinabrasil-http.middlewares: atcchinabrasil-https-redirect
+      traefik.http.routers.atcchinabrasil-http.service: atcchinabrasil
+      traefik.http.middlewares.atcchinabrasil-https-redirect.redirectscheme.scheme: https
+      traefik.http.middlewares.atcchinabrasil-https-redirect.redirectscheme.permanent: "true"
+
+      traefik.http.routers.atcchinabrasil-https.rule: Host(`atcchinabrasil.com`)
+      traefik.http.routers.atcchinabrasil-https.entrypoints: websecure
+      traefik.http.routers.atcchinabrasil-https.tls: "true"
+      traefik.http.routers.atcchinabrasil-https.tls.certresolver: letsencrypt
+      traefik.http.routers.atcchinabrasil-https.service: atcchinabrasil
+      traefik.http.services.atcchinabrasil.loadbalancer.server.port: "3000"
+
+networks:
+  dokploy-network:
+    external: true

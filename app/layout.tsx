@@ -7,12 +7,12 @@ export const metadata: Metadata = {
   title: "ATC China Brasil",
   description:
     "Conectamos sua empresa diretamente às melhores fábricas do mundo, com segurança e estratégia. Importação, exportação e sourcing na China.",
-  metadataBase: new URL("https://atc.lsx.li"),
+  metadataBase: new URL("https://atcchinabrasil.com"),
   openGraph: {
     title: "ATC China Brasil",
     description:
       "Conectamos sua empresa diretamente às melhores fábricas do mundo, com segurança e estratégia. Importação, exportação e sourcing na China.",
-    url: "https://atc.lsx.li",
+    url: "https://atcchinabrasil.com",
     siteName: "ATC China Brasil",
     images: [
       {
