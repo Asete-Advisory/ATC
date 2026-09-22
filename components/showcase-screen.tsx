@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { RadioTower, TrendingDown, TrendingUp } from "lucide-react";
 import { HeroVideoBackground } from "@/components/hero-video-background";
 import { MarketBoard } from "@/components/market-board";
+import { TradeRoutesMap } from "@/components/trade-routes-map";
 import {
   ToggleGroup,
   ToggleGroupItem,
@@ -48,8 +49,6 @@ const slideDurations: Record<PresentationSlide, number> = {
   map: mapSlideDurationMs,
   market: marketSlideDurationMs,
 };
-const financeMonitorEmbedUrl =
-  "https://finance.worldmonitor.app/embed.html?layers=stockExchanges,financialCenters,centralBanks,commodityHubs,gulfInvestments,tradeRoutes,cables,waterways&center=8,8&zoom=1.45&theme=dark&variant=finance";
 const investmentPanelSymbols = ["GC=F", "SI=F", "HG=F", "CL=F", "BZ=F", "ZS=F"];
 
 function rotateQuotes(quotes: CommodityQuote[], offset: number) {
@@ -273,7 +272,7 @@ function InstitutionalSlide({
     marqueeQuotes,
     Math.ceil((marqueeQuotes.length * 2) / 3),
   );
-  const showFinanceMap = activeSlide === "map";
+  const showTradeMap = activeSlide === "map";
   const showMarketBoard = activeSlide === "market";
 
   return (
@@ -286,8 +285,9 @@ function InstitutionalSlide({
       >
         <HeroVideoBackground />
       </div>
-      <FinanceMapLayer
-        active={showFinanceMap}
+      <TradeMapLayer
+        lang={lang}
+        active={showTradeMap}
         quotes={marqueeQuotes}
         numberFormatter={numberFormatter}
         loadingLabel={statusText[lang].loading}
@@ -351,8 +351,8 @@ function InstitutionalSlide({
             />
             <h1
               className={cn(
-                "max-w-[70rem] whitespace-pre-line text-[clamp(2.85rem,5.5vw,6.25rem)] font-semibold uppercase leading-[0.95] tracking-tight text-white transition-[text-shadow] duration-1000 lg:text-[clamp(3.15rem,4.7vw,5.55rem)] 2xl:text-[clamp(3.65rem,4.45vw,6.05rem)]",
-                showFinanceMap &&
+                "max-w-[70rem] whitespace-pre-line text-[clamp(2.85rem,5.5vw,6.25rem)] font-semibold leading-[0.95] tracking-tight text-white transition-[text-shadow] duration-1000 lg:text-[clamp(3.15rem,4.7vw,5.55rem)] 2xl:text-[clamp(3.65rem,4.45vw,6.05rem)]",
+                showTradeMap &&
                   "[text-shadow:0_4px_34px_rgba(0,0,0,0.82),0_2px_12px_rgba(0,0,0,0.86)]",
               )}
             >
@@ -361,7 +361,7 @@ function InstitutionalSlide({
             <p
               className={cn(
                 "mt-[clamp(0.9rem,2svh,1.5rem)] max-w-[58rem] text-[clamp(1.05rem,1.42vw,1.72rem)] leading-snug text-white/78 transition-[text-shadow] duration-1000",
-                showFinanceMap &&
+                showTradeMap &&
                   "[text-shadow:0_3px_22px_rgba(0,0,0,0.86),0_1px_8px_rgba(0,0,0,0.92)]",
               )}
             >
@@ -426,12 +426,14 @@ function InstitutionalSlide({
   );
 }
 
-function FinanceMapLayer({
+function TradeMapLayer({
+  lang,
   active,
   quotes,
   numberFormatter,
   loadingLabel,
 }: {
+  lang: Language;
   active: boolean;
   quotes: CommodityQuote[];
   numberFormatter: Intl.NumberFormat;
@@ -444,22 +446,15 @@ function FinanceMapLayer({
   return (
     <div
       aria-hidden={!active}
+      inert={!active}
       className={cn(
-        "pointer-events-none absolute inset-x-0 top-36 bottom-20 z-20 overflow-hidden bg-black transition-opacity duration-1000",
+        "pointer-events-none absolute inset-x-0 top-36 bottom-20 z-20 flex gap-8 overflow-hidden bg-[#071625] px-5 py-5 transition-opacity duration-1000 sm:px-8 lg:px-12",
         active ? "opacity-100" : "opacity-0",
       )}
     >
-      <iframe
-        title="Finance World Monitor"
-        src={financeMonitorEmbedUrl}
-        loading="eager"
-        tabIndex={-1}
-        className="size-full border-0 bg-black"
-        referrerPolicy="strict-origin-when-cross-origin"
-        allow="autoplay; encrypted-media; fullscreen; geolocation"
-      />
-      <MapLogoMark />
+      <TradeRoutesMap lang={lang} active={active} />
       <InvestmentMapPanel
+        lang={lang}
         quotes={panelQuotes}
         numberFormatter={numberFormatter}
         loadingLabel={loadingLabel}
@@ -468,37 +463,25 @@ function FinanceMapLayer({
   );
 }
 
-function MapLogoMark() {
-  return (
-    <div className="pointer-events-none absolute -bottom-8 left-3 z-30 h-36 w-44 overflow-hidden">
-      <Image
-        src="/global/atc-light.png"
-        alt="ATC China Brasil"
-        width={288}
-        height={273}
-        className="h-36 w-auto max-w-none object-contain"
-      />
-    </div>
-  );
-}
-
 function InvestmentMapPanel({
+  lang,
   quotes,
   numberFormatter,
   loadingLabel,
 }: {
+  lang: Language;
   quotes: CommodityQuote[];
   numberFormatter: Intl.NumberFormat;
   loadingLabel: string;
 }) {
   return (
-    <aside className="pointer-events-auto absolute right-2 bottom-2 z-30 w-[min(17rem,calc(100vw-1rem))] overflow-hidden rounded-md border border-white/12 bg-[#101316]/94 shadow-[0_18px_56px_-28px_rgba(0,0,0,0.95)] backdrop-blur-md sm:right-3 sm:bottom-3">
+    <aside className="hidden max-h-full w-60 shrink-0 self-center overflow-hidden rounded-md border border-white/12 bg-[#0c1e2d] xl:block 2xl:w-64">
       <div className="flex h-9 items-center justify-between border-b border-white/10 px-3">
         <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/78">
-          Mercado ATC
+          {lang === "pt" ? "Mercado ATC" : lang === "zh" ? "ATC 市场" : "ATC Market"}
         </p>
         <span className="text-[0.62rem] uppercase tracking-[0.16em] text-white/36">
-          Live
+          {statusText[lang].live}
         </span>
       </div>
       <div className="grid max-h-[min(28rem,calc(100svh-18rem))] overflow-hidden">

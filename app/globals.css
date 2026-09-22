@@ -292,6 +292,262 @@
         }
     }
 
+    .trade-map {
+        position: relative;
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr) auto;
+        flex: 1;
+        min-width: 0;
+        isolation: isolate;
+        container-type: inline-size;
+        container-name: trade-map;
+    }
+
+    .trade-map::before {
+        content: "";
+        position: absolute;
+        inset: 12% -4% 8%;
+        z-index: -1;
+        background: radial-gradient(ellipse at 62% 56%, rgb(25 91 114 / 0.16), transparent 65%);
+    }
+
+    .trade-map-heading {
+        padding-top: 0.25rem;
+    }
+
+    .trade-map-eyebrow {
+        margin-bottom: 0.6rem;
+        color: #7ca4ba;
+        font-size: 0.65rem;
+        font-weight: 600;
+        letter-spacing: 0.23em;
+        text-transform: uppercase;
+    }
+
+    .trade-map-heading h2 {
+        color: #ecf4f8;
+        font-size: clamp(1.15rem, 2.1vw, 2.25rem);
+        font-weight: 500;
+        letter-spacing: -0.035em;
+        line-height: 1.15;
+    }
+
+    .trade-map-stage {
+        display: flex;
+        align-items: center;
+        min-height: 0;
+        overflow: hidden;
+    }
+
+    .trade-map-vector {
+        display: block;
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+    }
+
+    .trade-map-oceans {
+        fill: #426075;
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 3px;
+        text-anchor: middle;
+    }
+
+    .trade-map-connection {
+        color: #669ac0;
+    }
+
+    .trade-map-connection.is-featured {
+        color: #67e8cf;
+    }
+
+    .trade-map-route {
+        stroke: currentColor;
+        stroke-width: 1.25;
+        opacity: 0.48;
+    }
+
+    .is-featured .trade-map-route {
+        stroke-width: 2.4;
+        opacity: 0.8;
+    }
+
+    .trade-map-route-glow {
+        stroke: currentColor;
+        stroke-width: 12;
+        opacity: 0.055;
+    }
+
+    .trade-map-flow {
+        stroke: #c4e4ff;
+        stroke-width: 2;
+        stroke-dasharray: 1 32.3333;
+        animation: trade-map-flow var(--route-duration) linear infinite;
+        animation-delay: var(--route-delay);
+    }
+
+    .is-featured .trade-map-flow {
+        stroke: #d8fff3;
+        stroke-width: 3.5;
+        stroke-dasharray: 0.8 19.2;
+    }
+
+    .trade-map-country-labels {
+        fill: #87c5c8;
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: 4px;
+        text-anchor: middle;
+    }
+
+    .trade-map-hub {
+        color: #8cb5d5;
+    }
+
+    .trade-map-hub.is-featured {
+        color: #7af2d5;
+    }
+
+    .trade-map-hub-ring {
+        fill: #071625;
+        stroke: currentColor;
+        stroke-width: 1;
+    }
+
+    .trade-map-hub-core {
+        fill: currentColor;
+    }
+
+    .trade-map-hub text {
+        fill: #bfcedc;
+        stroke: #071625;
+        stroke-width: 4;
+        stroke-linejoin: round;
+        paint-order: stroke;
+        font-size: 16px;
+        font-weight: 500;
+    }
+
+    .trade-map-hub.is-featured text {
+        fill: #e4fff6;
+        font-size: 20px;
+        font-weight: 600;
+    }
+
+    .trade-map-pulse {
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1;
+        transform-box: fill-box;
+        transform-origin: center;
+        animation: trade-map-pulse 4s ease-out infinite;
+    }
+
+    .trade-map[data-active="false"] .trade-map-flow,
+    .trade-map[data-active="false"] .trade-map-pulse {
+        animation-play-state: paused;
+    }
+
+    .trade-map-footer {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 1.5rem;
+        padding-top: 0.75rem;
+        padding-bottom: 0.25rem;
+    }
+
+    .trade-map-logo {
+        width: clamp(4.5rem, 8vw, 8rem);
+        height: auto;
+        opacity: 0.9;
+    }
+
+    .trade-map-caption {
+        text-align: right;
+    }
+
+    .trade-map-legend {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 0.4rem 1.25rem;
+        color: #b2c4d1;
+        font-size: 0.7rem;
+    }
+
+    .trade-map-legend span {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+    }
+
+    .trade-map-key {
+        width: 1.2rem;
+        height: 2px;
+        background: #669ac0;
+    }
+
+    .trade-map-key.is-featured {
+        background: #67e8cf;
+    }
+
+    .trade-map-caption p {
+        margin-top: 0.5rem;
+        color: #7b94a8;
+        font-size: 0.6rem;
+        letter-spacing: 0.04em;
+    }
+
+    @container trade-map (max-width: 560px) {
+        .trade-map-vector {
+            flex-shrink: 0;
+            width: 135%;
+            margin-left: -24%;
+        }
+
+        .trade-map-oceans,
+        .trade-map-hub:not(.is-featured) text {
+            display: none;
+        }
+
+        .trade-map-country-labels {
+            font-size: 24px;
+        }
+
+        .trade-map-hub.is-featured text {
+            font-size: 27px;
+        }
+
+        .trade-map-hub[data-hub="shanghai"] text {
+            text-anchor: end;
+            transform: translate(-32px, 32px);
+        }
+
+        .trade-map-legend {
+            font-size: 0.6rem;
+        }
+    }
+
+    @keyframes trade-map-flow {
+        to {
+            stroke-dashoffset: -100;
+        }
+    }
+
+    @keyframes trade-map-pulse {
+        from {
+            transform: scale(0.6);
+            opacity: 0.65;
+        }
+
+        to {
+            transform: scale(1.8);
+            opacity: 0;
+        }
+    }
+
     @keyframes media-marquee {
         from {
             transform: translateX(0);
@@ -349,6 +605,15 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
+        .trade-map-flow,
+        .trade-map-pulse {
+            animation: none;
+        }
+
+        .trade-map-pulse {
+            opacity: 0.3;
+        }
+
         .motion-reveal,
         .motion-reveal-soft {
             animation: none;
