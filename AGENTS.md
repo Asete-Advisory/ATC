@@ -10,6 +10,17 @@
   ignorar erros de tipos no build. O ESLint ainda não está configurado.
 - Use `app/globals.css`, importado pelo layout, para estilos globais.
 
+## Build Docker na `main`
+
+- O pnpm usa cache BuildKit próprio da ATC, 8 requisições simultâneas, timeout
+  de 120 segundos e até 3 retries. Preserve o lockfile congelado e as políticas
+  de instalação; o ajuste está restrito ao Dockerfile.
+- A imagem final não depende do cache de pacotes. Valide o build e o container
+  quando alterar a instalação ou a cópia dos arquivos standalone.
+- Consulte `DEPLOY.md` para investigar cancelamentos no Dokploy; um log cortado
+  sem erro final não confirma falha de compilação nem falta de memória.
+- Preserve a porta 3000 interna: sem `EXPOSE`, `ports` ou `expose` em produção.
+
 ## Mapa próprio do `/show` na `main`
 
 - O mapa usa `components/trade-routes-map.tsx`, `lib/trade-map.ts` e a base

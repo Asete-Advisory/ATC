@@ -9,7 +9,16 @@ ARG PNPM_VERSION=11.23.0
 RUN npm install --global pnpm@${PNPM_VERSION}
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-RUN pnpm install --frozen-lockfile
+# Reuse downloaded packages across attempts and limit concurrent registry requests.
+# Copy packages so node_modules remains usable without the BuildKit cache mount.
+RUN --mount=type=cache,id=atcchinabrasil-main-pnpm-v11,target=/pnpm/store,sharing=locked \
+    pnpm install --frozen-lockfile \
+    --store-dir=/pnpm/store \
+    --package-import-method=copy \
+    --network-concurrency=8 \
+    --fetch-timeout=120000 \
+    --fetch-retries=3 \
+    --reporter=append-only
 
 FROM dependencies AS builder
 COPY . .
