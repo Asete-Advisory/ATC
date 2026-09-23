@@ -14,11 +14,8 @@ type TradeHub = {
 
 export const tradeMapCopy = {
   pt: {
-    eyebrow: "Conexões globais",
-    title: "Brasil, China e o mundo.",
-    corridor: "Eixo Brasil–China",
-    network: "Conexões internacionais",
-    note: "Conexões ilustrativas",
+    title: "Conexões Globais",
+    subtitle: "Pessoas, mercados e oportunidades\nsem fronteiras.",
     description: "Mapa de conexões comerciais ilustrativas entre Brasil, China e polos internacionais. As animações não representam embarques em tempo real.",
     brazil: "BRASIL",
     china: "CHINA",
@@ -27,11 +24,8 @@ export const tradeMapCopy = {
     pacific: "OCEANO PACÍFICO",
   },
   en: {
-    eyebrow: "Global connections",
-    title: "Brazil, China and the world.",
-    corridor: "Brazil–China corridor",
-    network: "International connections",
-    note: "Illustrative connections",
+    title: "Global Connections",
+    subtitle: "People, markets and opportunities\nwithout borders.",
     description: "Map of illustrative trade connections between Brazil, China and international hubs. Animations do not represent real-time shipments.",
     brazil: "BRAZIL",
     china: "CHINA",
@@ -40,11 +34,8 @@ export const tradeMapCopy = {
     pacific: "PACIFIC OCEAN",
   },
   zh: {
-    eyebrow: "全球连接",
-    title: "连接巴西、中国与世界。",
-    corridor: "中巴贸易纽带",
-    network: "国际连接",
-    note: "连接示意图",
+    title: "全球连接",
+    subtitle: "连接人、市场与机遇，\n跨越国界。",
     description: "巴西、中国与国际枢纽之间的贸易连接示意图。动画不代表实时货运。",
     brazil: "巴西",
     china: "中国",

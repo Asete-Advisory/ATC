@@ -6,7 +6,7 @@ As cotações permanecem independentes, alimentadas por `/api/commodities`.
 
 ## Arquivos
 
-- `components/trade-routes-map.tsx`: mapa SVG, marcadores, título e legenda.
+- `components/trade-routes-map.tsx`: mapa SVG, marcadores, título, subtítulo e logo.
 - `lib/trade-map.ts`: polos, conexões, projeção e textos em português, inglês e mandarim.
 - `public/maps/world-countries.svg`: base geográfica local com Brasil e China destacados.
 - `app/globals.css`: estilos e animações com prefixo `trade-map`.

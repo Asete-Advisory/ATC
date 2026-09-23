@@ -315,21 +315,20 @@
         padding-top: 0.25rem;
     }
 
-    .trade-map-eyebrow {
-        margin-bottom: 0.6rem;
-        color: #7ca4ba;
-        font-size: 0.65rem;
-        font-weight: 600;
-        letter-spacing: 0.23em;
-        text-transform: uppercase;
-    }
-
     .trade-map-heading h2 {
         color: #ecf4f8;
         font-size: clamp(1.15rem, 2.1vw, 2.25rem);
-        font-weight: 500;
+        font-weight: 700;
         letter-spacing: -0.035em;
         line-height: 1.15;
+    }
+
+    .trade-map-subtitle {
+        margin-top: 0.5rem;
+        color: #b2c4d1;
+        font-size: clamp(0.85rem, 1.05vw, 1.125rem);
+        line-height: 1.4;
+        white-space: pre-line;
     }
 
     .trade-map-stage {
@@ -452,8 +451,6 @@
     .trade-map-footer {
         display: flex;
         align-items: flex-end;
-        justify-content: space-between;
-        gap: 1.5rem;
         padding-top: 0.75rem;
         padding-bottom: 0.25rem;
     }
@@ -462,42 +459,6 @@
         width: clamp(4.5rem, 8vw, 8rem);
         height: auto;
         opacity: 0.9;
-    }
-
-    .trade-map-caption {
-        text-align: right;
-    }
-
-    .trade-map-legend {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: flex-end;
-        gap: 0.4rem 1.25rem;
-        color: #b2c4d1;
-        font-size: 0.7rem;
-    }
-
-    .trade-map-legend span {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.45rem;
-    }
-
-    .trade-map-key {
-        width: 1.2rem;
-        height: 2px;
-        background: #669ac0;
-    }
-
-    .trade-map-key.is-featured {
-        background: #67e8cf;
-    }
-
-    .trade-map-caption p {
-        margin-top: 0.5rem;
-        color: #7b94a8;
-        font-size: 0.6rem;
-        letter-spacing: 0.04em;
     }
 
     @container trade-map (max-width: 560px) {
@@ -523,10 +484,6 @@
         .trade-map-hub[data-hub="shanghai"] text {
             text-anchor: end;
             transform: translate(-32px, 32px);
-        }
-
-        .trade-map-legend {
-            font-size: 0.6rem;
         }
     }
 

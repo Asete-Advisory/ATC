@@ -34,7 +34,7 @@ export const copy = {
       ctaMessage: "Olá, quero solicitar uma cotação internacional.",
     },
     showcase: {
-      title: "Consultoria\ninternacional",
+      title: "Consultoria\nInternacional",
       description:
         "Soluções estruturadas para empresas que desejam importar, exportar e operar no mercado global com segurança, estratégia e escala.",
     },
@@ -301,7 +301,7 @@ export const copy = {
       ctaMessage: "Hello, I would like to request an international quotation.",
     },
     showcase: {
-      title: "International\nconsulting",
+      title: "International\nConsulting",
       description:
         "Structured solutions for companies looking to import, export and operate in the global market with confidence, strategy and scale.",
     },

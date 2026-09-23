@@ -17,8 +17,8 @@ export function TradeRoutesMap({ lang, active }: { lang: Language; active: boole
   return (
     <div className="trade-map" data-active={active}>
       <header className="trade-map-heading">
-        <p className="trade-map-eyebrow">{content.eyebrow}</p>
         <h2>{content.title}</h2>
+        <p className="trade-map-subtitle">{content.subtitle}</p>
       </header>
 
       <div className="trade-map-stage">
@@ -85,13 +85,6 @@ export function TradeRoutesMap({ lang, active }: { lang: Language; active: boole
 
       <footer className="trade-map-footer">
         <Image src="/global/atc-icon-white.svg" alt="ATC China Brasil" width={1205} height={375} className="trade-map-logo" />
-        <div className="trade-map-caption">
-          <div className="trade-map-legend">
-            <span><i className="trade-map-key is-featured" aria-hidden="true" />{content.corridor}</span>
-            <span><i className="trade-map-key" aria-hidden="true" />{content.network}</span>
-          </div>
-          <p>{content.note}</p>
-        </div>
       </footer>
     </div>
   );
