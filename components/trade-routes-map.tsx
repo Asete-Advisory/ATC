@@ -49,6 +49,7 @@ export function TradeRoutesMap({ lang, active }: { lang: Language; active: boole
             {tradeConnections.map((connection, index) => (
               <g
                 key={connection.id}
+                data-connection={connection.id}
                 className={connection.featured ? "trade-map-connection is-featured" : "trade-map-connection"}
                 style={{
                   "--route-duration": `${connection.duration}s`,

@@ -20,8 +20,16 @@ Mapa e Mercado conservam seus tempos de alternância: 30 s, 5 min e 5 min.
 
 As conexões são **ilustrativas**. Não representam rastreamento de navios,
 embarques em andamento, itinerários de navegação ou instalações da ATC nos
-polos indicados. Santos–Xangai é destacado como eixo Brasil–China; os demais
-polos contextualizam conexões internacionais. As coordenadas são aproximadas.
+polos indicados. O eixo Brasil–China continua destacado.
+
+Os seis marcadores e os corredores seguem aproximadamente a fotografia do
+mapa físico fornecida pelo usuário: costa oeste dos EUA, América Central,
+sul do Brasil, norte da Europa, China e Japão. A perspectiva e os objetos
+sobre a foto impedem identificar cidades e trajetos exatos; os rótulos são
+regionais. As linhas passam pelo Caribe, pelo Atlântico e pelo sul da África,
+seguindo pelo Índico até a Ásia. São uma adaptação visual da referência,
+não uma reconstrução de rotas marítimas verificadas. Não adicione marcadores
+nos pontos intermediários dos trajetos sem solicitação.
 
 Edite `tradeHubs` e `connections` em `lib/trade-map.ts` para alterar os polos e
 os pontos de passagem. As curvas são calculadas uma vez; CSS movimenta os

@@ -28,6 +28,9 @@
 - Não reintroduza a dependência do serviço externo sem solicitação.
 - Brasil–China é o eixo visual principal. As linhas são conexões ilustrativas,
   não rastreamento em tempo real nem confirmação de operações ou bases da ATC.
+- Os seis marcadores seguem a foto de referência do usuário: costa oeste dos
+  EUA, América Central, sul do Brasil, norte da Europa, China e Japão. Preserve
+  os nomes regionais enquanto cidades específicas não forem confirmadas.
 - Mantenha os textos do mapa coerentes em português, inglês e mandarim.
 - Preserve a pausa das animações quando o mapa estiver oculto e o suporte a
   `prefers-reduced-motion`. Verifique os modos manual e automático do `/show`.

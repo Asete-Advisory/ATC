@@ -464,8 +464,8 @@
     @container trade-map (max-width: 560px) {
         .trade-map-vector {
             flex-shrink: 0;
-            width: 135%;
-            margin-left: -24%;
+            width: 120%;
+            margin-left: -10%;
         }
 
         .trade-map-oceans,
@@ -479,11 +479,6 @@
 
         .trade-map-hub.is-featured text {
             font-size: 27px;
-        }
-
-        .trade-map-hub[data-hub="shanghai"] text {
-            text-anchor: end;
-            transform: translate(-32px, 32px);
         }
     }
 
