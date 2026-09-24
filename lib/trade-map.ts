@@ -6,9 +6,6 @@ type Coordinates = readonly [longitude: number, latitude: number];
 type TradeHub = {
   id: string;
   coordinates: Coordinates;
-  label: LocalizedLabel;
-  labelOffset: readonly [number, number];
-  anchor?: "start" | "end";
   featured?: boolean;
 };
 
@@ -16,41 +13,56 @@ export const tradeMapCopy = {
   pt: {
     title: "Conexões Globais",
     description: "Mapa de conexões comerciais ilustrativas entre Brasil, China e polos internacionais. As animações não representam embarques em tempo real.",
-    brazil: "BRASIL",
-    china: "CHINA",
-    atlantic: "OCEANO ATLÂNTICO",
-    indian: "OCEANO ÍNDICO",
-    pacific: "OCEANO PACÍFICO",
   },
   en: {
     title: "Global Connections",
     description: "Map of illustrative trade connections between Brazil, China and international hubs. Animations do not represent real-time shipments.",
-    brazil: "BRAZIL",
-    china: "CHINA",
-    atlantic: "ATLANTIC OCEAN",
-    indian: "INDIAN OCEAN",
-    pacific: "PACIFIC OCEAN",
   },
   zh: {
     title: "全球连接",
     description: "巴西、中国与国际枢纽之间的贸易连接示意图。动画不代表实时货运。",
-    brazil: "巴西",
-    china: "中国",
-    atlantic: "大西洋",
-    indian: "印度洋",
-    pacific: "太平洋",
   },
 } satisfies Record<Language, Record<string, string>>;
+
+type TradeMapLabel = {
+  id: string;
+  kind: "region" | "ocean" | "passage";
+  coordinates: Coordinates;
+  label: LocalizedLabel;
+  offset?: readonly [number, number];
+  anchor?: "start" | "end";
+};
+
+// Text from the blue reference map, independent of the existing route pins.
+// Passage names are geographic annotations, not additional stops on a route.
+export const tradeMapLabels: TradeMapLabel[] = [
+  { id: "north-america", kind: "region", coordinates: [-100, 44], label: { pt: "AMÉRICA\nDO NORTE", en: "NORTH\nAMERICA", zh: "北美洲" } },
+  { id: "central-america", kind: "region", coordinates: [-91, 25], label: { pt: "AMÉRICA\nCENTRAL", en: "CENTRAL\nAMERICA", zh: "中美洲" } },
+  { id: "south-america", kind: "region", coordinates: [-61, -11], label: { pt: "AMÉRICA\nDO SUL", en: "SOUTH\nAMERICA", zh: "南美洲" } },
+  { id: "europe", kind: "region", coordinates: [18, 48], label: { pt: "EUROPA", en: "EUROPE", zh: "欧洲" } },
+  { id: "africa", kind: "region", coordinates: [20, 6], label: { pt: "ÁFRICA", en: "AFRICA", zh: "非洲" } },
+  { id: "china", kind: "region", coordinates: [98, 38], label: { pt: "CHINA", en: "CHINA", zh: "中国" } },
+  { id: "japan", kind: "region", coordinates: [146, 40], label: { pt: "JAPÃO", en: "JAPAN", zh: "日本" } },
+  { id: "southeast-asia", kind: "region", coordinates: [133, 7], label: { pt: "SUDESTE\nASIÁTICO", en: "SOUTHEAST\nASIA", zh: "东南亚" } },
+  { id: "australia", kind: "region", coordinates: [135, -26], label: { pt: "AUSTRÁLIA", en: "AUSTRALIA", zh: "澳大利亚" } },
+  { id: "pacific", kind: "ocean", coordinates: [-111, -7], label: { pt: "OCEANO PACÍFICO", en: "PACIFIC OCEAN", zh: "太平洋" } },
+  { id: "atlantic", kind: "ocean", coordinates: [-48, 30], label: { pt: "OCEANO\nATLÂNTICO", en: "ATLANTIC\nOCEAN", zh: "大西洋" } },
+  { id: "indian", kind: "ocean", coordinates: [85, -30], label: { pt: "OCEANO ÍNDICO", en: "INDIAN OCEAN", zh: "印度洋" } },
+  { id: "suez", kind: "passage", coordinates: [31, 30], offset: [-12, -8], anchor: "end", label: { pt: "Canal de Suez", en: "Suez Canal", zh: "苏伊士运河" } },
+  { id: "hormuz", kind: "passage", coordinates: [56, 26], offset: [12, -14], anchor: "start", label: { pt: "Estreito de Ormuz", en: "Strait of Hormuz", zh: "霍尔木兹海峡" } },
+  { id: "bab-el-mandeb", kind: "passage", coordinates: [43, 12.5], offset: [14, 20], anchor: "start", label: { pt: "Bab el-Mandeb", en: "Bab el-Mandeb", zh: "曼德海峡" } },
+  { id: "cape-of-good-hope", kind: "passage", coordinates: [18.5, -34], offset: [10, 72], anchor: "start", label: { pt: "Cabo da Boa Esperança", en: "Cape of Good Hope", zh: "好望角" } },
+];
 
 // Approximate regions marked in the user's reference photograph. The photo
 // does not identify exact cities; do not present these pins as ATC facilities.
 export const tradeHubs: TradeHub[] = [
-  { id: "us-west", coordinates: [-123, 33], label: { pt: "Costa oeste dos EUA", en: "US West Coast", zh: "美国西海岸" }, labelOffset: [16, -16] },
-  { id: "central-america", coordinates: [-88.5, 15.5], label: { pt: "América Central", en: "Central America", zh: "中美洲" }, labelOffset: [-16, -16], anchor: "end" },
-  { id: "brazil-south", coordinates: [-51, -29], label: { pt: "Sul do Brasil", en: "Southern Brazil", zh: "巴西南部" }, labelOffset: [-16, 26], anchor: "end", featured: true },
-  { id: "northern-europe", coordinates: [6.5, 60], label: { pt: "Norte da Europa", en: "Northern Europe", zh: "北欧" }, labelOffset: [16, -16] },
-  { id: "china", coordinates: [119.5, 29.5], label: { pt: "China", en: "China", zh: "中国" }, labelOffset: [-16, 28], anchor: "end", featured: true },
-  { id: "japan", coordinates: [138, 37], label: { pt: "Japão", en: "Japan", zh: "日本" }, labelOffset: [16, -16] },
+  { id: "us-west", coordinates: [-123, 33] },
+  { id: "central-america", coordinates: [-88.5, 15.5] },
+  { id: "brazil-south", coordinates: [-51, -29], featured: true },
+  { id: "northern-europe", coordinates: [6.5, 60] },
+  { id: "china", coordinates: [119.5, 29.5], featured: true },
+  { id: "japan", coordinates: [138, 37] },
 ];
 
 type TradeConnection = {

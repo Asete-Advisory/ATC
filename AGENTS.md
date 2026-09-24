@@ -29,8 +29,11 @@
 - Brasil–China é o eixo visual principal. As linhas são conexões ilustrativas,
   não rastreamento em tempo real nem confirmação de operações ou bases da ATC.
 - Os seis marcadores seguem a foto de referência do usuário: costa oeste dos
-  EUA, América Central, sul do Brasil, norte da Europa, China e Japão. Preserve
-  os nomes regionais enquanto cidades específicas não forem confirmadas.
+  EUA, América Central, sul do Brasil, norte da Europa, China e Japão.
+- Os rótulos visíveis são independentes dos marcadores e seguem a segunda
+  referência (mapa azul): continentes, regiões, países, oceanos e quatro
+  passagens geográficas. Edite `tradeMapLabels`; não crie novos pontos ou
+  altere linhas ao mudar apenas esses textos.
 - Mantenha os textos do mapa coerentes em português, inglês e mandarim.
 - A área do mapa ocupa o espaço disponível sem título, subtítulo ou logo
   próprios. Preserve os seis pontos e suas linhas no enquadramento ampliado.

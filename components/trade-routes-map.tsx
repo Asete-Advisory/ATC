@@ -7,6 +7,7 @@ import {
   tradeConnections,
   tradeHubs,
   tradeMapCopy,
+  tradeMapLabels,
 } from "@/lib/trade-map";
 
 export function TradeRoutesMap({ lang, active }: { lang: Language; active: boolean }) {
@@ -33,12 +34,6 @@ export function TradeRoutesMap({ lang, active }: { lang: Language; active: boole
           <rect width="1440" height="600" fill={`url(#${id}-grid)`} />
           <image href="/maps/world-countries.svg" width="1440" height="600" />
 
-          <g className="trade-map-oceans">
-            <text x="625" y="340">{content.atlantic}</text>
-            <text x="940" y="415">{content.indian}</text>
-            <text x="270" y="350">{content.pacific}</text>
-          </g>
-
           <g fill="none" strokeLinecap="round" strokeLinejoin="round">
             {tradeConnections.map((connection, index) => (
               <g
@@ -57,11 +52,6 @@ export function TradeRoutesMap({ lang, active }: { lang: Language; active: boole
             ))}
           </g>
 
-          <g className="trade-map-country-labels">
-            <text x="495" y="370">{content.brazil}</text>
-            <text x="1120" y="190">{content.china}</text>
-          </g>
-
           {tradeHubs.map((hub) => {
             const { x, y } = projectTradeCoordinates(hub.coordinates);
             return (
@@ -69,10 +59,31 @@ export function TradeRoutesMap({ lang, active }: { lang: Language; active: boole
                 {hub.featured ? <circle r="17" className="trade-map-pulse" /> : null}
                 <circle r={hub.featured ? 9 : 6} className="trade-map-hub-ring" />
                 <circle r={hub.featured ? 4 : 2.5} className="trade-map-hub-core" />
-                <text x={hub.labelOffset[0]} y={hub.labelOffset[1]} textAnchor={hub.anchor ?? "start"}>
-                  {hub.label[lang]}
-                </text>
               </g>
+            );
+          })}
+
+          {tradeMapLabels.map((label) => {
+            const position = projectTradeCoordinates(label.coordinates);
+            const x = position.x + (label.offset?.[0] ?? 0);
+            const y = position.y + (label.offset?.[1] ?? 0);
+            const lines = label.label[lang].split("\n");
+
+            return (
+              <text
+                key={label.id}
+                data-map-label={label.id}
+                className={`trade-map-label trade-map-label--${label.kind}`}
+                x={x}
+                y={y}
+                textAnchor={label.anchor ?? "middle"}
+              >
+                {lines.map((line, index) => (
+                  <tspan key={index} x={x} dy={index === 0 ? `${-(lines.length - 1) * 0.6}em` : "1.2em"}>
+                    {line}
+                  </tspan>
+                ))}
+              </text>
             );
           })}
         </svg>

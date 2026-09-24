@@ -325,12 +325,30 @@
         overflow: visible;
     }
 
-    .trade-map-oceans {
-        fill: #426075;
-        font-size: 12px;
+    .trade-map-label {
+        fill: #cbdce8;
+        stroke: #071625;
+        stroke-width: 3;
+        stroke-linejoin: round;
+        paint-order: stroke;
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 0.4px;
+    }
+
+    .trade-map-label--ocean {
+        fill: #779fbd;
+        font-size: 13px;
+        font-style: italic;
         font-weight: 500;
-        letter-spacing: 3px;
-        text-anchor: middle;
+    }
+
+    .trade-map-label--passage {
+        fill: #bfcedc;
+        stroke-width: 7;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0;
     }
 
     .trade-map-connection {
@@ -372,14 +390,6 @@
         stroke-dasharray: 0.8 19.2;
     }
 
-    .trade-map-country-labels {
-        fill: #87c5c8;
-        font-size: 16px;
-        font-weight: 600;
-        letter-spacing: 4px;
-        text-anchor: middle;
-    }
-
     .trade-map-hub {
         color: #8cb5d5;
     }
@@ -398,22 +408,6 @@
         fill: currentColor;
     }
 
-    .trade-map-hub text {
-        fill: #bfcedc;
-        stroke: #071625;
-        stroke-width: 4;
-        stroke-linejoin: round;
-        paint-order: stroke;
-        font-size: 16px;
-        font-weight: 500;
-    }
-
-    .trade-map-hub.is-featured text {
-        fill: #e4fff6;
-        font-size: 20px;
-        font-weight: 600;
-    }
-
     .trade-map-pulse {
         fill: none;
         stroke: currentColor;
@@ -429,17 +423,16 @@
     }
 
     @container trade-map (max-width: 560px) {
-        .trade-map-oceans,
-        .trade-map-hub:not(.is-featured) text {
+        .trade-map-label--passage {
             display: none;
         }
 
-        .trade-map-country-labels {
-            font-size: 24px;
+        .trade-map-label--region {
+            font-size: 18px;
         }
 
-        .trade-map-hub.is-featured text {
-            font-size: 27px;
+        .trade-map-label--ocean {
+            font-size: 16px;
         }
     }
 
