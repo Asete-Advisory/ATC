@@ -55,6 +55,13 @@ não adicionam marcadores nem indicam que as linhas passam nesses locais.
 Em áreas de até 560 px de largura, essas quatro anotações menores são
 ocultadas para preservar a leitura das regiões e oceanos.
 
+Cor, fonte, tamanho e contorno dos textos são definidos diretamente no SVG,
+com a mesma família tipográfica em todas as plataformas. O CSS global cuida
+apenas dos ajustes de tela pequena. Assim os rótulos permanecem legíveis
+mesmo se o navegador carregar uma folha de estilos anterior ao deploy.
+Os textos são centralizados verticalmente; offsets das passagens devem
+mantê-las próximas de sua localização, sem cobrir os trajetos.
+
 ## Origem da base geográfica
 
 - Natural Earth, países em escala 1:110m, versão **5.1.2**.

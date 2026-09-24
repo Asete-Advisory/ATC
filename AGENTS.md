@@ -35,6 +35,9 @@
   passagens geográficas. Edite `tradeMapLabels`; não crie novos pontos ou
   altere linhas ao mudar apenas esses textos.
 - Mantenha os textos do mapa coerentes em português, inglês e mandarim.
+- Preserve a tipografia e as cores dos rótulos diretamente no SVG. Valide
+  também com CSS antigo/sem regras dos rótulos, para evitar textos pretos
+  após deploys, e confira alinhamento e sobreposição nos três idiomas.
 - A área do mapa ocupa o espaço disponível sem título, subtítulo ou logo
   próprios. Preserve os seis pontos e suas linhas no enquadramento ampliado.
 - Preserve a pausa das animações quando o mapa estiver oculto e o suporte a

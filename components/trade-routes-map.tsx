@@ -10,6 +10,30 @@ import {
   tradeMapLabels,
 } from "@/lib/trade-map";
 
+// Keep essential SVG typography with the labels so a stale stylesheet cannot
+// turn a newly rendered label into black, default-sized SVG text.
+const labelStyles: Record<"region" | "ocean" | "passage", CSSProperties> = {
+  region: {
+    fill: "#cbdce8",
+    fontSize: "var(--trade-map-label-size, 14px)",
+    fontWeight: 600,
+    letterSpacing: "0.4px",
+  },
+  ocean: {
+    fill: "#779fbd",
+    fontSize: "var(--trade-map-label-size, 13px)",
+    fontStyle: "italic",
+    fontWeight: 500,
+    letterSpacing: "0.4px",
+  },
+  passage: {
+    fill: "#bfcedc",
+    fontSize: 11,
+    fontWeight: 500,
+    letterSpacing: 0,
+  },
+};
+
 export function TradeRoutesMap({ lang, active }: { lang: Language; active: boolean }) {
   const content = tradeMapCopy[lang];
   const id = useId().replace(/:/g, "");
@@ -73,10 +97,20 @@ export function TradeRoutesMap({ lang, active }: { lang: Language; active: boole
               <text
                 key={label.id}
                 data-map-label={label.id}
-                className={`trade-map-label trade-map-label--${label.kind}`}
+                className="trade-map-label"
+                data-label-kind={label.kind}
+                style={{
+                  fontFamily: "Arial, Helvetica, sans-serif",
+                  stroke: "#071625",
+                  strokeWidth: label.kind === "passage" ? 5 : 3,
+                  strokeLinejoin: "round",
+                  paintOrder: "stroke",
+                  ...labelStyles[label.kind],
+                }}
                 x={x}
                 y={y}
                 textAnchor={label.anchor ?? "middle"}
+                dominantBaseline="central"
               >
                 {lines.map((line, index) => (
                   <tspan key={index} x={x} dy={index === 0 ? `${-(lines.length - 1) * 0.6}em` : "1.2em"}>

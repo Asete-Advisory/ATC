@@ -36,22 +36,22 @@ type TradeMapLabel = {
 // Text from the blue reference map, independent of the existing route pins.
 // Passage names are geographic annotations, not additional stops on a route.
 export const tradeMapLabels: TradeMapLabel[] = [
-  { id: "north-america", kind: "region", coordinates: [-100, 44], label: { pt: "AMÉRICA\nDO NORTE", en: "NORTH\nAMERICA", zh: "北美洲" } },
-  { id: "central-america", kind: "region", coordinates: [-91, 25], label: { pt: "AMÉRICA\nCENTRAL", en: "CENTRAL\nAMERICA", zh: "中美洲" } },
-  { id: "south-america", kind: "region", coordinates: [-61, -11], label: { pt: "AMÉRICA\nDO SUL", en: "SOUTH\nAMERICA", zh: "南美洲" } },
-  { id: "europe", kind: "region", coordinates: [18, 48], label: { pt: "EUROPA", en: "EUROPE", zh: "欧洲" } },
-  { id: "africa", kind: "region", coordinates: [20, 6], label: { pt: "ÁFRICA", en: "AFRICA", zh: "非洲" } },
-  { id: "china", kind: "region", coordinates: [98, 38], label: { pt: "CHINA", en: "CHINA", zh: "中国" } },
-  { id: "japan", kind: "region", coordinates: [146, 40], label: { pt: "JAPÃO", en: "JAPAN", zh: "日本" } },
-  { id: "southeast-asia", kind: "region", coordinates: [133, 7], label: { pt: "SUDESTE\nASIÁTICO", en: "SOUTHEAST\nASIA", zh: "东南亚" } },
+  { id: "north-america", kind: "region", coordinates: [-103, 43], label: { pt: "AMÉRICA\nDO NORTE", en: "NORTH\nAMERICA", zh: "北美洲" } },
+  { id: "central-america", kind: "region", coordinates: [-79, 26], label: { pt: "AMÉRICA\nCENTRAL", en: "CENTRAL\nAMERICA", zh: "中美洲" } },
+  { id: "south-america", kind: "region", coordinates: [-62, -13], label: { pt: "AMÉRICA\nDO SUL", en: "SOUTH\nAMERICA", zh: "南美洲" } },
+  { id: "europe", kind: "region", coordinates: [15, 49], label: { pt: "EUROPA", en: "EUROPE", zh: "欧洲" } },
+  { id: "africa", kind: "region", coordinates: [18, 2], label: { pt: "ÁFRICA", en: "AFRICA", zh: "非洲" } },
+  { id: "china", kind: "region", coordinates: [104, 35], label: { pt: "CHINA", en: "CHINA", zh: "中国" } },
+  { id: "japan", kind: "region", coordinates: [144, 43], label: { pt: "JAPÃO", en: "JAPAN", zh: "日本" } },
+  { id: "southeast-asia", kind: "region", coordinates: [96, 18], label: { pt: "SUDESTE\nASIÁTICO", en: "SOUTHEAST\nASIA", zh: "东南亚" } },
   { id: "australia", kind: "region", coordinates: [135, -26], label: { pt: "AUSTRÁLIA", en: "AUSTRALIA", zh: "澳大利亚" } },
   { id: "pacific", kind: "ocean", coordinates: [-111, -7], label: { pt: "OCEANO PACÍFICO", en: "PACIFIC OCEAN", zh: "太平洋" } },
   { id: "atlantic", kind: "ocean", coordinates: [-48, 30], label: { pt: "OCEANO\nATLÂNTICO", en: "ATLANTIC\nOCEAN", zh: "大西洋" } },
-  { id: "indian", kind: "ocean", coordinates: [85, -30], label: { pt: "OCEANO ÍNDICO", en: "INDIAN OCEAN", zh: "印度洋" } },
+  { id: "indian", kind: "ocean", coordinates: [95, -35], label: { pt: "OCEANO ÍNDICO", en: "INDIAN OCEAN", zh: "印度洋" } },
   { id: "suez", kind: "passage", coordinates: [31, 30], offset: [-12, -8], anchor: "end", label: { pt: "Canal de Suez", en: "Suez Canal", zh: "苏伊士运河" } },
-  { id: "hormuz", kind: "passage", coordinates: [56, 26], offset: [12, -14], anchor: "start", label: { pt: "Estreito de Ormuz", en: "Strait of Hormuz", zh: "霍尔木兹海峡" } },
-  { id: "bab-el-mandeb", kind: "passage", coordinates: [43, 12.5], offset: [14, 20], anchor: "start", label: { pt: "Bab el-Mandeb", en: "Bab el-Mandeb", zh: "曼德海峡" } },
-  { id: "cape-of-good-hope", kind: "passage", coordinates: [18.5, -34], offset: [10, 72], anchor: "start", label: { pt: "Cabo da Boa Esperança", en: "Cape of Good Hope", zh: "好望角" } },
+  { id: "hormuz", kind: "passage", coordinates: [56, 26], offset: [10, -10], anchor: "start", label: { pt: "Estreito de Ormuz", en: "Strait of Hormuz", zh: "霍尔木兹海峡" } },
+  { id: "bab-el-mandeb", kind: "passage", coordinates: [43, 12.5], offset: [12, 14], anchor: "start", label: { pt: "Bab el-Mandeb", en: "Bab el-Mandeb", zh: "曼德海峡" } },
+  { id: "cape-of-good-hope", kind: "passage", coordinates: [18.5, -34], offset: [0, -8], label: { pt: "Cabo da Boa Esperança", en: "Cape of Good Hope", zh: "好望角" } },
 ];
 
 // Approximate regions marked in the user's reference photograph. The photo
