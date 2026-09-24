@@ -295,7 +295,7 @@
     .trade-map {
         position: relative;
         display: grid;
-        grid-template-rows: auto minmax(0, 1fr) auto;
+        grid-template-rows: minmax(0, 1fr);
         flex: 1;
         min-width: 0;
         isolation: isolate;
@@ -309,26 +309,6 @@
         inset: 12% -4% 8%;
         z-index: -1;
         background: radial-gradient(ellipse at 62% 56%, rgb(25 91 114 / 0.16), transparent 65%);
-    }
-
-    .trade-map-heading {
-        padding-top: 0.25rem;
-    }
-
-    .trade-map-heading h2 {
-        color: #ecf4f8;
-        font-size: clamp(1.15rem, 2.1vw, 2.25rem);
-        font-weight: 700;
-        letter-spacing: -0.035em;
-        line-height: 1.15;
-    }
-
-    .trade-map-subtitle {
-        margin-top: 0.5rem;
-        color: #b2c4d1;
-        font-size: clamp(0.85rem, 1.05vw, 1.125rem);
-        line-height: 1.4;
-        white-space: pre-line;
     }
 
     .trade-map-stage {
@@ -448,26 +428,7 @@
         animation-play-state: paused;
     }
 
-    .trade-map-footer {
-        display: flex;
-        align-items: flex-end;
-        padding-top: 0.75rem;
-        padding-bottom: 0.25rem;
-    }
-
-    .trade-map-logo {
-        width: clamp(4.5rem, 8vw, 8rem);
-        height: auto;
-        opacity: 0.9;
-    }
-
     @container trade-map (max-width: 560px) {
-        .trade-map-vector {
-            flex-shrink: 0;
-            width: 120%;
-            margin-left: -10%;
-        }
-
         .trade-map-oceans,
         .trade-map-hub:not(.is-featured) text {
             display: none;

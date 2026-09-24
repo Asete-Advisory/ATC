@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useId, type CSSProperties } from "react";
 import type { Language } from "@/lib/i18n";
 import {
@@ -16,15 +15,10 @@ export function TradeRoutesMap({ lang, active }: { lang: Language; active: boole
 
   return (
     <div className="trade-map" data-active={active}>
-      <header className="trade-map-heading">
-        <h2>{content.title}</h2>
-        <p className="trade-map-subtitle">{content.subtitle}</p>
-      </header>
-
       <div className="trade-map-stage">
         <svg
           className="trade-map-vector"
-          viewBox="0 0 1440 600"
+          viewBox="160 20 1200 560"
           role="img"
           aria-labelledby={`${id}-title ${id}-description`}
         >
@@ -83,10 +77,6 @@ export function TradeRoutesMap({ lang, active }: { lang: Language; active: boole
           })}
         </svg>
       </div>
-
-      <footer className="trade-map-footer">
-        <Image src="/global/atc-icon-white.svg" alt="ATC China Brasil" width={1205} height={375} className="trade-map-logo" />
-      </footer>
     </div>
   );
 }

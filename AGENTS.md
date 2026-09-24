@@ -32,6 +32,8 @@
   EUA, América Central, sul do Brasil, norte da Europa, China e Japão. Preserve
   os nomes regionais enquanto cidades específicas não forem confirmadas.
 - Mantenha os textos do mapa coerentes em português, inglês e mandarim.
+- A área do mapa ocupa o espaço disponível sem título, subtítulo ou logo
+  próprios. Preserve os seis pontos e suas linhas no enquadramento ampliado.
 - Preserve a pausa das animações quando o mapa estiver oculto e o suporte a
   `prefers-reduced-motion`. Verifique os modos manual e automático do `/show`.
 - A base Natural Earth é de domínio público e está versionada no repositório;

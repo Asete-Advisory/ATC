@@ -15,7 +15,6 @@ type TradeHub = {
 export const tradeMapCopy = {
   pt: {
     title: "Conexões Globais",
-    subtitle: "Pessoas, mercados e oportunidades\nsem fronteiras.",
     description: "Mapa de conexões comerciais ilustrativas entre Brasil, China e polos internacionais. As animações não representam embarques em tempo real.",
     brazil: "BRASIL",
     china: "CHINA",
@@ -25,7 +24,6 @@ export const tradeMapCopy = {
   },
   en: {
     title: "Global Connections",
-    subtitle: "People, markets and opportunities\nwithout borders.",
     description: "Map of illustrative trade connections between Brazil, China and international hubs. Animations do not represent real-time shipments.",
     brazil: "BRAZIL",
     china: "CHINA",
@@ -35,7 +33,6 @@ export const tradeMapCopy = {
   },
   zh: {
     title: "全球连接",
-    subtitle: "连接人、市场与机遇，\n跨越国界。",
     description: "巴西、中国与国际枢纽之间的贸易连接示意图。动画不代表实时货运。",
     brazil: "巴西",
     china: "中国",
@@ -48,7 +45,7 @@ export const tradeMapCopy = {
 // Approximate regions marked in the user's reference photograph. The photo
 // does not identify exact cities; do not present these pins as ATC facilities.
 export const tradeHubs: TradeHub[] = [
-  { id: "us-west", coordinates: [-123, 33], label: { pt: "Costa oeste dos EUA", en: "US West Coast", zh: "美国西海岸" }, labelOffset: [-16, -16], anchor: "end" },
+  { id: "us-west", coordinates: [-123, 33], label: { pt: "Costa oeste dos EUA", en: "US West Coast", zh: "美国西海岸" }, labelOffset: [16, -16] },
   { id: "central-america", coordinates: [-88.5, 15.5], label: { pt: "América Central", en: "Central America", zh: "中美洲" }, labelOffset: [-16, -16], anchor: "end" },
   { id: "brazil-south", coordinates: [-51, -29], label: { pt: "Sul do Brasil", en: "Southern Brazil", zh: "巴西南部" }, labelOffset: [-16, 26], anchor: "end", featured: true },
   { id: "northern-europe", coordinates: [6.5, 60], label: { pt: "Norte da Europa", en: "Northern Europe", zh: "北欧" }, labelOffset: [16, -16] },

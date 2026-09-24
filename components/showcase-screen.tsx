@@ -448,7 +448,7 @@ function TradeMapLayer({
       aria-hidden={!active}
       inert={!active}
       className={cn(
-        "pointer-events-none absolute inset-x-0 top-36 bottom-20 z-20 flex gap-8 overflow-hidden bg-[#071625] px-5 py-5 transition-opacity duration-1000 sm:px-8 lg:px-12",
+        "pointer-events-none absolute inset-x-0 top-36 bottom-20 z-20 flex gap-4 overflow-hidden bg-[#071625] p-3 transition-opacity duration-1000 lg:gap-6 lg:px-6",
         active ? "opacity-100" : "opacity-0",
       )}
     >

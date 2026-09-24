@@ -6,7 +6,7 @@ As cotações permanecem independentes, alimentadas por `/api/commodities`.
 
 ## Arquivos
 
-- `components/trade-routes-map.tsx`: mapa SVG, marcadores, título, subtítulo e logo.
+- `components/trade-routes-map.tsx`: mapa SVG e marcadores, com título e descrição acessíveis.
 - `lib/trade-map.ts`: polos, conexões, projeção e textos em português, inglês e mandarim.
 - `public/maps/world-countries.svg`: base geográfica local com Brasil e China destacados.
 - `app/globals.css`: estilos e animações com prefixo `trade-map`.
@@ -15,6 +15,11 @@ As cotações permanecem independentes, alimentadas por `/api/commodities`.
 O modo Mapa mantém as faixas de cotações. A partir de 1280 px, mostra também
 o painel lateral de commodities, sem sobrepor a geografia. Os modos Original,
 Mapa e Mercado conservam seus tempos de alternância: 30 s, 5 min e 5 min.
+
+A área do mapa não exibe cabeçalho, subtítulo ou logo próprios. O SVG ocupa
+todo o espaço disponível, com margens menores e enquadramento aproximado
+nos seis polos (`viewBox="160 20 1200 560"`), mantendo os marcadores e as
+conexões dentro da tela. Esse enquadramento não altera a projeção geográfica.
 
 ## Significado das linhas
 
