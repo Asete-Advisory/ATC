@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ATC · Proposta para o /show</title>
+  <style>
+    :root{color-scheme:dark;--navy:#091d33;--muted:#a9bed0;--line:#ffffff20;--mint:#72e0bf;--body:'Avenir Next','Trebuchet MS',sans-serif}
+    *{box-sizing:border-box}body{margin:0;background:#e9edf0;color:#152b40;font-family:var(--body);padding:24px 36px}button,a{-webkit-tap-highlight-color:transparent}button{font:inherit;cursor:pointer}button:focus-visible,a:focus-visible{outline:3px solid #48c6df;outline-offset:4px}button:disabled{cursor:default;opacity:.35}[hidden]{display:none!important}
+    .review-head,.review-foot{max-width:1600px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:20px}.review-head{margin-bottom:17px}.eyebrow{font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:700}.review-head h1{font-size:23px;letter-spacing:-.7px;margin:5px 0 0}.review-head a{font-size:12px;font-weight:600;color:#305873;text-underline-offset:4px}.review-badge{border:1px solid #afbec7;border-radius:4px;padding:7px 10px;font-size:10px;letter-spacing:.08em;text-transform:uppercase}.review-links{display:flex;gap:20px;align-items:center}
+    .showcase{max-width:1600px;height:min(830px,calc(100svh - 156px));min-height:610px;margin:auto;background:var(--navy);color:#fff;border:1px solid #254158;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 65px -25px #183a5660}.show-header{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:0 30px;min-height:66px;background:#0c243d;border-bottom:1px solid var(--line)}.brand{width:96px;height:32px;object-fit:contain}.nav{display:flex;gap:30px;height:66px}.nav button{position:relative;border:0;background:none;color:#9eb6cb;font-size:12px;font-weight:600;padding:0 4px}.nav button[aria-pressed=true]{color:#fff}.nav button[aria-pressed=true]:after{content:'';position:absolute;left:0;right:0;bottom:13px;height:2px;background:#7ce0df}.header-tools{display:flex;gap:15px;align-items:center}.sample-label{color:#a5bdce;font-size:10px;display:flex;align-items:center;gap:6px}.sample-label:before{content:'';width:5px;height:5px;background:#e4bc78;border-radius:50%}.segmented{display:flex;padding:3px;gap:3px;border:1px solid #ffffff29;background:#ffffff09;border-radius:30px;flex-shrink:0}.segmented button{border:0;border-radius:22px;background:none;color:#b5c7d5;padding:7px 16px;line-height:1;font-size:11px;font-weight:700;white-space:nowrap}.segmented button[aria-pressed=true]{background:#fff;color:#10273e}
+    .ticker{display:flex;gap:27px;align-items:center;padding:10px 28px;white-space:nowrap;overflow:hidden;border-bottom:1px solid var(--line);font-size:10px;font-family:var(--body);flex-shrink:0;background:#0a1d32}.tick{display:flex;align-items:center;gap:8px}.tick b{font-size:9px;letter-spacing:.03em}.tick span{color:#bdcbd7}.tick .up,.up{color:#81dfc2}.tick .down,.down{color:#ff9caa}.ticker.bottom{border-top:1px solid var(--line);border-bottom:0}
+    .stage{position:relative;flex:1;min-height:0}.panel{height:100%;overflow:hidden}.home{position:relative;display:grid;grid-template-columns:1fr 285px;align-items:center;gap:40px;padding:50px 52px;isolation:isolate}.home:before{content:'';position:absolute;inset:0;z-index:-2;background:url('../../../public/global/porto.webp') center 54%/cover;filter:saturate(1.17)}.home:after{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(3,28,43,.93),rgba(3,28,43,.55) 38%,rgba(5,27,42,.07) 72%),linear-gradient(0deg,#061c3370,transparent 45%)}.home-copy{max-width:700px}.home-copy .eyebrow{color:#a6e1dc;display:flex;align-items:center;gap:12px}.home-copy .eyebrow:before{content:'';width:28px;height:1px;background:#a6e1dc}.home h2{font-size:clamp(44px,4.7vw,80px);line-height:1.03;letter-spacing:-.055em;font-weight:650;margin:23px 0}.home-description{font-size:clamp(14px,1.23vw,20px);line-height:1.55;color:#e1ebf1;max-width:520px}.home-caption{margin-top:33px;color:#b8d7df;letter-spacing:.15em;font-size:10px;text-transform:uppercase}.stats{display:grid;gap:12px}.stat{border:1px solid #ffffff38;background:#09243bdf;border-radius:9px;padding:22px;backdrop-filter:blur(12px)}.stat strong{display:block;font-size:30px;letter-spacing:-1px;font-weight:650}.stat p{font-size:12px;line-height:1.45;color:#d1e0e8;margin:8px 0 0;max-width:195px}
+    .map{background:radial-gradient(ellipse at 50% 40%,#163953,#081d34 85%);position:relative;display:flex;align-items:stretch}.map-canvas{flex:1;min-width:0;position:relative}.map svg{display:block;width:100%;height:100%}.map-side{width:154px;padding:24px 18px;border-left:1px solid var(--line);display:flex;flex-direction:column;justify-content:center;gap:22px;background:#071b3066}.map-side .eyebrow{color:#a4bdd0;font-size:9px}.map-quote{display:grid;gap:3px}.map-quote b{font-size:10px;color:#b9cbdb}.map-quote strong{font-size:18px;font-weight:500}.map-quote small{font-size:10px}.map-tools{position:absolute;left:24px;bottom:18px;display:flex;align-items:center;gap:15px;max-width:calc(100% - 34px)}.map-legend{display:flex;gap:12px;align-items:center;font-size:9px;color:#c9dae6}.legend-line{display:inline-block;width:23px;height:2px;background:#7ce9d0;margin-right:5px;vertical-align:middle}.map-tools button{font-size:10px;color:#cfe3f0;padding:7px 9px;background:#0c253e;border:1px solid #6287a0;border-radius:4px;white-space:nowrap}.map-note{position:absolute;top:13px;left:24px;font-size:9px;color:#a6bccd}.route{fill:none;stroke-linecap:round;stroke-linejoin:round}.passage-label{font-family:var(--body);font-weight:600}.passage-link{fill:none;stroke:#f4dfaf;stroke-width:.8;opacity:.75}.route-flow{stroke-dasharray:4 10;animation:flow 35s linear infinite;animation-play-state:paused}.map[data-motion=on] .route-flow{animation-play-state:running}@keyframes flow{to{stroke-dashoffset:-180}}@media(prefers-reduced-motion:reduce){.route-flow{animation:none!important}}
+    .market{padding:20px 27px 12px;display:flex;flex-direction:column;gap:14px;background:linear-gradient(120deg,#0d2945,#081d32)}.market-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px}.market-title{display:flex;gap:12px;align-items:baseline}.market-title h2{font-size:18px;font-weight:600;margin:0;letter-spacing:-.4px}.market-title span{font-size:10px;color:#9fb8cb}.market-body{flex:1;min-height:0;overflow:auto}.table-wrap{height:100%;overflow:auto;border-top:1px solid #ffffff25}table{border-collapse:collapse;width:100%;min-width:1070px;table-layout:auto;font-variant-numeric:tabular-nums;font-size:10px}th{padding:9px 7px;text-align:right;font-size:9px;color:#8faac0;font-weight:500;white-space:nowrap;position:sticky;top:0;background:#102b45}td{padding:6px 7px;text-align:right;border-bottom:1px solid #ffffff09;white-space:nowrap}td:first-child,th:first-child{text-align:left}td:first-child{font-weight:600;color:#e2ecf4}tbody tr:nth-child(even){background:#ffffff04}td:not(:first-child){font-family:'SFMono-Regular',Consolas,monospace;font-size:9px}.sector-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-content:start}.sector-card{display:flex;flex-direction:column;background:#eff4f7;color:#102b40;border-radius:7px;overflow:hidden;min-width:0}.sector-head{display:flex;align-items:center;gap:12px;min-height:51px;background:var(--sector);padding:10px 15px;color:#fff}.sector-head svg{width:23px;height:23px;flex-shrink:0}.sector-head h3{font-size:12px;line-height:1.2;font-weight:650;margin:0}.sector-columns,.sector-row{display:grid;grid-template-columns:minmax(0,1fr) auto 57px;gap:9px;align-items:center;padding:0 14px}.sector-columns{color:#6d7e8d;font-size:8px;text-transform:uppercase;letter-spacing:.03em;padding-top:9px;padding-bottom:6px}.sector-columns span:not(:first-child),.sector-row span{text-align:right}.sector-row{font-size:10px;min-height:24px;border-top:1px solid #18344c0d;font-variant-numeric:tabular-nums}.sector-row b{font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sector-row .up{color:#127252}.sector-row .down{color:#b03950}.sector-row:last-child{padding-bottom:6px;min-height:30px}.sector-footer{margin-top:auto;padding:7px 14px;font-size:8px;color:#506b7f;border-top:1px solid #17395216;background:#e4ecf2;display:flex;justify-content:space-between}.market-footer{display:flex;justify-content:space-between;align-items:center;gap:15px;font-size:9px;color:#a3bbce}.pagination{display:flex;gap:10px;align-items:center}.pagination button{border:1px solid #ffffff28;background:#ffffff08;color:#fff;border-radius:4px;padding:4px 10px;font-size:12px}.benchmarks{display:flex;gap:14px;border-top:1px solid var(--line);padding-top:9px;overflow:auto;font-size:9px;white-space:nowrap}.benchmark{display:flex;gap:6px}.benchmark b{color:#a7bfd3;font-size:8px}.benchmark em{font-style:normal;color:#dae6ee}
+    .screen-footer{padding:8px 28px;font-size:9px;letter-spacing:.04em;display:flex;justify-content:space-between;gap:15px;background:#08192b;color:#8ca8bf}.review-foot{padding-top:14px;color:#5b7182;font-size:11px;line-height:1.5}.review-foot p{margin:0}.review-foot strong{color:#263e52;font-weight:600}
+    .sector-grid{height:100%;grid-template-rows:repeat(2,minmax(0,1fr))}.sector-footer button{border:0;background:none;color:#2c5670;padding:0 3px;font-size:12px;line-height:1}.sector-pager{display:flex;gap:5px;align-items:center}.sector-row:last-child{padding-bottom:0;min-height:24px}
+    @media(min-width:701px) and (max-height:850px){.sector-head{min-height:36px;padding:7px 12px}.sector-head svg{width:20px;height:20px}.sector-head h3{font-size:11px}.sector-columns{padding-top:4px;padding-bottom:4px}.sector-row,.sector-row:last-child{min-height:18px}.sector-row,.sector-row b{font-size:9px}.sector-footer{padding-top:4px;padding-bottom:4px}.sector-grid{gap:10px}}
+    @media(min-width:1500px){.sector-row{min-height:30px}.sector-head{min-height:62px}.sector-head h3{font-size:15px}.sector-row,.sector-row b{font-size:12px}.sector-columns{font-size:9px}table{font-size:12px}td{padding:8px}td:not(:first-child){font-size:11px}}
+    @media(max-width:1100px){body{padding:18px}.show-header{padding:0 22px}.sample-label{display:none}.home{padding:35px;gap:24px;grid-template-columns:1fr 235px}.stat{padding:18px}.stat strong{font-size:27px}.map-side{display:none}.sector-grid{gap:10px}.market{padding:18px}.sector-head{padding:10px}.sector-columns,.sector-row{padding-left:10px;padding-right:10px}.nav{gap:24px}}
+    @media(max-width:700px){body{padding:12px}.review-head{align-items:flex-start;margin-bottom:12px}.review-head h1{font-size:18px}.review-links{gap:8px;flex-direction:column;align-items:flex-end}.review-badge{font-size:8px}.review-head a{font-size:10px}.showcase{height:auto;min-height:0}.show-header{min-height:110px;padding:13px 18px;gap:10px;flex-wrap:wrap}.brand{width:80px;height:27px}.header-tools{margin-left:auto}.nav{order:3;justify-content:space-between;width:100%;height:36px;gap:12px}.nav button{font-size:12px}.nav button[aria-pressed=true]:after{bottom:0}.ticker{padding:9px 17px;gap:20px}.home{grid-template-columns:1fr;gap:35px;padding:40px 23px;min-height:630px}.home h2{font-size:46px}.home-description{font-size:15px}.home-caption{margin-top:22px}.stats{grid-template-columns:1fr;gap:8px}.stat{padding:13px 16px;display:flex;gap:14px;align-items:center}.stat strong{font-size:23px;min-width:126px;letter-spacing:-.7px}.stat p{font-size:10px;margin:0}.map{height:560px;overflow:auto}.map-canvas{min-width:850px}.map-tools{bottom:18px;left:18px}.map-note{left:18px}.market{min-height:600px;gap:15px;padding:18px 14px}.market-toolbar{align-items:flex-start;flex-direction:column;gap:13px}.market-title{width:100%;justify-content:space-between}.market-body{flex:none;max-height:610px}.table-wrap{max-height:510px}.sector-grid{grid-template-columns:1fr;grid-template-rows:none;height:auto}.sector-card{min-height:195px}.sector-head{min-height:48px}.sector-head h3{font-size:14px}.sector-row,.sector-row b{font-size:12px}.sector-row{min-height:31px}.sector-columns{font-size:9px}.market-footer{font-size:8px}.screen-footer{padding:9px 17px;font-size:8px}.review-foot{font-size:10px;align-items:flex-start}.review-foot>span{display:none}}
+  </style>
+</head>
+<body>
+  <header class="review-head">
+    <div><div class="eyebrow">ATC / Showcase</div><h1>Proposta de evolução do /show</h1></div>
+    <div class="review-links"><span class="review-badge">Mockup para avaliação · 01</span><a href="README.md">Ler planejamento ↗</a></div>
+  </header>
+  <main class="showcase" aria-label="Prévia interativa do showcase">
+    <header class="show-header">
+      <img class="brand" src="../../../public/global/atc-icon-white.svg" alt="ATC">
+      <nav class="nav" aria-label="Telas do showcase">
+        <button type="button" data-screen="home" aria-controls="home" aria-pressed="true" data-i18n="home">Início</button>
+        <button type="button" data-screen="map" aria-controls="map" aria-pressed="false" data-i18n="map">Mapa</button>
+        <button type="button" data-screen="market" aria-controls="market" aria-pressed="false" data-i18n="market">Mercado</button>
+      </nav>
+      <div class="header-tools"><span class="sample-label" data-i18n="sample">Dados ilustrativos</span><div class="segmented" role="group" aria-label="Idioma / Language"><button type="button" data-lang="pt" aria-label="Português" aria-pressed="true">PT</button><button type="button" data-lang="en" aria-label="English" aria-pressed="false">EN</button></div></div>
+    </header>
+    <div class="ticker" id="top-ticker" aria-label="Exemplos de cotações"></div>
+    <div class="stage">
+      <section class="panel home" id="home" aria-label="Página inicial">
+        <div class="home-copy"><div class="eyebrow" data-i18n="eyebrow">Conexões que atravessam fronteiras</div><h2 data-i18n="heroTitle">Consultoria<br>Internacional</h2><p class="home-description" data-i18n="heroDescription">Soluções estruturadas para empresas que desejam importar, exportar e operar no mercado global com segurança, estratégia e escala.</p><div class="home-caption" data-i18n="homeCaption">Brasil · China · Mundo</div></div>
+        <div class="stats"><article class="stat"><strong data-i18n="stat1">+R$1 BILHÃO</strong><p data-i18n="stat1Label">em operações e valores negociados</p></article><article class="stat"><strong data-i18n="stat2">+1 MILHÃO</strong><p data-i18n="stat2Label">de toneladas de commodities negociadas internacionalmente</p></article><article class="stat"><strong data-i18n="stat3">+3.000</strong><p data-i18n="stat3Label">empresas e clientes atendidos</p></article></div>
+      </section>
+      <section class="panel map" id="map" aria-label="Mapa de conexões ilustrativas" hidden>
+        <div class="map-canvas">
+          <span class="map-note" data-i18n="mapNote">PASSAGENS MARÍTIMAS · CONEXÕES ILUSTRATIVAS</span>
+          <svg id="route-map" xmlns="http://www.w3.org/2000/svg" viewBox="160 20 1200 560" role="img" aria-labelledby="map-title map-desc">
+            <title id="map-title">Conexões ilustrativas entre seis pontos do mundo</title><desc id="map-desc">Continentes coloridos, rotas animadas e passagens destacadas. Não representa navegação em tempo real.</desc>
+            <defs><pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse"><path d="M 80 0 L 0 0 0 80" fill="none" stroke="#ffffff" stroke-opacity=".035" stroke-width=".6"/></pattern></defs>
+            <rect x="160" y="20" width="1200" height="560" fill="url(#grid)"/>
+            <image href="assets/show-map-preview.svg" width="1440" height="600"/>
+            <g id="routes"></g><g id="ships"></g><g id="hubs"></g><g id="continent-labels"></g><g id="passages"></g>
+          </svg>
+          <div class="map-tools"><div class="map-legend"><span><i class="legend-line"></i><span data-i18n="axis">Brasil–China</span></span><span data-i18n="schematic">Rotas esquemáticas</span></div><button type="button" id="motion-toggle" aria-pressed="false">Pausar animação</button></div>
+        </div>
+        <aside class="map-side" id="map-quotes" aria-label="Exemplos de commodities"></aside>
+      </section>
+      <section class="panel market" id="market" aria-label="Mercado" hidden>
+        <div class="market-toolbar"><div class="market-title"><h2 data-i18n="market">Mercado</h2><span data-i18n="marketSubtitle">40 ativos · dados ilustrativos</span></div><div class="segmented" role="group" aria-label="Formato do mercado"><button type="button" data-format="table" aria-pressed="true" data-i18n="table">Tabela</button><button type="button" data-format="sectors" aria-pressed="false" data-i18n="sectors">Setores</button></div></div>
+        <div class="market-body"><div id="table-view" class="table-wrap"><table><caption class="eyebrow" style="text-align:left;padding:0;height:0;overflow:hidden" data-i18n="sample">Dados ilustrativos</caption><thead id="table-head"></thead><tbody id="table-body"></tbody></table></div><div id="sector-view" class="sector-grid" hidden></div></div>
+        <div class="market-footer"><span id="market-status"></span><div class="pagination"><button type="button" id="prev-page" aria-label="Página anterior">←</button><span id="page-label"></span><button type="button" id="next-page" aria-label="Próxima página">→</button></div></div>
+        <div class="benchmarks" id="benchmarks"></div>
+      </section>
+    </div>
+    <div class="ticker bottom" id="bottom-ticker" aria-label="Exemplos de cotações"></div>
+    <footer class="screen-footer"><span data-i18n="footer">ATC CHINA BRASIL · SHOWCASE</span><span data-i18n="noLive">Prévia visual · sem cotações ao vivo</span></footer>
+  </main>
+  <footer class="review-foot"><p id="review-note"><strong>01 / Início.</strong> Alterne PT/EN no cabeçalho. A foto existente demonstra o tratamento de cor.</p><span>Planejamento · 14.10.2026</span></footer>
+  <noscript>Ative JavaScript para navegar pelo mockup. Nenhum dado externo é carregado.</noscript>
+  <script>
+    // Mockup documental: todos os preços são fictícios e não há requisições às APIs.
+    const copy = {
+      pt:{home:'Início',map:'Mapa',market:'Mercado',sample:'Dados ilustrativos',eyebrow:'Conexões que atravessam fronteiras',heroTitle:'Consultoria<br>Internacional',heroDescription:'Soluções estruturadas para empresas que desejam importar, exportar e operar no mercado global com segurança, estratégia e escala.',homeCaption:'Brasil · China · Mundo',stat1:'+R$1 BILHÃO',stat1Label:'em operações e valores negociados',stat2:'+1 MILHÃO',stat2Label:'de toneladas de commodities negociadas internacionalmente',stat3:'+3.000',stat3Label:'empresas e clientes atendidos',mapNote:'PASSAGENS MARÍTIMAS · CONEXÕES ILUSTRATIVAS',axis:'Brasil–China',schematic:'Rotas esquemáticas',marketSubtitle:'40 ativos · dados ilustrativos',table:'Tabela',sectors:'Setores',footer:'ATC CHINA BRASIL · SHOWCASE',noLive:'Prévia visual · sem cotações ao vivo',pause:'Pausar animação',resume:'Retomar animação',reduced:'Movimento reduzido',page:'Página',of:'de',asset:'Ativo',price:'Preço',day:'Dia',assets:'ativos',groups:'grupos',mock:'Exemplo visual',mapTitle:'Conexões ilustrativas entre seis pontos do mundo',mapDesc:'Continentes coloridos, rotas animadas e passagens destacadas. Não representa navegação em tempo real.',headings:['Ativo','Último','Mínimo','Fech. anterior','Abertura','Compra','Venda','Volume','Dia','Semana','Mês','Ano','12 meses'],notes:{home:'<strong>01 / Início.</strong> Alterne PT/EN no cabeçalho. A foto existente demonstra o tratamento de cor.',map:'<strong>02 / Mapa.</strong> Seis pontos preservados; sete passagens em destaque. Trajetos aproximados para avaliação visual.',market:'<strong>03 / Mercado.</strong> Compare Tabela e Setores. Use as setas para ver os demais ativos e grupos.'}},
+      en:{home:'Home',map:'Map',market:'Markets',sample:'Illustrative data',eyebrow:'Connections beyond borders',heroTitle:'International<br>Consulting',heroDescription:'Structured solutions for companies looking to import, export and operate in the global market with confidence, strategy and scale.',homeCaption:'Brazil · China · Worldwide',stat1:'BRL 1B+',stat1Label:'in transactions and negotiated value',stat2:'1M+ tonnes',stat2Label:'of commodities traded internationally',stat3:'3,000+',stat3Label:'businesses and clients served',mapNote:'MARITIME PASSAGES · ILLUSTRATIVE CONNECTIONS',axis:'Brazil–China',schematic:'Schematic routes',marketSubtitle:'40 assets · illustrative data',table:'Table',sectors:'Sectors',footer:'ATC CHINA BRASIL · SHOWCASE',noLive:'Visual preview · no live quotes',pause:'Pause animation',resume:'Resume animation',reduced:'Reduced motion',page:'Page',of:'of',asset:'Asset',price:'Price',day:'Day',assets:'assets',groups:'groups',mock:'Visual example',mapTitle:'Illustrative connections between six points worldwide',mapDesc:'Colored continents, animated routes and highlighted passages. Not real-time vessel tracking.',headings:['Asset','Last','Low','Previous close','Open','Bid','Ask','Volume','Day','Week','Month','Year','12 months'],notes:{home:'<strong>01 / Home.</strong> Switch PT/EN in the header. An existing photo demonstrates the color treatment.',map:'<strong>02 / Map.</strong> Six points retained; seven passages highlighted. Approximate paths for visual review.',market:'<strong>03 / Markets.</strong> Compare Table and Sectors. Use the arrows to explore the remaining assets and groups.'}}
+    };
+    const sectorDefs = [
+      {id:'energy',pt:'Energia e petróleo',en:'Energy & oil',color:'#b96b35',icon:'M8 21V3h8v18M5 21h14M8 8h8M8 13h8M8 18h8M12 3v18'},
+      {id:'mining',pt:'Mineração e siderurgia',en:'Mining & steel',color:'#397fbb',icon:'M2 20 9 6l4 8 3-5 6 11ZM6 12l3 2 3-2'},
+      {id:'finance',pt:'Bancos e serviços financeiros',en:'Banking & financial services',color:'#7960ba',icon:'M2 8l10-5 10 5ZM4 21h16M6 10v8M12 10v8M18 10v8'},
+      {id:'retail',pt:'Consumo e varejo',en:'Consumer & retail',color:'#318773',icon:'M2 4h3l3 12h11l3-9H6M9 20h1M17 20h1'},
+      {id:'infra',pt:'Infraestrutura e serviços',en:'Infrastructure & services',color:'#bb606f',icon:'M3 21 9 3h6l6 18M12 5v3m0 4v3m0 4v2'},
+      {id:'commodities',pt:'Commodities',en:'Commodities',color:'#ab842a',icon:'M5 21 18 5M7 16C2 7 9 2 21 3c0 12-6 17-14 13Z'},
+      {id:'property',pt:'Construção e imóveis',en:'Construction & real estate',color:'#548594',icon:'M3 11 12 3l9 8M5 10v11h14V10M10 21v-7h4v7'},
+      {id:'health',pt:'Saúde',en:'Healthcare',color:'#4b8c86',icon:'M9 3h6v6h6v6h-6v6H9v-6H3V9h6Z'},
+      {id:'paper',pt:'Papel e celulose',en:'Pulp & paper',color:'#6f8750',icon:'M12 2 4 13h4l-4 5h16l-4-5h4ZM12 18v4'}
+    ];
+    const raw = [
+      ['ABEV3','retail',12.84,1.12],['B3SA3','finance',13.51,.52],['BBAS3','finance',24.6,-.42],['BBDC4','finance',14.2,1.14],['BPAC11','finance',31.42,.81],['BRAP4','mining',18.2,-.53],['CMIG4','infra',11.72,.69],['CSNA3','mining',9.4,-1.24],['CYRE3','property',22.84,.73],['ECOR3','infra',6.12,-.64],['EQTL3','infra',31.5,.85],['GFSA3','property',1.21,-.82],['GGBR4','mining',19.35,.42],['GOAU4','mining',9.7,.31],['ITSA4','finance',10.2,.55],['ITUB4','finance',34.82,1.03],['LREN3','retail',14.42,-.41],['MGLU3','retail',8.24,.61],['MRVE3','property',6.3,-.34],['PETR3','energy',39.12,1.18],['PETR4','energy',36.85,.94],['PRIO3','energy',42.36,1.27],['RADL3','health',24.3,.22],['RDOR3','health',28.51,-.41],['RENT3','infra',43.2,.91],['SUZB3','paper',54.7,-.56],['USIM5','mining',6.32,-.24],['VALE3','mining',61.4,.72],['WEGE3','infra',49.6,1.42],
+      ['IBOV','index',128420.5,.61],['S&P 500','index',5780.42,-.18],['NASDAQ','index',18225.1,.24],['USD/BRL','currency',5.1247,-.32],['RMB/BRL','currency',.7184,.11],['OURO','commodities',2490.3,.47,'Gold'],['PRATA','commodities',29.42,-.18,'Silver'],['COBRE','commodities',4.2145,.62,'Copper'],['WTI','commodities',76.23,1.13],['BRENT','commodities',80.42,.84],['SOJA','commodities',1034.5,-.21,'Soybeans']
+    ];
+    const assets = raw.map(([ticker,sector,price,change,en],index)=>({ticker,sector,price,change,en,index}));
+    let lang=new URLSearchParams(location.search).get('lang')==='en'?'en':'pt', screen='home', format='table', tablePage=0, sectorPage=0, paused=false;
+    const cardPages={},cardPageSize=3;
+    const pageSize=14, reduced=matchMedia('(prefers-reduced-motion: reduce)');
+    const $=s=>document.querySelector(s);
+    const number=(n,d=2)=>new Intl.NumberFormat(lang==='pt'?'pt-BR':'en-US',{minimumFractionDigits:d,maximumFractionDigits:d}).format(n);
+    const percent=n=>(n>0?'+':'')+number(n)+'%';
+    const direction=n=>n<0?'down':'up';
+    const assetName=a=>lang==='en'&&a.en?a.en:a.ticker;
+    function renderQuotes(){
+      const quote=a=>`<div class="tick"><b>${assetName(a)}</b><span>${number(a.price,a.sector==='currency'?4:2)}</span><strong class="${direction(a.change)}">${percent(a.change)}</strong></div>`;
+      $('#top-ticker').innerHTML=[29,32,34,35,37,36,30,33].map(i=>quote(assets[i])).join('');
+      $('#bottom-ticker').innerHTML=[27,20,15,3,0,38,39,31].map(i=>quote(assets[i])).join('');
+      $('#map-quotes').innerHTML=`<span class="eyebrow">${copy[lang].sample}</span>`+[34,36,37,39].map(i=>{const a=assets[i];return `<div class="map-quote"><b>${assetName(a)}</b><strong>USD ${number(a.price)}</strong><small class="${direction(a.change)}">${percent(a.change)}</small></div>`}).join('');
+      $('#benchmarks').innerHTML=assets.filter(a=>['index','currency'].includes(a.sector)).map(a=>`<span class="benchmark"><b>${a.ticker}</b><em>${number(a.price,a.sector==='currency'?4:2)}</em><span class="${direction(a.change)}">${percent(a.change)}</span></span>`).join('');
+    }
+    function renderMarket(){
+      const c=copy[lang];
+      $('#table-view').hidden=format!=='table';$('#sector-view').hidden=format!=='sectors';
+      document.querySelectorAll('[data-format]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.format===format)));
+      $('#table-head').innerHTML='<tr>'+c.headings.map(t=>`<th scope="col">${t}</th>`).join('')+'</tr>';
+      $('#table-body').innerHTML=assets.slice(tablePage*pageSize,(tablePage+1)*pageSize).map(a=>{
+        const values=[a.price,a.price*.985,a.price/(1+a.change/100),a.price*.998,a.price-.01,a.price+.01];
+        const changes=[a.change,a.change*2.1,a.change*3.7,-a.change*5.2,a.change*8.3];
+        return `<tr><td>${assetName(a)}</td>${values.map(v=>`<td>${number(v,a.sector==='currency'?4:2)}</td>`).join('')}<td>${a.sector==='index'||a.sector==='currency'?'—':number((a.index+1)*1.7,1)+' M'}</td>${changes.map(v=>`<td class="${direction(v)}">${percent(v)}</td>`).join('')}</tr>`;
+      }).join('');
+      $('#sector-view').innerHTML=sectorDefs.slice(sectorPage*6,(sectorPage+1)*6).map(s=>{
+        const items=assets.filter(a=>a.sector===s.id), cardPage=cardPages[s.id]||0;
+        const shown=items.slice(cardPage*cardPageSize,(cardPage+1)*cardPageSize);
+        return `<article class="sector-card" style="--sector:${s.color}"><div class="sector-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${s.icon}"/></svg><h3>${s[lang]}</h3></div><div class="sector-columns"><span>${c.asset}</span><span>${c.price} · ${s.id==='commodities'?'USD':'BRL'}</span><span>${c.day}</span></div>${shown.map(a=>`<div class="sector-row"><b>${assetName(a)}</b><span>${number(a.price,a.ticker==='COBRE'?4:2)}</span><span class="${direction(a.change)}">${percent(a.change)}</span></div>`).join('')}<div class="sector-footer"><span>${items.length} ${c.assets}</span><span class="sector-pager">${items.length>cardPageSize?`<button type="button" data-card="${s.id}" data-delta="-1" aria-label="${lang==='pt'?'Ativos anteriores':'Previous assets'}: ${s[lang]}" ${cardPage===0?'disabled':''}>‹</button><span>${cardPage*cardPageSize+1}–${Math.min((cardPage+1)*cardPageSize,items.length)}</span><button type="button" data-card="${s.id}" data-delta="1" aria-label="${lang==='pt'?'Próximos ativos':'Next assets'}: ${s[lang]}" ${(cardPage+1)*cardPageSize>=items.length?'disabled':''}>›</button>`:c.mock}</span></div></article>`;
+      }).join('');
+      const page=format==='table'?tablePage:sectorPage, count=format==='table'?Math.ceil(assets.length/pageSize):Math.ceil(sectorDefs.length/6);
+      $('#page-label').textContent=`${c.page} ${page+1} ${c.of} ${count}`;
+      $('#market-status').textContent=format==='table'?`${c.table} · ${tablePage*pageSize+1}–${Math.min((tablePage+1)*pageSize,assets.length)} ${c.of} 40 ${c.assets}`:`${c.sectors} · ${sectorPage*6+1}–${Math.min((sectorPage+1)*6,sectorDefs.length)} ${c.of} 9 ${c.groups}`;
+      $('#prev-page').disabled=page===0;$('#next-page').disabled=page===count-1;
+      $('#prev-page').ariaLabel=lang==='pt'?'Página anterior':'Previous page';$('#next-page').ariaLabel=lang==='pt'?'Próxima página':'Next page';
+    }
+    const ns='http://www.w3.org/2000/svg';
+    function svgNode(tag,attrs={},text){const el=document.createElementNS(ns,tag);Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,v));if(text!==undefined)el.textContent=text;return el;}
+    const project=([lon,lat])=>[(lon+180)*4,(85-lat)*4];
+    const hubs={us:[-123,33],central:[-88.5,15.5],brazil:[-51,-29],europe:[6.5,60],china:[119.5,29.5],japan:[138,37]};
+    const places={panama:[-79.7,9],gibraltar:[-5.6,35.9],suez:[32.4,30],bab:[43.3,12.6],hormuz:[56.5,26.5],malacca:[101,3],cape:[18.5,-34]};
+    const corridor=[[-11,48],places.gibraltar,[5,37],[20,35],places.suez,[35,26],[39,19],places.bab,[51,10],[67,4],[82,2],[95,5],places.malacca,[106,1],[112,10],[119,20]];
+    const south=[[-43,-35],[-23,-42],[10,-40],[22,-38],[40,-34],[66,-23],[86,-8],[96,1],places.malacca,[107,1],[113,12]];
+    const routes=[
+      {points:[hubs.brazil,...south,hubs.china],color:'#8df0d3',featured:true},
+      {points:[hubs.europe,[-1,59],[-14,54],...corridor,hubs.china],color:'#a3d8ff'},
+      {points:[hubs.us,[-123,25],[-110,18],[-96,12],[-84,7],places.panama,[-82,14],hubs.central],color:'#f5c875'},
+      {points:[hubs.central,[-85,20],[-74,25],[-49,43],[-21,55],[-3,62],hubs.europe],color:'#a3d8ff'},
+      {points:[hubs.brazil,[-40,-20],[-29,5],[-24,28],[-18,47],[-7,57],hubs.europe],color:'#98cde1'},
+      {points:[hubs.china,[124,28],[130,30],hubs.japan],color:'#f5c875'},
+      {points:[hubs.brazil,[-40,-38],[-15,-46],[22,-44],[56,-32],[94,-13],[111,-6],[126,6],[138,24],hubs.japan],color:'#b9b1ed'},
+      {points:[hubs.central,[-83,20],[-67,26],[-38,18],[-18,-5],[3,-33],places.cape,...south.slice(4),hubs.china],color:'#79b7cd'},
+      {points:[hubs.us,[-122,22],[-110,15],[-90,5],places.panama,[-73,22],[-39,35],...corridor.slice(1),hubs.china],color:'#eaa2b2'},
+      {points:[places.bab,[52,12],[61,19],places.hormuz,[52,27]],color:'#f5c875'},
+      {points:[hubs.brazil,[-33,-14],[-25,12],[-19,32],...corridor.slice(1),hubs.china],color:'#89d9cb'},
+      {points:[places.panama,[-87,2],[-97,-12],[-83,-38],[-68,-57],[-52,-50],hubs.brazil],color:'#abb8d3'}
+    ];
+    function curve(coords){const p=coords.map(project);let d=`M${p[0].join(' ')}`;for(let i=0;i<p.length-1;i++){const a=p[Math.max(0,i-1)],b=p[i],c=p[i+1],e=p[Math.min(p.length-1,i+2)];d+=` C${b[0]+(c[0]-a[0])/7},${b[1]+(c[1]-a[1])/7} ${c[0]-(e[0]-b[0])/7},${c[1]-(e[1]-b[1])/7} ${c[0]},${c[1]}`;}return d;}
+    function initMap(){
+      routes.forEach((r,i)=>{
+        const d=curve(r.points);if(r.featured)$('#routes').append(svgNode('path',{d,stroke:r.color,'stroke-width':9,opacity:.12,class:'route'}));
+        $('#routes').append(svgNode('path',{id:`route-${i}`,d,stroke:r.color,'stroke-width':r.featured?2.3:1.1,opacity:r.featured?.92:.42,class:'route'}));
+        $('#routes').append(svgNode('path',{d,stroke:r.color,'stroke-width':r.featured?1.4:.85,opacity:.8,class:'route route-flow'}));
+        if(i<10){const ship=svgNode('g',{fill:r.color,stroke:'#102a40','stroke-width':.8});ship.append(svgNode('path',{d:'M-6 -3 L4 -3 L8 0 L4 3 L-6 3Z'}));ship.append(svgNode('path',{d:'M-3 -1.5H2 M-3 1.5H2',stroke:'#0c263c','stroke-width':.7}));const motion=svgNode('animateMotion',{dur:`${30+i*3}s`,repeatCount:'indefinite',rotate:'auto',begin:`-${i*4}s`});motion.append(svgNode('mpath',{href:`#route-${i}`}));ship.append(motion);$('#ships').append(ship);}
+      });
+      Object.entries(hubs).forEach(([id,point])=>{const [cx,cy]=project(point),featured=['brazil','china'].includes(id);$('#hubs').append(svgNode('circle',{cx,cy,r:featured?9:7,fill:'#082238',stroke:featured?'#97f3df':'#dbf1ff','stroke-width':1.5}));$('#hubs').append(svgNode('circle',{cx,cy,r:featured?4:3,fill:featured?'#97f3df':'#dbf1ff'}));});
+      renderMapLabels();syncMotion();
+    }
+    const continents=[{p:[-108,49],pt:['AMÉRICA DO','NORTE'],en:['NORTH','AMERICA']},{p:[-61,-9],pt:['AMÉRICA','DO SUL'],en:['SOUTH','AMERICA']},{p:[20,54],pt:['EUROPA'],en:['EUROPE']},{p:[18,5],pt:['ÁFRICA'],en:['AFRICA']},{p:[90,52],pt:['ÁSIA'],en:['ASIA']},{p:[137,-23],pt:['OCEANIA'],en:['OCEANIA']}];
+    const passageLabels=[
+      {id:'panama',pt:'Panamá',en:'Panama',label:[-103,8]},
+      {id:'gibraltar',pt:'Gibraltar',en:'Gibraltar',label:[-22,37]},
+      {id:'suez',pt:'Suez',en:'Suez',label:[33,43]},
+      {id:'bab',pt:'Bab el-Mandeb',en:'Bab el-Mandeb',label:[61,8]},
+      {id:'hormuz',pt:'Ormuz',en:'Hormuz',label:[69,29]},
+      {id:'malacca',pt:'Malaca',en:'Malacca',label:[124,0]},
+      {id:'cape',pt:'Cabo da Boa Esperança',en:'Cape of Good Hope',label:[17,-49]}
+    ];
+    function renderMapLabels(){
+      $('#continent-labels').replaceChildren();$('#passages').replaceChildren();
+      continents.forEach(c=>{const [x,y]=project(c.p);const text=svgNode('text',{x,y,fill:'#092640','font-family':'Avenir Next, Trebuchet MS, sans-serif','font-size':13,'font-weight':750,'text-anchor':'middle','letter-spacing':.5});c[lang].forEach((s,i)=>text.append(svgNode('tspan',{x,dy:i?16:0},s)));$('#continent-labels').append(text);});
+      passageLabels.forEach((p,i)=>{const [x,y]=project(places[p.id]),[lx,ly]=project(p.label),width=p[lang].length*5.7+18;
+        $('#passages').append(svgNode('path',{d:`M${x},${y} L${lx},${ly}`,class:'passage-link'}));
+        $('#passages').append(svgNode('circle',{cx:x,cy:y,r:5.5,fill:'#13364c',stroke:'#ffe2a0','stroke-width':1.5}));
+        $('#passages').append(svgNode('circle',{cx:x,cy:y,r:2,fill:'#ffe2a0'}));
+        $('#passages').append(svgNode('rect',{x:lx-width/2,y:ly-9,width,height:19,rx:4,fill:'#0b243c',stroke:'#7996ac','stroke-width':.65}));
+        $('#passages').append(svgNode('text',{x:lx,y:ly+3.5,'text-anchor':'middle',fill:'#f9e7be','font-size':10,class:'passage-label'},p[lang]));
+      });
+      $('#map-title').textContent=copy[lang].mapTitle;$('#map-desc').textContent=copy[lang].mapDesc;
+    }
+    function syncMotion(){
+      const running=screen==='map'&&!paused&&!reduced.matches&&!document.hidden;
+      $('#map').dataset.motion=running?'on':'off';
+      if(running)$('#route-map').unpauseAnimations();else $('#route-map').pauseAnimations();
+      $('#motion-toggle').textContent=reduced.matches?copy[lang].reduced:paused?copy[lang].resume:copy[lang].pause;
+      $('#motion-toggle').disabled=reduced.matches;$('#motion-toggle').setAttribute('aria-pressed',String(paused||reduced.matches));
+    }
+    function setScreen(next){screen=next;document.querySelectorAll('.panel').forEach(p=>p.hidden=p.id!==screen);document.querySelectorAll('[data-screen]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.screen===screen)));$('#review-note').innerHTML=copy[lang].notes[screen];syncMotion();}
+    function translate(){document.documentElement.lang=lang==='pt'?'pt-BR':'en';document.querySelectorAll('[data-i18n]').forEach(el=>el.innerHTML=copy[lang][el.dataset.i18n]);document.querySelectorAll('[data-lang]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lang===lang)));$('#home').ariaLabel=copy[lang].home;$('#map').ariaLabel=copy[lang].mapTitle;$('#market').ariaLabel=copy[lang].market;$('.nav').ariaLabel=lang==='pt'?'Telas do showcase':'Showcase screens';$('[aria-label="Formato do mercado"], [aria-label="Market format"]').ariaLabel=lang==='pt'?'Formato do mercado':'Market format';renderQuotes();renderMarket();renderMapLabels();setScreen(screen);}
+    document.querySelectorAll('[data-screen]').forEach(b=>b.addEventListener('click',()=>setScreen(b.dataset.screen)));
+    document.querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',()=>{lang=b.dataset.lang;translate();}));
+    $('#sector-view').addEventListener('click',e=>{const b=e.target.closest('[data-card]');if(!b)return;cardPages[b.dataset.card]=(cardPages[b.dataset.card]||0)+Number(b.dataset.delta);renderMarket();$('#sector-view').querySelector(`[data-card="${b.dataset.card}"][data-delta="${-Number(b.dataset.delta)}"]`)?.focus();});
+    document.querySelectorAll('[data-format]').forEach(b=>b.addEventListener('click',()=>{format=b.dataset.format;renderMarket();}));
+    function changePage(delta){if(format==='table')tablePage+=delta;else sectorPage+=delta;renderMarket();$('.market-body').scrollTop=0;$('.table-wrap').scrollTop=0;}
+    $('#prev-page').addEventListener('click',()=>changePage(-1));$('#next-page').addEventListener('click',()=>changePage(1));
+    $('#motion-toggle').addEventListener('click',()=>{paused=!paused;syncMotion();});
+    reduced.addEventListener('change',syncMotion);document.addEventListener('visibilitychange',syncMotion);
+    initMap();translate();
+  </script>
+</body>
+</html>

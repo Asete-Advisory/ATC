@@ -1,16 +1,21 @@
 "use client";
 
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { RadioTower, TrendingDown, TrendingUp } from "lucide-react";
-import { HeroVideoBackground } from "@/components/hero-video-background";
 import { MarketBoard } from "@/components/market-board";
 import { TradeRoutesMap } from "@/components/trade-routes-map";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { copy, getLanguage, type Language } from "@/lib/i18n";
 import {
-  ToggleGroup,
-  ToggleGroupItem,
-} from "@/components/ui/toggle-group";
-import { copy, type Language } from "@/lib/i18n";
+  showcaseLocales,
+  showcaseText,
+  showcaseSlideOrder,
+  showcaseSlideDurations,
+  type DisplayMode,
+  type PresentationSlide,
+} from "@/lib/showcase";
 import { cn } from "@/lib/utils";
 
 type CommodityQuote = {
@@ -23,39 +28,10 @@ type CommodityQuote = {
   marketTime: string | null;
 };
 
-type ShowcaseScreenProps = {
-  lang: Language;
-};
-
-type PresentationSlide = "original" | "map" | "market";
-type DisplayMode = "auto" | PresentationSlide;
-
-const marketPhrases = [
-  "Sourcing internacional",
-  "Trading estruturado",
-  "Commodities",
-  "Importacao",
-  "Exportacao",
-  "Inteligencia comercial",
-  "China Brasil",
-] as const;
-
-const originalSlideDurationMs = 30_000;
-const mapSlideDurationMs = 300_000;
-const marketSlideDurationMs = 300_000;
-const autoSlideOrder: PresentationSlide[] = ["original", "map", "market"];
-const slideDurations: Record<PresentationSlide, number> = {
-  original: originalSlideDurationMs,
-  map: mapSlideDurationMs,
-  market: marketSlideDurationMs,
-};
 const investmentPanelSymbols = ["GC=F", "SI=F", "HG=F", "CL=F", "BZ=F", "ZS=F"];
 
 function rotateQuotes(quotes: CommodityQuote[], offset: number) {
-  if (quotes.length === 0) {
-    return [];
-  }
-
+  if (quotes.length === 0) return [];
   const normalizedOffset = offset % quotes.length;
   return [
     ...quotes.slice(normalizedOffset),
@@ -63,529 +39,290 @@ function rotateQuotes(quotes: CommodityQuote[], offset: number) {
   ];
 }
 
-const statusText: Record<
-  Language,
-  { live: string; loading: string; updated: string }
-> = {
-  pt: {
-    live: "Ao vivo",
-    loading: "Cotações em atualização",
-    updated: "Atualizado",
-  },
-  en: {
-    live: "Live market",
-    loading: "Updating quotes",
-    updated: "Updated",
-  },
-  zh: {
-    live: "实时市场",
-    loading: "行情更新中",
-    updated: "已更新",
-  },
-};
-
-export function ShowcaseScreen({ lang }: ShowcaseScreenProps) {
+export function ShowcaseScreen({ lang: initialLanguage }: { lang: Language }) {
+  const searchParams = useSearchParams();
+  const lang = searchParams
+    ? getLanguage(searchParams.get("lang") ?? undefined)
+    : initialLanguage;
+  const content = copy[lang];
+  const text = showcaseText[lang];
   const [displayMode, setDisplayMode] = useState<DisplayMode>("auto");
   const [autoSlide, setAutoSlide] = useState<PresentationSlide>("original");
   const autoRotationTimerRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    if (autoRotationTimerRef.current !== null) {
-      window.clearTimeout(autoRotationTimerRef.current);
-      autoRotationTimerRef.current = null;
-    }
-
-    if (displayMode !== "auto") {
-      return;
-    }
-
-    autoRotationTimerRef.current = window.setTimeout(() => {
-      setAutoSlide((current) => {
-        const currentIndex = autoSlideOrder.indexOf(current);
-        return autoSlideOrder[(currentIndex + 1) % autoSlideOrder.length];
-      });
-    }, slideDurations[autoSlide]);
-
-    return () => {
-      if (autoRotationTimerRef.current !== null) {
-        window.clearTimeout(autoRotationTimerRef.current);
-        autoRotationTimerRef.current = null;
-      }
-    };
-  }, [autoSlide, displayMode]);
-
-  function handleModeChange(mode: DisplayMode) {
-    if (autoRotationTimerRef.current !== null) {
-      window.clearTimeout(autoRotationTimerRef.current);
-      autoRotationTimerRef.current = null;
-    }
-
-    setDisplayMode(mode);
-    if (mode === "auto") {
-      setAutoSlide("original");
-    }
-  }
-
-  const activeSlide = displayMode === "auto" ? autoSlide : displayMode;
-
-  return (
-    <main className="relative isolate h-svh min-h-[640px] overflow-hidden bg-[#071625] text-white">
-      <InstitutionalSlide lang={lang} activeSlide={activeSlide} />
-      <DisplayModeControl mode={displayMode} onModeChange={handleModeChange} />
-    </main>
-  );
-}
-
-function DisplayModeControl({
-  mode,
-  onModeChange,
-}: {
-  mode: DisplayMode;
-  onModeChange: (mode: DisplayMode) => void;
-}) {
-  const options: Array<{ value: DisplayMode; label: string }> = [
-    { value: "auto", label: "Auto" },
-    { value: "original", label: "Original" },
-    { value: "map", label: "Mapa" },
-    { value: "market", label: "Mercado" },
-  ];
-
-  return (
-    <ToggleGroup
-      type="single"
-      value={mode}
-      onValueChange={(value) => {
-        if (value) {
-          onModeChange(value as DisplayMode);
-        }
-      }}
-      spacing={0}
-      size="sm"
-      aria-label="Modo de exibição"
-      className="absolute bottom-2 left-2 z-30 rounded-md border border-white/10 bg-[#071625]/38 p-1 opacity-15 shadow-[0_12px_42px_-24px_rgba(0,0,0,0.95)] backdrop-blur-md transition-opacity duration-200 hover:opacity-100 focus-within:opacity-100"
-    >
-      {options.map((option) => (
-        <ToggleGroupItem
-          key={option.value}
-          value={option.value}
-          aria-label={option.label}
-          className="h-7 rounded px-2 text-[0.62rem] uppercase tracking-[0.13em] text-white/60 hover:bg-white/10 hover:text-white data-[state=on]:bg-white/14 data-[state=on]:text-white sm:text-[0.68rem] sm:tracking-[0.16em]"
-        >
-          {option.label}
-        </ToggleGroupItem>
-      ))}
-    </ToggleGroup>
-  );
-}
-
-function InstitutionalSlide({
-  lang,
-  activeSlide,
-}: {
-  lang: Language;
-  activeSlide: PresentationSlide;
-}) {
-  const content = copy[lang];
   const [quotes, setQuotes] = useState<CommodityQuote[]>([]);
   const [updatedAt, setUpdatedAt] = useState<string | null>(null);
   const [currentTime, setCurrentTime] = useState<Date | null>(null);
-
+  const activeSlide = displayMode === "auto" ? autoSlide : displayMode;
   const numberFormatter = useMemo(
     () =>
-      new Intl.NumberFormat(
-        lang === "pt" ? "pt-BR" : lang === "zh" ? "zh-CN" : "en-US",
-        {
-          maximumFractionDigits: 2,
-          minimumFractionDigits: 2,
-        },
-      ),
+      new Intl.NumberFormat(showcaseLocales[lang], {
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 2,
+      }),
     [lang],
   );
-
   const timeFormatter = useMemo(
     () =>
-      new Intl.DateTimeFormat(
-        lang === "pt" ? "pt-BR" : lang === "zh" ? "zh-CN" : "en-US",
-        {
-          hour: "2-digit",
-          minute: "2-digit",
-        },
-      ),
+      new Intl.DateTimeFormat(showcaseLocales[lang], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
     [lang],
   );
 
   useEffect(() => {
+    if (displayMode !== "auto") return;
+    autoRotationTimerRef.current = window.setTimeout(() => {
+      setAutoSlide(
+        (current) =>
+          showcaseSlideOrder[
+            (showcaseSlideOrder.indexOf(current) + 1) %
+              showcaseSlideOrder.length
+          ],
+      );
+    }, showcaseSlideDurations[autoSlide]);
+    return () => {
+      if (autoRotationTimerRef.current !== null)
+        window.clearTimeout(autoRotationTimerRef.current);
+    };
+  }, [autoSlide, displayMode]);
+
+  useEffect(() => {
     setCurrentTime(new Date());
-
-    const clock = window.setInterval(() => {
-      setCurrentTime(new Date());
-    }, 30_000);
-
-    return () => window.clearInterval(clock);
+    const interval = window.setInterval(
+      () => setCurrentTime(new Date()),
+      30_000,
+    );
+    return () => window.clearInterval(interval);
   }, []);
 
   useEffect(() => {
     let ignore = false;
-
+    let controller: AbortController | undefined;
     async function loadQuotes() {
+      controller?.abort();
+      controller = new AbortController();
+      const request = controller;
+      const timeout = window.setTimeout(() => request.abort(), 15_000);
       try {
         const response = await fetch(`/api/commodities?lang=${lang}`, {
           cache: "no-store",
+          signal: request.signal,
         });
+        if (!response.ok) throw new Error("Quotes unavailable");
         const data = (await response.json()) as {
           commodities?: CommodityQuote[];
           updatedAt?: string;
         };
-
         if (!ignore) {
           setQuotes(data.commodities ?? []);
-          setUpdatedAt(data.updatedAt ?? new Date().toISOString());
+          setUpdatedAt(data.updatedAt ?? null);
         }
       } catch {
         if (!ignore) {
           setQuotes([]);
           setUpdatedAt(null);
         }
+      } finally {
+        window.clearTimeout(timeout);
       }
     }
-
-    loadQuotes();
+    void loadQuotes();
     const interval = window.setInterval(loadQuotes, 60_000);
-
     return () => {
       ignore = true;
+      controller?.abort();
       window.clearInterval(interval);
     };
   }, [lang]);
 
-  const marqueeQuotes = quotes.length > 0 ? quotes : [];
-  const topTickerQuotes = rotateQuotes(marqueeQuotes, 0);
-  const bottomTickerQuotes = rotateQuotes(
-    marqueeQuotes,
-    Math.ceil(marqueeQuotes.length / 2),
-  );
-  const footerTickerQuotes = rotateQuotes(
-    marqueeQuotes,
-    Math.ceil(marqueeQuotes.length / 3),
-  );
-  const footerTickerQuotesReverse = rotateQuotes(
-    marqueeQuotes,
-    Math.ceil((marqueeQuotes.length * 2) / 3),
-  );
-  const showTradeMap = activeSlide === "map";
-  const showMarketBoard = activeSlide === "market";
+  function handleModeChange(value: string) {
+    if (!value || value === displayMode) return;
+    if (autoRotationTimerRef.current !== null)
+      window.clearTimeout(autoRotationTimerRef.current);
+    setDisplayMode(value as DisplayMode);
+    if (value === "auto") setAutoSlide("original");
+  }
 
-  return (
-    <div className="absolute inset-0 isolate">
-      <div
-        className={cn(
-          "absolute inset-0 -z-20 transition-opacity duration-1000",
-          activeSlide === "original" ? "opacity-100" : "opacity-0",
-        )}
-      >
-        <HeroVideoBackground />
-      </div>
-      <TradeMapLayer
-        lang={lang}
-        active={showTradeMap}
-        quotes={marqueeQuotes}
-        numberFormatter={numberFormatter}
-        loadingLabel={statusText[lang].loading}
-      />
-      <MarketBoard active={showMarketBoard} lang={lang} />
-      <div className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(7,22,37,0.88)_0%,rgba(7,22,37,0.56)_34%,rgba(7,22,37,0.76)_70%,rgba(7,22,37,0.95)_100%)]" />
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_72%_26%,rgba(90,180,210,0.22),transparent_34%),linear-gradient(90deg,rgba(4,14,25,0.64),rgba(4,14,25,0.16)_48%,rgba(4,14,25,0.62))]" />
+  function changeLanguage(value: string) {
+    if ((value !== "pt" && value !== "en") || value === lang) return;
+    const url = new URL(window.location.href);
+    url.searchParams.set("lang", value);
+    // Native history integrates with useSearchParams without remounting the
+    // presentation or resetting its slide, market format and timers.
+    window.history.pushState(null, "", url);
+  }
 
-      <section className="relative z-10 h-full">
-        <div className="absolute inset-x-0 top-0 border-b border-white/12 bg-[#071625]/82 backdrop-blur-md">
-          <div className="grid h-16 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4 px-5 sm:gap-6 sm:px-8 lg:px-12">
-            <div className="flex min-w-0 items-center justify-start gap-3 text-sm text-white/70">
-              <RadioTower className="size-5 shrink-0 text-emerald-300" aria-hidden="true" />
-              <span className="sr-only uppercase tracking-[0.18em] sm:not-sr-only">
-                {statusText[lang].live}
-              </span>
-            </div>
-
-            <div className="flex min-w-0 items-center justify-center">
-              <Image
-                src="/global/atc-icon-white.svg"
-                alt="ATC China Brasil"
-                width={1205}
-                height={375}
-                priority
-                className="h-auto w-28 sm:w-32"
-              />
-            </div>
-
-            <div className="flex min-w-0 items-center justify-end">
-              {currentTime ? (
-                <time className="font-mono text-xl font-semibold text-white">
-                  {timeFormatter.format(currentTime)}
-                </time>
-              ) : null}
-            </div>
-          </div>
-
-          <QuoteMarquee
-            quotes={topTickerQuotes}
-            numberFormatter={numberFormatter}
-            loadingLabel={statusText[lang].loading}
-          />
-          <QuoteMarquee
-            quotes={bottomTickerQuotes}
-            numberFormatter={numberFormatter}
-            loadingLabel={statusText[lang].loading}
-            reverse
-          />
-        </div>
-
-        <div className="absolute inset-x-5 top-[clamp(11.25rem,23svh,15rem)] bottom-[clamp(6.75rem,11svh,8.25rem)] grid content-center gap-5 sm:inset-x-8 md:gap-6 lg:inset-x-12 lg:grid-cols-[minmax(0,1fr)_clamp(18rem,25vw,27rem)] lg:items-center xl:gap-8">
-          <div className="min-w-0 max-w-[70rem]">
-            <Image
-              src="/global/atc-icon-white.svg"
-              alt="ATC China Brasil"
-              width={1205}
-              height={375}
-              priority
-              className="mb-[clamp(1rem,2.2svh,1.7rem)] h-auto w-[clamp(6rem,9vw,10rem)]"
-            />
-            <h1
-              className={cn(
-                "max-w-[70rem] whitespace-pre-line text-[clamp(2.85rem,5.5vw,6.25rem)] font-semibold leading-[0.95] tracking-tight text-white transition-[text-shadow] duration-1000 lg:text-[clamp(3.15rem,4.7vw,5.55rem)] 2xl:text-[clamp(3.65rem,4.45vw,6.05rem)]",
-                showTradeMap &&
-                  "[text-shadow:0_4px_34px_rgba(0,0,0,0.82),0_2px_12px_rgba(0,0,0,0.86)]",
-              )}
-            >
-              {content.showcase.title}
-            </h1>
-            <p
-              className={cn(
-                "mt-[clamp(0.9rem,2svh,1.5rem)] max-w-[58rem] text-[clamp(1.05rem,1.42vw,1.72rem)] leading-snug text-white/78 transition-[text-shadow] duration-1000",
-                showTradeMap &&
-                  "[text-shadow:0_3px_22px_rgba(0,0,0,0.86),0_1px_8px_rgba(0,0,0,0.92)]",
-              )}
-            >
-              {content.showcase.description}
-            </p>
-          </div>
-
-          <div className="hidden min-w-0 gap-3 self-end md:grid md:grid-cols-3 lg:grid-cols-1 lg:self-center">
-            {content.hero.stats.map((stat) => (
-              <article
-                key={stat.label}
-                className="min-h-20 rounded-xl border border-white/14 bg-[#071625]/64 p-4 shadow-[0_22px_80px_-54px_rgba(0,0,0,0.95)] backdrop-blur-md"
-              >
-                <p className="font-mono text-[clamp(1.65rem,2vw,2.55rem)] font-semibold leading-none text-white">
-                  {stat.value}
-                </p>
-                <p className="mt-2.5 text-[clamp(0.82rem,0.92vw,1rem)] leading-snug text-white/64">
-                  {stat.label}
-                </p>
-              </article>
-            ))}
-          </div>
-        </div>
-
-        <div className="absolute inset-x-0 bottom-0 grid gap-0 border-t border-white/12 bg-[#071625]/86 backdrop-blur-md">
-          <div className="overflow-hidden py-4 md:hidden">
-            <div className="commodity-marquee">
-              <PhraseGroup />
-              <PhraseGroup ariaHidden />
-            </div>
-          </div>
-
-          <div className="hidden min-w-0 md:block">
-            <QuoteMarquee
-              quotes={footerTickerQuotes}
-              numberFormatter={numberFormatter}
-              loadingLabel={statusText[lang].loading}
-            />
-            <QuoteMarquee
-              quotes={footerTickerQuotesReverse}
-              numberFormatter={numberFormatter}
-              loadingLabel={statusText[lang].loading}
-              reverse
-            />
-          </div>
-        </div>
-      </section>
-
-      {updatedAt ? (
-        <div className="pointer-events-none absolute bottom-28 right-8 text-xs uppercase tracking-[0.18em] text-white/40">
-          {statusText[lang].updated}{" "}
-          {new Intl.DateTimeFormat(
-            lang === "pt" ? "pt-BR" : lang === "zh" ? "zh-CN" : "en-US",
-            {
-              hour: "2-digit",
-              minute: "2-digit",
-            },
-          ).format(new Date(updatedAt))}
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
-function TradeMapLayer({
-  lang,
-  active,
-  quotes,
-  numberFormatter,
-  loadingLabel,
-}: {
-  lang: Language;
-  active: boolean;
-  quotes: CommodityQuote[];
-  numberFormatter: Intl.NumberFormat;
-  loadingLabel: string;
-}) {
   const panelQuotes = investmentPanelSymbols
     .map((symbol) => quotes.find((quote) => quote.symbol === symbol))
     .filter((quote): quote is CommodityQuote => Boolean(quote));
 
   return (
-    <div
-      aria-hidden={!active}
-      inert={!active}
-      className={cn(
-        "pointer-events-none absolute inset-x-0 top-36 bottom-20 z-20 flex gap-4 overflow-hidden bg-[#071625] p-3 transition-opacity duration-1000 lg:gap-6 lg:px-6",
-        active ? "opacity-100" : "opacity-0",
-      )}
+    <main
+      className="showcase-screen"
+      lang={showcaseLocales[lang]}
+      data-slide={activeSlide}
+      data-mode={displayMode}
     >
-      <TradeRoutesMap lang={lang} active={active} />
-      <InvestmentMapPanel
-        lang={lang}
-        quotes={panelQuotes}
-        numberFormatter={numberFormatter}
-        loadingLabel={loadingLabel}
-      />
-    </div>
-  );
-}
-
-function InvestmentMapPanel({
-  lang,
-  quotes,
-  numberFormatter,
-  loadingLabel,
-}: {
-  lang: Language;
-  quotes: CommodityQuote[];
-  numberFormatter: Intl.NumberFormat;
-  loadingLabel: string;
-}) {
-  return (
-    <aside className="hidden max-h-full w-60 shrink-0 self-center overflow-hidden rounded-md border border-white/12 bg-[#0c1e2d] xl:block 2xl:w-64">
-      <div className="flex h-9 items-center justify-between border-b border-white/10 px-3">
-        <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/78">
-          {lang === "pt" ? "Mercado ATC" : lang === "zh" ? "ATC 市场" : "ATC Market"}
-        </p>
-        <span className="text-[0.62rem] uppercase tracking-[0.16em] text-white/36">
-          {statusText[lang].live}
-        </span>
-      </div>
-      <div className="grid max-h-[min(28rem,calc(100svh-18rem))] overflow-hidden">
-        {quotes.length > 0 ? (
-          quotes.map((quote) => (
-            <InvestmentMapCard
-              key={quote.symbol}
-              quote={quote}
-              numberFormatter={numberFormatter}
-            />
-          ))
-        ) : (
-          <div className="flex min-h-24 items-center px-3 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-white/45">
-            {loadingLabel}
-          </div>
-        )}
-      </div>
-    </aside>
-  );
-}
-
-function InvestmentMapCard({
-  quote,
-  numberFormatter,
-}: {
-  quote: CommodityQuote;
-  numberFormatter: Intl.NumberFormat;
-}) {
-  const trend = quote.changePercent ?? 0;
-  const isPositive = trend >= 0;
-
-  return (
-    <article className="grid min-h-[4.35rem] grid-cols-[minmax(0,1fr)_5.5rem] items-center gap-3 border-b border-white/8 px-3 py-2.5 last:border-b-0">
-      <div className="min-w-0">
-        <p className="truncate text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-white/38">
-          {quote.label}
-        </p>
-        <p className="mt-1 font-mono text-[1.08rem] font-semibold leading-none text-white">
-          {quote.currency} {numberFormatter.format(quote.price)}
-        </p>
-        <p
-          className={cn(
-            "mt-1 font-mono text-[0.72rem] font-semibold leading-none",
-            isPositive ? "text-emerald-300" : "text-red-300",
-          )}
+      <header className="showcase-header">
+        <Image
+          src="/global/atc-icon-white.svg"
+          alt="ATC China Brasil"
+          width={1205}
+          height={375}
+          priority
+          className="showcase-logo"
+        />
+        <ToggleGroup
+          type="single"
+          value={displayMode}
+          onValueChange={handleModeChange}
+          size="sm"
+          spacing={1}
+          aria-label={text.displayMode}
+          className="showcase-navigation"
         >
-          {trend > 0 ? "+" : ""}
-          {numberFormatter.format(trend)}%
-        </p>
+          {(["auto", "original", "map", "market"] as const).map((mode) => (
+            <ToggleGroupItem
+              key={mode}
+              value={mode}
+              data-current={activeSlide === mode}
+              aria-controls={mode === "auto" ? undefined : `show-${mode}`}
+            >
+              {text[mode]}
+            </ToggleGroupItem>
+          ))}
+        </ToggleGroup>
+        <div className="showcase-header-tools">
+          <span className="showcase-live">
+            <RadioTower aria-hidden="true" />
+            {quotes.length > 0 ? text.live : text.loading}
+          </span>
+          {currentTime ? (
+            <time
+              className="showcase-clock"
+              dateTime={currentTime.toISOString()}
+            >
+              {timeFormatter.format(currentTime)}
+            </time>
+          ) : null}
+          <ToggleGroup
+            type="single"
+            value={lang}
+            onValueChange={changeLanguage}
+            size="sm"
+            spacing={1}
+            aria-label={text.language}
+            className="showcase-segmented"
+          >
+            <ToggleGroupItem value="pt" aria-label="Português">
+              PT
+            </ToggleGroupItem>
+            <ToggleGroupItem value="en" aria-label="English">
+              EN
+            </ToggleGroupItem>
+          </ToggleGroup>
+        </div>
+      </header>
+      <div className="showcase-tickers">
+        <QuoteMarquee
+          quotes={quotes}
+          numberFormatter={numberFormatter}
+          loadingLabel={text.loading}
+        />
+        <QuoteMarquee
+          quotes={rotateQuotes(quotes, Math.ceil(quotes.length / 2))}
+          numberFormatter={numberFormatter}
+          loadingLabel={text.loading}
+          reverse
+        />
       </div>
-      <Sparkline symbol={quote.symbol} value={trend} />
-    </article>
+      <div className="showcase-stage">
+        <section
+          id="show-original"
+          className="showcase-home"
+          hidden={activeSlide !== "original"}
+          aria-label={text.original}
+        >
+          <Image
+            src="/global/porto.webp"
+            alt=""
+            fill
+            sizes="100vw"
+            priority
+            className="showcase-home-photo"
+          />
+          <div className="showcase-home-content">
+            <div>
+              <p className="showcase-eyebrow">{text.eyebrow}</p>
+              <h1>{content.showcase.title}</h1>
+              <p className="showcase-description">
+                {content.showcase.description}
+              </p>
+              <p className="showcase-worldwide">{text.worldwide}</p>
+            </div>
+            <div className="showcase-stats">
+              {content.hero.stats.map((stat, index) => (
+                <article key={index}>
+                  <strong>{stat.value}</strong>
+                  <p>{stat.label}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+          {updatedAt && Number.isFinite(Date.parse(updatedAt)) ? (
+            <p className="showcase-updated">
+              {text.updated}{" "}
+              <time dateTime={updatedAt}>
+                {timeFormatter.format(new Date(updatedAt))}
+              </time>
+            </p>
+          ) : null}
+        </section>
+        <section
+          id="show-map"
+          className="showcase-map-panel"
+          hidden={activeSlide !== "map"}
+          aria-label={text.map}
+        >
+          <TradeRoutesMap lang={lang} active={activeSlide === "map"} />
+          <aside className="showcase-map-quotes" aria-label={text.market}>
+            <p className="showcase-eyebrow">{text.market}</p>
+            {panelQuotes.length > 0 ? (
+              panelQuotes.map((quote) => (
+                <article key={quote.symbol}>
+                  <p>{quote.label}</p>
+                  <strong>
+                    {quote.currency} {numberFormatter.format(quote.price)}
+                  </strong>
+                  <TrendValue
+                    value={quote.changePercent}
+                    numberFormatter={numberFormatter}
+                  />
+                </article>
+              ))
+            ) : (
+              <p>{text.loading}</p>
+            )}
+          </aside>
+        </section>
+        <MarketBoard active={activeSlide === "market"} lang={lang} />
+      </div>
+      <footer className="showcase-tickers">
+        <QuoteMarquee
+          quotes={rotateQuotes(quotes, Math.ceil(quotes.length / 3))}
+          numberFormatter={numberFormatter}
+          loadingLabel={text.loading}
+        />
+        <QuoteMarquee
+          quotes={rotateQuotes(quotes, Math.ceil((quotes.length * 2) / 3))}
+          numberFormatter={numberFormatter}
+          loadingLabel={text.loading}
+          reverse
+        />
+      </footer>
+    </main>
   );
-}
-
-function Sparkline({ symbol, value }: { symbol: string; value: number }) {
-  const points = getSparklinePoints(symbol, value);
-  const strokeClass = value >= 0 ? "stroke-emerald-300" : "stroke-red-300";
-  const fillClass = value >= 0 ? "fill-emerald-300/10" : "fill-red-300/10";
-
-  return (
-    <svg
-      viewBox="0 0 96 34"
-      aria-hidden="true"
-      className="h-9 w-full overflow-visible"
-      preserveAspectRatio="none"
-    >
-      <path
-        d={`M0 34 L${points} L96 34 Z`}
-        className={fillClass}
-        vectorEffect="non-scaling-stroke"
-      />
-      <polyline
-        points={points}
-        fill="none"
-        strokeWidth="2"
-        className={strokeClass}
-        vectorEffect="non-scaling-stroke"
-      />
-    </svg>
-  );
-}
-
-function getSparklinePoints(symbol: string, value: number) {
-  const width = 96;
-  const height = 34;
-  const steps = 18;
-  const seed = [...symbol].reduce(
-    (total, char) => total + char.charCodeAt(0),
-    0,
-  );
-  const direction = value >= 0 ? -1 : 1;
-
-  return Array.from({ length: steps }, (_, index) => {
-    const progress = index / (steps - 1);
-    const wave =
-      Math.sin(seed * 0.17 + index * 0.85) * 4 +
-      Math.cos(seed * 0.07 + index * 0.42) * 2.5;
-    const trend = direction * progress * Math.min(Math.abs(value), 8) * 1.15;
-    const x = (width / (steps - 1)) * index;
-    const y = Math.max(4, Math.min(height - 4, height / 2 + wave + trend));
-
-    return `${x.toFixed(1)},${y.toFixed(1)}`;
-  }).join(" ");
 }
 
 function QuoteMarquee({
@@ -662,7 +399,7 @@ function QuoteText({
         {quote.currency} {numberFormatter.format(quote.price)}
       </span>
       <TrendValue
-        value={quote.changePercent ?? 0}
+        value={quote.changePercent}
         numberFormatter={numberFormatter}
       />
     </>
@@ -673,9 +410,13 @@ function TrendValue({
   value,
   numberFormatter,
 }: {
-  value: number;
+  value: number | null;
   numberFormatter: Intl.NumberFormat;
 }) {
+  if (value === null) {
+    return <span className="ml-3 text-white/60">—</span>;
+  }
+
   const directionClass =
     value > 0
       ? "text-emerald-300"
@@ -692,20 +433,5 @@ function TrendValue({
       {value > 0 ? "+" : ""}
       {numberFormatter.format(value)}%
     </span>
-  );
-}
-
-function PhraseGroup({ ariaHidden }: { ariaHidden?: boolean }) {
-  return (
-    <div className="commodity-marquee-group" aria-hidden={ariaHidden}>
-      {marketPhrases.map((phrase) => (
-        <span
-          key={phrase}
-          className="flex h-full shrink-0 items-center px-8 text-2xl font-semibold uppercase tracking-[0.22em] text-white/68 lg:px-10"
-        >
-          {phrase}
-        </span>
-      ))}
-    </div>
   );
 }

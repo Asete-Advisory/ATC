@@ -1,68 +1,221 @@
 import type { Language } from "@/lib/i18n";
 
-type LocalizedLabel = Record<Language, string>;
 type Coordinates = readonly [longitude: number, latitude: number];
-
-type TradeHub = {
-  id: string;
-  coordinates: Coordinates;
-  featured?: boolean;
-};
+type LocalizedLabel = Record<Language, string>;
 
 export const tradeMapCopy = {
   pt: {
-    title: "Conexões Globais",
-    description: "Mapa de conexões comerciais ilustrativas entre Brasil, China e polos internacionais. As animações não representam embarques em tempo real.",
+    title: "Conexões globais e passagens marítimas",
+    description:
+      "Seis pontos de referência, continentes coloridos e passagens marítimas em rotas ilustrativas. Brasil–China é o eixo principal. Não representa rastreamento de navios nem bases da ATC.",
   },
   en: {
-    title: "Global Connections",
-    description: "Map of illustrative trade connections between Brazil, China and international hubs. Animations do not represent real-time shipments.",
+    title: "Global connections and maritime passages",
+    description:
+      "Six reference points, colored continents and maritime passages along illustrative routes. Brazil–China is the main connection. This is not vessel tracking or a map of ATC facilities.",
   },
   zh: {
-    title: "全球连接",
-    description: "巴西、中国与国际枢纽之间的贸易连接示意图。动画不代表实时货运。",
+    title: "全球连接与海上通道",
+    description:
+      "六个参考点、彩色大陆和示意航线上的海上通道。巴西—中国为主要连接。这不是船舶追踪或ATC设施分布图。",
   },
 } satisfies Record<Language, Record<string, string>>;
 
 type TradeMapLabel = {
   id: string;
-  kind: "region" | "ocean" | "passage";
   coordinates: Coordinates;
   label: LocalizedLabel;
-  offset?: readonly [number, number];
-  anchor?: "start" | "end";
 };
-
-// Text from the blue reference map, independent of the existing route pins.
-// Passage names are geographic annotations, not additional stops on a route.
 export const tradeMapLabels: TradeMapLabel[] = [
-  { id: "north-america", kind: "region", coordinates: [-103, 43], label: { pt: "AMÉRICA\nDO NORTE", en: "NORTH\nAMERICA", zh: "北美洲" } },
-  { id: "central-america", kind: "region", coordinates: [-79, 26], label: { pt: "AMÉRICA\nCENTRAL", en: "CENTRAL\nAMERICA", zh: "中美洲" } },
-  { id: "south-america", kind: "region", coordinates: [-62, -13], label: { pt: "AMÉRICA\nDO SUL", en: "SOUTH\nAMERICA", zh: "南美洲" } },
-  { id: "europe", kind: "region", coordinates: [15, 49], label: { pt: "EUROPA", en: "EUROPE", zh: "欧洲" } },
-  { id: "africa", kind: "region", coordinates: [18, 2], label: { pt: "ÁFRICA", en: "AFRICA", zh: "非洲" } },
-  { id: "china", kind: "region", coordinates: [104, 35], label: { pt: "CHINA", en: "CHINA", zh: "中国" } },
-  { id: "japan", kind: "region", coordinates: [144, 43], label: { pt: "JAPÃO", en: "JAPAN", zh: "日本" } },
-  { id: "southeast-asia", kind: "region", coordinates: [96, 18], label: { pt: "SUDESTE\nASIÁTICO", en: "SOUTHEAST\nASIA", zh: "东南亚" } },
-  { id: "australia", kind: "region", coordinates: [135, -26], label: { pt: "AUSTRÁLIA", en: "AUSTRALIA", zh: "澳大利亚" } },
-  { id: "pacific", kind: "ocean", coordinates: [-111, -7], label: { pt: "OCEANO PACÍFICO", en: "PACIFIC OCEAN", zh: "太平洋" } },
-  { id: "atlantic", kind: "ocean", coordinates: [-48, 30], label: { pt: "OCEANO\nATLÂNTICO", en: "ATLANTIC\nOCEAN", zh: "大西洋" } },
-  { id: "indian", kind: "ocean", coordinates: [95, -35], label: { pt: "OCEANO ÍNDICO", en: "INDIAN OCEAN", zh: "印度洋" } },
-  { id: "suez", kind: "passage", coordinates: [31, 30], offset: [-12, -8], anchor: "end", label: { pt: "Canal de Suez", en: "Suez Canal", zh: "苏伊士运河" } },
-  { id: "hormuz", kind: "passage", coordinates: [56, 26], offset: [10, -10], anchor: "start", label: { pt: "Estreito de Ormuz", en: "Strait of Hormuz", zh: "霍尔木兹海峡" } },
-  { id: "bab-el-mandeb", kind: "passage", coordinates: [43, 12.5], offset: [12, 14], anchor: "start", label: { pt: "Bab el-Mandeb", en: "Bab el-Mandeb", zh: "曼德海峡" } },
-  { id: "cape-of-good-hope", kind: "passage", coordinates: [18.5, -34], offset: [0, -8], label: { pt: "Cabo da Boa Esperança", en: "Cape of Good Hope", zh: "好望角" } },
+  {
+    id: "north-america",
+    coordinates: [-105, 48],
+    label: { pt: "AMÉRICA DO\nNORTE", en: "NORTH\nAMERICA", zh: "北美洲" },
+  },
+  {
+    id: "south-america",
+    coordinates: [-61, -9],
+    label: { pt: "AMÉRICA\nDO SUL", en: "SOUTH\nAMERICA", zh: "南美洲" },
+  },
+  {
+    id: "europe",
+    coordinates: [21, 54],
+    label: { pt: "EUROPA", en: "EUROPE", zh: "欧洲" },
+  },
+  {
+    id: "africa",
+    coordinates: [18, 5],
+    label: { pt: "ÁFRICA", en: "AFRICA", zh: "非洲" },
+  },
+  {
+    id: "asia",
+    coordinates: [90, 52],
+    label: { pt: "ÁSIA", en: "ASIA", zh: "亚洲" },
+  },
+  {
+    id: "oceania",
+    coordinates: [137, -24],
+    label: { pt: "OCEANIA", en: "OCEANIA", zh: "大洋洲" },
+  },
 ];
 
-// Approximate regions marked in the user's reference photograph. The photo
-// does not identify exact cities; do not present these pins as ATC facilities.
-export const tradeHubs: TradeHub[] = [
-  { id: "us-west", coordinates: [-123, 33] },
-  { id: "central-america", coordinates: [-88.5, 15.5] },
-  { id: "brazil-south", coordinates: [-51, -29], featured: true },
-  { id: "northern-europe", coordinates: [6.5, 60] },
-  { id: "china", coordinates: [119.5, 29.5], featured: true },
-  { id: "japan", coordinates: [138, 37] },
+// Regional reference pins from the user's original photograph, not ATC offices.
+export const tradeHubs = [
+  { id: "us-west", coordinates: [-123, 33] as Coordinates, featured: false },
+  {
+    id: "central-america",
+    coordinates: [-88.5, 15.5] as Coordinates,
+    featured: false,
+  },
+  {
+    id: "brazil-south",
+    coordinates: [-51, -29] as Coordinates,
+    featured: true,
+  },
+  {
+    id: "northern-europe",
+    coordinates: [6.5, 60] as Coordinates,
+    featured: false,
+  },
+  { id: "china", coordinates: [119.5, 29.5] as Coordinates, featured: true },
+  { id: "japan", coordinates: [138, 37] as Coordinates, featured: false },
+];
+
+// Canal/strait coordinates are shared with the route geometry. The Cape marker
+// sits offshore along the illustrative southern corridor, not on the land tip.
+const passageCoordinates = {
+  panama: [-79.7, 9.1],
+  gibraltar: [-5.6, 35.95],
+  suez: [32.4, 30.5],
+  "bab-el-mandeb": [43.3, 12.6],
+  hormuz: [56.5, 26.5],
+  malacca: [100.2, 3.5],
+  "cape-of-good-hope": [18.3, -35.2],
+} satisfies Record<string, Coordinates>;
+
+type TradePassage = {
+  id: keyof typeof passageCoordinates;
+  coordinates: Coordinates;
+  labelCoordinates: Coordinates;
+  label: LocalizedLabel;
+};
+export const tradePassages: TradePassage[] = [
+  {
+    id: "panama",
+    coordinates: passageCoordinates.panama,
+    labelCoordinates: [-103, 8],
+    label: { pt: "Panamá", en: "Panama", zh: "巴拿马运河" },
+  },
+  {
+    id: "gibraltar",
+    coordinates: passageCoordinates.gibraltar,
+    labelCoordinates: [-23, 36],
+    label: { pt: "Gibraltar", en: "Gibraltar", zh: "直布罗陀海峡" },
+  },
+  {
+    id: "suez",
+    coordinates: passageCoordinates.suez,
+    labelCoordinates: [33, 43],
+    label: { pt: "Suez", en: "Suez", zh: "苏伊士运河" },
+  },
+  {
+    id: "bab-el-mandeb",
+    coordinates: passageCoordinates["bab-el-mandeb"],
+    labelCoordinates: [62, 8],
+    label: { pt: "Bab el-Mandeb", en: "Bab el-Mandeb", zh: "曼德海峡" },
+  },
+  {
+    id: "hormuz",
+    coordinates: passageCoordinates.hormuz,
+    labelCoordinates: [71, 29],
+    label: { pt: "Ormuz", en: "Hormuz", zh: "霍尔木兹海峡" },
+  },
+  {
+    id: "malacca",
+    coordinates: passageCoordinates.malacca,
+    labelCoordinates: [124, -1],
+    label: { pt: "Malaca", en: "Malacca", zh: "马六甲海峡" },
+  },
+  {
+    id: "cape-of-good-hope",
+    coordinates: passageCoordinates["cape-of-good-hope"],
+    labelCoordinates: [17, -49],
+    label: {
+      pt: "Cabo da Boa Esperança",
+      en: "Cape of Good Hope",
+      zh: "好望角",
+    },
+  },
+];
+
+const northAtlantic: Coordinates[] = [
+  [0, 60],
+  [-4, 59.5],
+  [-8, 56],
+  [-12, 50],
+  [-11, 44],
+  [-11, 38],
+];
+const cape = passageCoordinates["cape-of-good-hope"];
+const malaccaToChina: Coordinates[] = [
+  passageCoordinates.malacca,
+  [102, 2.5],
+  [103.8, 1.2],
+  [105.3, 1.3],
+  [108, 6],
+  [113, 14],
+  [118, 22],
+];
+const capeToAsia: Coordinates[] = [
+  cape,
+  [24, -36],
+  [38, -33],
+  [49, -27],
+  [65, -15],
+  [79, -3],
+  [88, 1],
+  [96, 6],
+  ...malaccaToChina,
+];
+const mediterranean: Coordinates[] = [
+  passageCoordinates.gibraltar,
+  [0, 37],
+  [8, 37.7],
+  [15, 35],
+  [23, 34],
+  [29, 32.6],
+  [32.32, 31.27],
+  passageCoordinates.suez,
+];
+const redSea: Coordinates[] = [
+  [32.55, 29.9],
+  [33.7, 27.7],
+  [35.2, 25],
+  [36.8, 22],
+  [38.5, 19],
+  [40.2, 16],
+  [42, 13.5],
+  passageCoordinates["bab-el-mandeb"],
+];
+const indianOcean: Coordinates[] = [
+  [45, 12],
+  [49, 12],
+  [53, 11.5],
+  [60, 10],
+  [72, 5],
+  [82, 3],
+  [90, 4],
+  [96, 6],
+];
+const pacificToPanama: Coordinates[] = [
+  [-123, 27],
+  [-118, 21],
+  [-109, 17],
+  [-102, 12],
+  [-91, 8],
+  [-83, 6],
+  [-79.4, 8.5],
+  passageCoordinates.panama,
 ];
 
 type TradeConnection = {
@@ -72,48 +225,206 @@ type TradeConnection = {
   waypoints: Coordinates[];
   featured?: boolean;
   duration: number;
+  color: string;
 };
 
 const connections: TradeConnection[] = [
-  // Follow the reference's bundles around southern Africa and across the
-  // Indian Ocean. Nearby paths stay distinct instead of sharing one stroke.
   {
-    id: "brazil-china", from: "brazil-south", to: "china", featured: true, duration: 16,
-    waypoints: [[-43, -34], [-24, -42], [10, -41], [37, -37], [70, -21], [99, -3], [108, 3], [116, 18]],
+    id: "brazil-china",
+    from: "brazil-south",
+    to: "china",
+    featured: true,
+    duration: 32,
+    color: "#8df0d3",
+    waypoints: [
+      [-47, -30],
+      [-35, -36],
+      [-15, -41],
+      [5, -40],
+      [14, -37],
+      ...capeToAsia,
+    ],
   },
   {
-    id: "brazil-japan", from: "brazil-south", to: "japan", duration: 18,
-    waypoints: [[-43, -35], [-25, -47], [12, -46], [46, -40], [79, -25], [103, -9], [122, 3], [133, 20], [145, 31]],
+    id: "brazil-japan",
+    from: "brazil-south",
+    to: "japan",
+    duration: 38,
+    color: "#b9b1ed",
+    waypoints: [
+      [-44, -36],
+      [-15, -46],
+      [22, -44],
+      [56, -32],
+      [94, -13],
+      [111, -6],
+      [130, 7],
+      [139, 24],
+      [142, 32],
+    ],
   },
   {
-    id: "us-west-china", from: "us-west", to: "china", duration: 24,
-    waypoints: [[-128, 27], [-121, 15], [-109, 7], [-95, 4], [-82.5, 7.5], [-79.7, 9], [-77, 13], [-63, 17], [-48, 0], [-33, -10], [-20, -33], [10, -39], [35, -38], [59, -26], [78, -12], [96, 3], [103, 1], [111, 11], [119, 23]],
+    id: "us-west-china",
+    from: "us-west",
+    to: "china",
+    duration: 52,
+    color: "#eaa2b2",
+    waypoints: [
+      ...pacificToPanama,
+      [-80.2, 9.5],
+      [-78, 16],
+      [-65, 16],
+      [-60, 20],
+      [-39, 35],
+      [-12, 36],
+      ...mediterranean,
+      ...redSea,
+      ...indianOcean,
+      ...malaccaToChina,
+    ],
   },
   {
-    id: "central-america-china", from: "central-america", to: "china", duration: 22,
-    waypoints: [[-78, 19], [-64, 17], [-48, 2], [-30, -7], [-18, -31], [15, -40], [43, -36], [72, -21], [95, -4], [106, 3], [115, 16]],
+    id: "central-america-china",
+    from: "central-america",
+    to: "china",
+    duration: 45,
+    color: "#79b7cd",
+    waypoints: [
+      [-85, 17],
+      [-78, 18],
+      [-65, 16],
+      [-48, 4],
+      [-32, -10],
+      [-16, -30],
+      [8, -37],
+      ...capeToAsia,
+    ],
   },
   {
-    id: "europe-china", from: "northern-europe", to: "china", duration: 21,
-    waypoints: [[-6, 54], [-18, 34], [-30, 12], [-29, -6], [-15, -30], [17, -38], [43, -33], [71, -16], [97, 2], [111, 9], [121, 23]],
-  },
-  // The photograph also links the Pacific coast, Central America and the
-  // northern European pin through the Caribbean and western Atlantic.
-  {
-    id: "us-west-central-america", from: "us-west", to: "central-america", duration: 11,
-    waypoints: [[-124, 27], [-116, 18], [-100, 8], [-88, 9]],
-  },
-  {
-    id: "central-america-europe", from: "central-america", to: "northern-europe", duration: 15,
-    waypoints: [[-80, 19], [-63, 16], [-49, 4], [-36, 0], [-25, 18], [-14, 43], [-4, 56]],
-  },
-  {
-    id: "europe-brazil", from: "northern-europe", to: "brazil-south", duration: 14,
-    waypoints: [[-8, 55], [-19, 38], [-31, 16], [-36, -2], [-39, -15], [-46, -25]],
+    id: "europe-china",
+    from: "northern-europe",
+    to: "china",
+    duration: 44,
+    color: "#98cde1",
+    waypoints: [
+      ...northAtlantic,
+      [-16, 29],
+      [-25, 10],
+      [-22, -8],
+      [-11, -29],
+      [8, -37],
+      ...capeToAsia,
+    ],
   },
   {
-    id: "china-japan", from: "china", to: "japan", duration: 9,
-    waypoints: [[124, 23], [130, 24], [139, 30]],
+    id: "us-west-central-america",
+    from: "us-west",
+    to: "central-america",
+    duration: 28,
+    color: "#f5c875",
+    waypoints: [
+      ...pacificToPanama,
+      [-80.2, 9.5],
+      [-80, 13],
+      [-84, 17],
+      [-86, 17],
+    ],
+  },
+  {
+    id: "central-america-europe",
+    from: "central-america",
+    to: "northern-europe",
+    duration: 34,
+    color: "#a3d8ff",
+    waypoints: [
+      [-86, 17],
+      [-84.8, 19],
+      [-85.1, 21],
+      [-85.3, 23],
+      [-81, 24.5],
+      [-77, 26.5],
+      [-68, 28],
+      [-49, 43],
+      [-21, 55],
+      [-6, 59],
+      [0, 60],
+    ],
+  },
+  {
+    id: "europe-brazil",
+    from: "northern-europe",
+    to: "brazil-south",
+    duration: 30,
+    color: "#98cde1",
+    waypoints: [
+      ...northAtlantic,
+      [-19, 30],
+      [-31, 16],
+      [-36, -2],
+      [-39, -15],
+      [-46, -25],
+    ],
+  },
+  {
+    id: "china-japan",
+    from: "china",
+    to: "japan",
+    duration: 20,
+    color: "#f5c875",
+    waypoints: [
+      [124, 27],
+      [132, 28],
+      [141, 33],
+    ],
+  },
+  {
+    id: "europe-suez-china",
+    from: "northern-europe",
+    to: "china",
+    duration: 46,
+    color: "#a3d8ff",
+    waypoints: [
+      ...northAtlantic,
+      [-8, 36],
+      ...mediterranean,
+      ...redSea,
+      ...indianOcean,
+      ...malaccaToChina,
+    ],
+  },
+  {
+    id: "brazil-suez-china",
+    from: "brazil-south",
+    to: "china",
+    duration: 48,
+    color: "#89d9cb",
+    waypoints: [
+      [-40, -20],
+      [-29, 3],
+      [-23, 25],
+      [-12, 36],
+      ...mediterranean,
+      ...redSea,
+      ...indianOcean,
+      ...malaccaToChina,
+    ],
+  },
+  // A separate Gulf branch; Hormuz is not a waypoint on the Suez–China route.
+  {
+    id: "china-hormuz",
+    from: "china",
+    to: "hormuz",
+    duration: 36,
+    color: "#f5c875",
+    waypoints: [...malaccaToChina].reverse().concat([
+      [96, 6],
+      [90, 4],
+      [82, 3],
+      [72, 5],
+      [65, 12],
+      [61, 19],
+      [59, 24],
+    ]),
   },
 ];
 
@@ -124,8 +435,13 @@ export function projectTradeCoordinates([longitude, latitude]: Coordinates) {
 
 function connectionPath(connection: TradeConnection) {
   const from = tradeHubs.find((hub) => hub.id === connection.from)!;
-  const to = tradeHubs.find((hub) => hub.id === connection.to)!;
-  const points = [from.coordinates, ...connection.waypoints, to.coordinates].map(projectTradeCoordinates);
+  const to = tradeHubs.find((hub) => hub.id === connection.to);
+  const end =
+    to?.coordinates ??
+    tradePassages.find((passage) => passage.id === connection.to)!.coordinates;
+  const points = [from.coordinates, ...connection.waypoints, end].map(
+    projectTradeCoordinates,
+  );
   const coordinate = (value: number) => value.toFixed(1);
   let path = `M${coordinate(points[0].x)},${coordinate(points[0].y)}`;
 

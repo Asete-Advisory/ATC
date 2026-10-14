@@ -1,6 +1,13 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { MarketSectors } from "@/components/market-sectors";
+import { usePageVisible } from "@/hooks/use-page-visible";
+import { marketAssetLabel, marketViewText } from "@/lib/market-sectors";
+import { showcaseLocales } from "@/lib/showcase";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -116,6 +123,10 @@ function getPageSize(containerHeight: number) {
 
 export function MarketBoard({ active, lang }: MarketBoardProps) {
   const content = marketText[lang];
+  const viewText = marketViewText[lang];
+  const [view, setView] = useState<"table" | "sectors">("sectors");
+  const [updatedAt, setUpdatedAt] = useState<string | null>(null);
+  const pageVisible = usePageVisible();
   const [investments, setInvestments] = useState<MarketQuote[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
@@ -167,7 +178,7 @@ export function MarketBoard({ active, lang }: MarketBoardProps) {
     }
 
     const updatePageSize = (height = container.clientHeight) => {
-      setPageSize(getPageSize(height));
+      if (height > 0) setPageSize(getPageSize(height));
     };
 
     updatePageSize();
@@ -184,9 +195,12 @@ export function MarketBoard({ active, lang }: MarketBoardProps) {
 
   useEffect(() => {
     let ignore = false;
+    let pendingRequest: AbortController | undefined;
 
     async function loadInvestments() {
+      pendingRequest?.abort();
       const controller = new AbortController();
+      pendingRequest = controller;
       const requestTimeout = window.setTimeout(
         () => controller.abort(),
         requestTimeoutMs,
@@ -206,6 +220,7 @@ export function MarketBoard({ active, lang }: MarketBoardProps) {
           const nextInvestments = data.investments ?? [];
           if (nextInvestments.length > 0) {
             setInvestments(nextInvestments);
+            setUpdatedAt(data.updatedAt);
             setHasError(false);
           } else {
             setHasError(true);
@@ -228,6 +243,7 @@ export function MarketBoard({ active, lang }: MarketBoardProps) {
 
     return () => {
       ignore = true;
+      pendingRequest?.abort();
       window.clearInterval(interval);
     };
   }, []);
@@ -239,13 +255,7 @@ export function MarketBoard({ active, lang }: MarketBoardProps) {
   }, [totalPages]);
 
   useEffect(() => {
-    if (active) {
-      setCurrentPage(0);
-    }
-  }, [active]);
-
-  useEffect(() => {
-    if (!active || totalPages <= 1) {
+    if (!active || !pageVisible || view !== "table" || totalPages <= 1) {
       return;
     }
 
@@ -254,16 +264,19 @@ export function MarketBoard({ active, lang }: MarketBoardProps) {
     }, pageDurationMs);
 
     return () => window.clearInterval(interval);
-  }, [active, totalPages]);
+  }, [active, pageVisible, view, totalPages]);
 
   const visibleCount = Math.min(pageSize, investments.length);
-  const visibleInvestments = Array.from({ length: visibleCount }, (_, index) => {
-    const assetIndex = (currentPage * pageSize + index) % investments.length;
-    return investments[assetIndex];
-  });
+  const visibleInvestments = Array.from(
+    { length: visibleCount },
+    (_, index) => {
+      const assetIndex = (currentPage * pageSize + index) % investments.length;
+      return investments[assetIndex];
+    },
+  );
 
   function formatPrice(value: number | null, decimals: number) {
-    if (value === null) {
+    if (value === null || !Number.isFinite(value)) {
       return "—";
     }
 
@@ -275,21 +288,65 @@ export function MarketBoard({ active, lang }: MarketBoardProps) {
   }
 
   return (
-    <div
-      aria-hidden={!active}
-      className={cn(
-        "absolute inset-x-0 top-36 bottom-20 z-20 overflow-hidden bg-black text-white transition-opacity duration-1000",
-        active ? "opacity-100" : "pointer-events-none opacity-0",
-      )}
+    <section
+      id="show-market"
+      className="showcase-market"
+      hidden={!active}
+      aria-label={viewText.title}
+      data-view={view}
     >
-      <div
-        ref={tableContainerRef}
-        className="h-full overflow-hidden [&>[data-slot=table-container]]:h-full"
-      >
-        {isLoading ? (
-          <MarketTableSkeleton rows={pageSize} />
-        ) : visibleInvestments.length > 0 ? (
-          <Table className="h-full table-fixed border-collapse font-mono text-[0.63rem] leading-none lg:text-[0.68rem] xl:text-[0.72rem]">
+      <header className="market-toolbar">
+        <div className="market-heading">
+          <h2>{viewText.title}</h2>
+          <p className="market-status" role="status">
+            {isLoading ? (
+              content.loading
+            ) : hasError ? (
+              investments.length > 0 ? (
+                viewText.stale
+              ) : (
+                content.unavailable
+              )
+            ) : updatedAt && Number.isFinite(Date.parse(updatedAt)) ? (
+              <>
+                {viewText.consulted}{" "}
+                <time dateTime={updatedAt}>
+                  {new Intl.DateTimeFormat(showcaseLocales[lang], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  }).format(new Date(updatedAt))}
+                </time>
+              </>
+            ) : null}
+          </p>
+        </div>
+        <ToggleGroup
+          type="single"
+          value={view}
+          onValueChange={(value) => {
+            if (value === "table" || value === "sectors") setView(value);
+          }}
+          size="sm"
+          spacing={1}
+          aria-label={viewText.format}
+          className="showcase-segmented"
+        >
+          <ToggleGroupItem value="table">{viewText.table}</ToggleGroupItem>
+          <ToggleGroupItem value="sectors">{viewText.sectors}</ToggleGroupItem>
+        </ToggleGroup>
+      </header>
+
+      <div className="market-table-panel" hidden={view !== "table"}>
+        <div
+          ref={tableContainerRef}
+          className="market-table-container"
+          tabIndex={0}
+          aria-label={viewText.table}
+        >
+          {isLoading ? (
+            <MarketTableSkeleton rows={pageSize} />
+          ) : visibleInvestments.length > 0 ? (
+            <Table className="h-full min-w-[1100px] table-fixed border-collapse font-mono text-[0.63rem] leading-none lg:text-[0.68rem] xl:text-[0.72rem]">
               <TableHeader className="bg-[#24272b] text-white/58">
                 <TableRow className="h-7 border-white/10 hover:bg-[#24272b]">
                   <MarketTableHead className="w-[9.5rem] text-left">
@@ -310,7 +367,9 @@ export function MarketBoard({ active, lang }: MarketBoardProps) {
                   <MarketTableHead>{content.columns.week}</MarketTableHead>
                   <MarketTableHead>{content.columns.month}</MarketTableHead>
                   <MarketTableHead>{content.columns.year}</MarketTableHead>
-                  <MarketTableHead>{content.columns.twelveMonths}</MarketTableHead>
+                  <MarketTableHead>
+                    {content.columns.twelveMonths}
+                  </MarketTableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -327,7 +386,7 @@ export function MarketBoard({ active, lang }: MarketBoardProps) {
                             {investment.ticker}
                           </p>
                           <p className="mt-0.5 truncate text-[0.52rem] leading-none text-white/72">
-                            {investment.label}
+                            {marketAssetLabel(investment, lang)}
                           </p>
                         </div>
                       </div>
@@ -391,14 +450,52 @@ export function MarketBoard({ active, lang }: MarketBoardProps) {
                   </TableRow>
                 ))}
               </TableBody>
-          </Table>
-        ) : (
-          <div className="grid h-full place-items-center px-6 text-center text-sm uppercase tracking-[0.16em] text-white/45">
-            {hasError ? content.unavailable : content.loading}
+            </Table>
+          ) : (
+            <div className="market-empty">{content.unavailable}</div>
+          )}
+        </div>
+        {investments.length > 0 ? (
+          <div className="market-table-pagination market-pagination">
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              disabled={currentPage === 0}
+              aria-label={viewText.previous}
+              onClick={() => setCurrentPage((page) => Math.max(0, page - 1))}
+            >
+              <ChevronLeft />
+            </Button>
+            <span>
+              {viewText.page} {currentPage + 1} / {totalPages}
+            </span>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              disabled={currentPage >= totalPages - 1}
+              aria-label={viewText.next}
+              onClick={() =>
+                setCurrentPage((page) => Math.min(totalPages - 1, page + 1))
+              }
+            >
+              <ChevronRight />
+            </Button>
           </div>
-        )}
+        ) : null}
       </div>
-    </div>
+      <MarketSectors
+        investments={investments}
+        lang={lang}
+        active={
+          active && view === "sectors" && !isLoading && investments.length > 0
+        }
+      />
+      {view === "sectors" && (isLoading || investments.length === 0) ? (
+        <div className="market-empty">
+          {isLoading ? content.loading : content.unavailable}
+        </div>
+      ) : null}
+    </section>
   );
 }
 
@@ -488,7 +585,10 @@ function CategoryMark({ category }: { category: MarketQuote["category"] }) {
 
 function MarketTableSkeleton({ rows }: { rows: number }) {
   return (
-    <div className="flex h-full flex-col gap-px bg-black p-2" aria-hidden="true">
+    <div
+      className="flex h-full flex-col gap-px bg-black p-2"
+      aria-hidden="true"
+    >
       {Array.from({ length: rows }, (_, index) => (
         <div
           key={index}
@@ -496,7 +596,10 @@ function MarketTableSkeleton({ rows }: { rows: number }) {
         >
           <Skeleton className="h-2.5 w-20 bg-white/12" />
           {Array.from({ length: 12 }, (_, cellIndex) => (
-            <Skeleton key={cellIndex} className="ml-auto h-2 w-10 bg-white/10" />
+            <Skeleton
+              key={cellIndex}
+              className="ml-auto h-2 w-10 bg-white/10"
+            />
           ))}
         </div>
       ))}
