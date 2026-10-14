@@ -249,11 +249,6 @@ export function TradeRoutesMap({
         </svg>
       </div>
       <div className="trade-map-footer">
-        <p>
-          <span className="trade-map-axis" aria-hidden="true" />
-          {text.axis}
-          <span>{text.routes}</span>
-        </p>
         <Button
           variant="ghost"
           size="sm"

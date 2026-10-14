@@ -18,10 +18,14 @@ passagens. A implementação permanece exclusiva da `main`.
 - `app/globals.css`: estilos e animações `trade-map` e apresentação `showcase`.
 - `hooks/use-page-visible.ts`: pausa quando a aba do navegador está oculta.
 - `components/showcase-screen.tsx` e `lib/showcase.ts`: modos, idiomas e tempos.
+- `components/hero-video-background.tsx`: sequência contínua dos vídeos locais,
+  retomada na Home e pausa quando oculta.
 
 ## Apresentação e idiomas
 
 O seletor PT/EN fica no cabeçalho, junto de Auto, Início, Mapa e Mercado.
+O modo selecionado recebe fundo verde-claro. Durante o ciclo, o botão indica
+“Auto ativo” e permanece destacado; as telas não recebem um segundo destaque.
 Português é o padrão; `?lang=zh` continua disponível. Alterar o idioma atualiza
 somente o parâmetro `lang`, preservando outros parâmetros, fragmento, tela,
 formato do mercado e temporizador. F5 e voltar/avançar respeitam o idioma da URL.
@@ -29,13 +33,24 @@ A integração usa o [histórico nativo do Next.js](https://nextjs.org/docs/app/
 
 O modo automático mantém Início por 30 segundos, Mapa por 5 minutos e Mercado
 por 5 minutos. Escolher uma tela interrompe esse ciclo; selecionar Auto inicia
-novamente na apresentação. Mercado abre em Setores; a escolha posterior entre
+novamente na apresentação. Mercado abre em Tabela; a escolha posterior entre
 Tabela/Setores permanece selecionada ao mudar de tela ou idioma.
+
+A Home reproduz os quatro MP4 de `public/hero-section/videos` em sequência
+contínua, sem áudio. Ao sair da Home ou ocultar a aba, a reprodução pausa;
+ao retornar, retoma automaticamente, inclusive no ciclo Auto. `porto.webp`
+é apenas o poster de carregamento. As tentativas de reprodução seguem os
+[eventos e a promessa de `play()`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/play),
+com cancelamento ao trocar de tela e nova tentativa após interação quando
+o navegador bloquear autoplay.
 
 O mapa conserva as faixas de cotações e, a partir de 1280 px, o painel lateral
 de commodities. Não tem título ou logo próprios. O SVG mantém
 `viewBox="160 20 1200 560"`. Em telas pequenas, sua área permite rolagem
 horizontal para preservar a leitura das passagens, sem esconder os rótulos.
+O rodapé exibe somente o controle discreto de pausar/retomar. A legenda
+Brasil–China / Rotas ilustrativas foi removida da interface; a descrição
+acessível do SVG e esta documentação mantêm a natureza ilustrativa das linhas.
 
 ## Polos, passagens e linhas
 
@@ -104,7 +119,11 @@ Execute `pnpm test:show` (Node 22.6+ com suporte à remoção de tipos),
 Confira `/show?lang=pt`, `/show?lang=en` e `/show?lang=zh`. Teste:
 
 - Troca de idioma nas três telas, F5, voltar/avançar e parâmetros extras.
+- Vídeo avançando sem interação, fim dos quatro clipes, retorno manual/Auto
+  à Home e retorno à aba. Conferir também a Home `/`, que compartilha o player.
 - Manual/Auto, pausa do mapa, aba oculta e movimento reduzido.
+- Tabela como formato inicial, Setores como alternativa e fundo azul contínuo
+  durante carregamento, exibição de dados e erro.
 - Seis polos, sete passagens, Brasil–China e ausência de sobreposição.
 - SVG sem regras de rótulo do CSS e com serviços externos indisponíveis.
 - Desktop, notebook e celular; rolagem localizada e navegação pelo teclado.

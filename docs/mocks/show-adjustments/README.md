@@ -218,12 +218,16 @@ Esta conferência se refere ao HTML de referência; a implementação tem valida
 
 - Cabeçalho com Auto/Início/Mapa/Mercado e PT/EN; estado preservado durante
   a troca de idioma. Mandarim permanece acessível por URL.
-- Abertura usa a fotografia local `porto.webp`, com o tratamento de cor da proposta.
+- Abertura usa os quatro vídeos locais em sequência contínua; `porto.webp`
+  permanece como poster. O player retoma ao voltar à Home ou à aba.
 - Mapa com seis polos, sete passagens, 12 conexões e barcos animados. Fonte
   e geração documentadas em [show-map.md](../../show-map.md).
-- Setores é o formato padrão ao abrir Mercado. A tabela original foi
-  preservada, com controles de página adicionais. Os dois formatos
+- Tabela é o formato padrão ao abrir Mercado, conforme a revisão mais recente.
+  A tabela original foi preservada, com controles de página adicionais. Os dois formatos
   compartilham a consulta de `/api/market-overview`, sem novo endpoint.
+- A revisão mantém o fundo da tabela integrado ao azul da página, com
+  margens e cabeçalho compactos. No mapa, o botão de pausa é menor e a legenda
+  Brasil–China / Rotas ilustrativas foi removida.
 - Grade com seis/quatro/dois grupos por página conforme a largura (uma linha
   de cartões em telas com pouca altura); quantidade
   de linhas calculada pela altura. Ativos dos cartões alternam a cada 8 s;
@@ -242,3 +246,7 @@ Esta conferência se refere ao HTML de referência; a implementação tem valida
   oculto/pausado/movimento reduzido, tabela/setores, acesso aos 40 ativos,
   falha/recuperação de atualização e larguras 1920, 1366 e 390 px. Cenários
   de falha e cobertura completa usam respostas controladas das APIs.
+- Revisão do vídeo validada com os MP4 reais no Chrome: autoplay sem interação,
+  avanço dos quadros, passagem pelos quatro clipes e retorno ao primeiro,
+  saída/retorno manual e automático, aba oculta e player compartilhado da Home `/`.
+  A tabela foi conferida em 1366×768, 1920×1080 e 390×844, com fundo azul contínuo.

@@ -3,7 +3,8 @@
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { RadioTower, TrendingDown, TrendingUp } from "lucide-react";
+import { RadioTower, Repeat2, TrendingDown, TrendingUp } from "lucide-react";
+import { HeroVideoBackground } from "@/components/hero-video-background";
 import { MarketBoard } from "@/components/market-board";
 import { TradeRoutesMap } from "@/components/trade-routes-map";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -186,10 +187,13 @@ export function ShowcaseScreen({ lang: initialLanguage }: { lang: Language }) {
             <ToggleGroupItem
               key={mode}
               value={mode}
-              data-current={activeSlide === mode}
+              data-mode={mode}
               aria-controls={mode === "auto" ? undefined : `show-${mode}`}
             >
-              {text[mode]}
+              {mode === "auto" ? <Repeat2 aria-hidden="true" /> : null}
+              {mode === "auto" && displayMode === "auto"
+                ? text.autoActive
+                : text[mode]}
             </ToggleGroupItem>
           ))}
         </ToggleGroup>
@@ -244,14 +248,12 @@ export function ShowcaseScreen({ lang: initialLanguage }: { lang: Language }) {
           hidden={activeSlide !== "original"}
           aria-label={text.original}
         >
-          <Image
-            src="/global/porto.webp"
-            alt=""
-            fill
-            sizes="100vw"
-            priority
-            className="showcase-home-photo"
-          />
+          <div className="showcase-home-media">
+            <HeroVideoBackground
+              active={activeSlide === "original"}
+              poster="/global/porto.webp"
+            />
+          </div>
           <div className="showcase-home-content">
             <div>
               <p className="showcase-eyebrow">{text.eyebrow}</p>

@@ -124,7 +124,7 @@ function getPageSize(containerHeight: number) {
 export function MarketBoard({ active, lang }: MarketBoardProps) {
   const content = marketText[lang];
   const viewText = marketViewText[lang];
-  const [view, setView] = useState<"table" | "sectors">("sectors");
+  const [view, setView] = useState<"table" | "sectors">("table");
   const [updatedAt, setUpdatedAt] = useState<string | null>(null);
   const pageVisible = usePageVisible();
   const [investments, setInvestments] = useState<MarketQuote[]>([]);
@@ -346,9 +346,9 @@ export function MarketBoard({ active, lang }: MarketBoardProps) {
           {isLoading ? (
             <MarketTableSkeleton rows={pageSize} />
           ) : visibleInvestments.length > 0 ? (
-            <Table className="h-full min-w-[1100px] table-fixed border-collapse font-mono text-[0.63rem] leading-none lg:text-[0.68rem] xl:text-[0.72rem]">
-              <TableHeader className="bg-[#24272b] text-white/58">
-                <TableRow className="h-7 border-white/10 hover:bg-[#24272b]">
+            <Table className="market-table h-full min-w-[1100px] table-fixed border-collapse font-mono text-[0.63rem] leading-none lg:text-[0.68rem] xl:text-[0.72rem]">
+              <TableHeader>
+                <TableRow className="h-7 border-white/10">
                   <MarketTableHead className="w-[9.5rem] text-left">
                     {content.columns.asset}
                   </MarketTableHead>
@@ -376,7 +376,7 @@ export function MarketBoard({ active, lang }: MarketBoardProps) {
                 {visibleInvestments.map((investment) => (
                   <TableRow
                     key={investment.symbol}
-                    className="h-6 border-white/5 odd:bg-[#08090b] even:bg-[#15171a] hover:bg-[#20242a]"
+                    className="h-6 border-white/5"
                   >
                     <TableCell className="h-6 overflow-hidden px-2 py-0 text-left font-sans">
                       <div className="flex min-w-0 items-center gap-2">
@@ -586,7 +586,7 @@ function CategoryMark({ category }: { category: MarketQuote["category"] }) {
 function MarketTableSkeleton({ rows }: { rows: number }) {
   return (
     <div
-      className="flex h-full flex-col gap-px bg-black p-2"
+      className="flex h-full flex-col gap-px bg-background p-2"
       aria-hidden="true"
     >
       {Array.from({ length: rows }, (_, index) => (

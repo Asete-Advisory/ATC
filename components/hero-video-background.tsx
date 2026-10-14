@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const heroVideos = [
   "/hero-section/videos/hero-video-01.mp4",
@@ -9,105 +9,121 @@ const heroVideos = [
   "/hero-section/videos/hero-video-04.mp4",
 ] as const;
 
-export function HeroVideoBackground() {
+export function HeroVideoBackground({
+  active = true,
+  poster,
+}: {
+  active?: boolean;
+  poster?: string;
+}) {
   const [activeVideo, setActiveVideo] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const requestPlaybackRef = useRef<() => void>(() => undefined);
-  const retryTimerRef = useRef<number | null>(null);
+  const failedVideosRef = useRef(new Set<number>());
 
-  const prepareVideo = useCallback((video: HTMLVideoElement) => {
+  useEffect(() => {
+    const element = videoRef.current;
+    if (!element) return;
+    const video = element;
+
+    let disposed = false;
+    let playPending = false;
+    let retryTimer: number | undefined;
+    let retries = 0;
+
+    // Set the DOM properties as well as the JSX attributes before play().
     video.muted = true;
     video.defaultMuted = true;
     video.volume = 0;
     video.playsInline = true;
-    video.controls = false;
-    video.autoplay = true;
-    video.removeAttribute("controls");
-    video.setAttribute("autoplay", "");
     video.setAttribute("muted", "");
-    video.setAttribute("playsinline", "");
     video.setAttribute("webkit-playsinline", "");
-  }, []);
 
-  const queuePlaybackRetry = useCallback(() => {
-    if (retryTimerRef.current) {
-      window.clearTimeout(retryTimerRef.current);
+    function shouldPlay() {
+      return !disposed && active && !document.hidden && !video.error;
     }
 
-    retryTimerRef.current = window.setTimeout(() => {
-      retryTimerRef.current = null;
-      requestPlaybackRef.current();
-    }, 350);
-  }, []);
-
-  const requestPlayback = useCallback(() => {
-    const video = videoRef.current;
-
-    if (!video) {
-      return;
+    function queueRetry() {
+      if (
+        !shouldPlay() ||
+        video.ended ||
+        retryTimer !== undefined ||
+        retries >= 3
+      )
+        return;
+      retries += 1;
+      retryTimer = window.setTimeout(() => {
+        retryTimer = undefined;
+        requestPlayback();
+      }, 350);
     }
 
-    prepareVideo(video);
-
-    if (document.visibilityState !== "visible") {
-      return;
+    function requestPlayback() {
+      if (!shouldPlay() || !video.paused || playPending) return;
+      playPending = true;
+      void video
+        .play()
+        .then(() => {
+          if (!disposed && !shouldPlay()) video.pause();
+        })
+        .catch((error: DOMException) => {
+          // A source/visibility change can interrupt play(). Policy blocks are
+          // retried on the next gesture, focus or media-ready event instead.
+          if (error.name === "AbortError") queueRetry();
+        })
+        .finally(() => {
+          playPending = false;
+        });
     }
 
-    const playPromise = video.play();
-
-    if (playPromise === undefined) {
-      return;
+    function handleVisibilityChange() {
+      if (shouldPlay()) requestPlayback();
+      else video.pause();
     }
 
-    playPromise.catch((error: DOMException) => {
-      if (error.name === "AbortError") {
-        queuePlaybackRetry();
+    function handlePlaying() {
+      if (!shouldPlay()) {
+        video.pause();
         return;
       }
+      retries = 0;
+    }
 
-      const resumeAfterUserGesture = () => {
-        requestPlayback();
-      };
-
-      window.addEventListener("pointerdown", resumeAfterUserGesture, {
-        once: true,
-        passive: true,
-      });
-      window.addEventListener("keydown", resumeAfterUserGesture, {
-        once: true,
-      });
-      document.addEventListener("visibilitychange", resumeAfterUserGesture, {
-        once: true,
-      });
-    });
-  }, [prepareVideo, queuePlaybackRetry]);
-
-  requestPlaybackRef.current = requestPlayback;
-
-  useEffect(() => {
-    requestPlayback();
-
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === "visible") {
-        requestPlayback();
-      }
-    };
-
+    video.addEventListener("canplay", requestPlayback);
+    video.addEventListener("loadeddata", requestPlayback);
+    video.addEventListener("pause", queueRetry);
+    video.addEventListener("playing", handlePlaying);
     window.addEventListener("focus", requestPlayback);
+    window.addEventListener("pageshow", requestPlayback);
+    window.addEventListener("pointerdown", requestPlayback, { passive: true });
+    window.addEventListener("keydown", requestPlayback);
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
-    return () => {
-      if (retryTimerRef.current) {
-        window.clearTimeout(retryTimerRef.current);
-      }
+    handleVisibilityChange();
 
+    return () => {
+      disposed = true;
+      window.clearTimeout(retryTimer);
+      video.removeEventListener("canplay", requestPlayback);
+      video.removeEventListener("loadeddata", requestPlayback);
+      video.removeEventListener("pause", queueRetry);
+      video.removeEventListener("playing", handlePlaying);
       window.removeEventListener("focus", requestPlayback);
+      window.removeEventListener("pageshow", requestPlayback);
+      window.removeEventListener("pointerdown", requestPlayback);
+      window.removeEventListener("keydown", requestPlayback);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
+      video.pause();
     };
-  }, [activeVideo, requestPlayback]);
+  }, [active, activeVideo]);
 
   function playNextVideo() {
-    setActiveVideo((current) => (current + 1) % heroVideos.length);
+    for (let offset = 1; offset <= heroVideos.length; offset += 1) {
+      const next = (activeVideo + offset) % heroVideos.length;
+      if (!failedVideosRef.current.has(next)) {
+        setActiveVideo(next);
+        return;
+      }
+    }
   }
 
   return (
@@ -115,7 +131,9 @@ export function HeroVideoBackground() {
       ref={videoRef}
       className="hero-background-video pointer-events-none size-full object-cover"
       src={heroVideos[activeVideo]}
-      autoPlay
+      poster={poster}
+      autoPlay={active}
+      loop={failedVideosRef.current.size === heroVideos.length - 1}
       muted
       playsInline
       preload="auto"
@@ -123,14 +141,10 @@ export function HeroVideoBackground() {
       tabIndex={-1}
       disablePictureInPicture
       controls={false}
-      onCanPlay={requestPlayback}
-      onLoadedData={requestPlayback}
       onEnded={playNextVideo}
-      onError={playNextVideo}
-      onPause={() => {
-        if (!videoRef.current?.ended) {
-          queuePlaybackRetry();
-        }
+      onError={() => {
+        failedVideosRef.current.add(activeVideo);
+        playNextVideo();
       }}
     />
   );

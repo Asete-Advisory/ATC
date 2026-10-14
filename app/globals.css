@@ -575,21 +575,23 @@
     height: 100%;
 }
 .showcase-navigation [data-slot="toggle-group-item"] {
-    --accent: #ffffff12;
-    --accent-foreground: #fff;
-    position: relative;
+    --accent: var(--ring);
+    --accent-foreground: #0d293e;
     height: 36px;
     font-size: 12px;
     padding: 0 12px;
+    gap: 6px;
 }
-.showcase-navigation [data-current="true"]::after {
-    content: "";
-    position: absolute;
-    height: 2px;
-    left: 12px;
-    right: 12px;
-    bottom: -6px;
-    background: var(--ring);
+.showcase-navigation [data-mode="auto"] {
+    min-width: 108px;
+}
+.showcase-navigation [data-state="on"] {
+    font-weight: 650;
+    box-shadow: inset 0 0 0 1px #ffffff30;
+}
+.showcase-navigation [data-slot="toggle-group-item"] svg {
+    width: 14px;
+    height: 14px;
 }
 .showcase-header-tools {
     display: flex;
@@ -645,11 +647,14 @@
     isolation: isolate;
     overflow: auto;
 }
-.showcase-home-photo {
-    object-fit: cover;
-    object-position: center 54%;
+.showcase-home-media {
+    position: absolute;
+    inset: 0;
     z-index: -2;
     filter: saturate(1.15);
+}
+.showcase-home-media video {
+    object-position: center 54%;
 }
 .showcase-home::after {
     content: "";
@@ -804,29 +809,23 @@
 .trade-map-footer {
     display: flex;
     flex-shrink: 0;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
-    gap: 12px;
-    padding-top: 5px;
-    font-size: 11px;
-    color: #c0d6e5;
-}
-.trade-map-footer p {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-.trade-map-footer p > span:last-child {
-    color: #9bb8cd;
-    margin-left: 12px;
+    padding-top: 2px;
+    color: #9fb9cc;
 }
 .trade-map-footer [data-slot="button"] {
-    font-size: 11px;
+    --accent: #ffffff0d;
+    --accent-foreground: #d8e8f2;
+    height: 24px;
+    gap: 4px;
+    padding: 0 6px;
+    font-size: 10px;
+    font-weight: 400;
 }
-.trade-map-axis {
-    width: 25px;
-    height: 2px;
-    background: #8df0d3;
+.trade-map-footer [data-slot="button"] svg {
+    width: 12px;
+    height: 12px;
 }
 
 .showcase-market {
@@ -834,9 +833,9 @@
     inset: 0;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    padding: 16px 24px 8px;
-    background: #081d32;
+    gap: 8px;
+    padding: 8px 12px 4px;
+    background: var(--background);
 }
 .market-toolbar {
     display: flex;
@@ -845,11 +844,14 @@
     align-items: center;
     gap: 18px;
 }
-.market-heading .market-status {
-    margin-top: 3px;
+.market-heading {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 2px 14px;
 }
 .market-toolbar h2 {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 600;
 }
 .market-status {
@@ -869,13 +871,26 @@
     flex: 1;
     min-height: 0;
     overflow: auto;
-    background: #000;
+    background: var(--background);
 }
 .market-table-container > [data-slot="table-container"] {
     height: 100%;
 }
+.market-table thead,
+.market-table thead tr:hover {
+    background: var(--muted);
+}
+.market-table tbody tr:nth-child(odd) {
+    background: var(--background);
+}
+.market-table tbody tr:nth-child(even) {
+    background: #ffffff04;
+}
+.market-table tbody tr:hover {
+    background: #ffffff0d;
+}
 .market-table-pagination {
-    padding-top: 4px;
+    padding-top: 2px;
 }
 .market-pagination {
     display: flex;
@@ -1087,11 +1102,13 @@
         gap: 4px;
     }
     .showcase-navigation [data-slot="toggle-group-item"] {
-        padding: 0 14px;
+        padding: 0 10px;
         height: 30px;
+        font-size: 11px;
+        gap: 4px;
     }
-    .showcase-navigation [data-current="true"]::after {
-        bottom: -3px;
+    .showcase-navigation [data-mode="auto"] {
+        min-width: 92px;
     }
     .showcase-home-content {
         grid-template-columns: minmax(0, 1fr);
@@ -1131,25 +1148,9 @@
     .showcase-map-panel {
         padding: 10px 12px 6px;
     }
-    .trade-map-footer {
-        font-size: 10px;
-        gap: 4px;
-    }
-    .trade-map-footer p {
-        gap: 5px;
-    }
-    .trade-map-footer p > span:last-child {
-        display: none;
-    }
-    .trade-map-footer [data-slot="button"] {
-        font-size: 10px;
-    }
     .showcase-market {
-        padding: 12px 14px 6px;
-        gap: 7px;
-    }
-    .market-heading .market-status {
-        margin-top: 3px;
+        padding: 8px 10px 4px;
+        gap: 6px;
     }
     .market-toolbar h2 {
         font-size: 18px;
