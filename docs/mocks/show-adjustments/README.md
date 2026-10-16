@@ -226,8 +226,11 @@ Esta conferência se refere ao HTML de referência; a implementação tem valida
   A tabela original foi preservada, com controles de página adicionais. Os dois formatos
   compartilham a consulta de `/api/market-overview`, sem novo endpoint.
 - A revisão mantém o fundo da tabela integrado ao azul da página, com
-  margens e cabeçalho compactos. No mapa, o botão de pausa é menor e a legenda
-  Brasil–China / Rotas ilustrativas foi removida.
+  margens e cabeçalho compactos. A legenda Brasil–China / Rotas ilustrativas
+  foi removida. A revisão de 16/10/2026 centraliza o logo e oculta navegação,
+  idiomas e pausa em um menu revelado no topo por hover, foco ou toque no logo.
+  Preserva as 12 conexões e acrescenta oito faixas de retorno, totalizando
+  20 faixas e 43 navios com posições e durações diferentes.
 - Grade com seis/quatro/dois grupos por página conforme a largura (uma linha
   de cartões em telas com pouca altura); quantidade
   de linhas calculada pela altura. Ativos dos cartões alternam a cada 8 s;
@@ -250,3 +253,8 @@ Esta conferência se refere ao HTML de referência; a implementação tem valida
   avanço dos quadros, passagem pelos quatro clipes e retorno ao primeiro,
   saída/retorno manual e automático, aba oculta e player compartilhado da Home `/`.
   A tabela foi conferida em 1366×768, 1920×1080 e 390×844, com fundo azul contínuo.
+- Revisão do menu oculto e fluxo marítimo conferida no Chrome: mouse, Tab,
+  Escape, toque, PT/EN/ZH e larguras 320, 390, 1366 e 1920 px. Verificados
+  logo central, cotações sem deslocamento, 43 navios em movimento e pausa
+  por controle, tela oculta, aba oculta e preferência de movimento reduzido.
+  Os traçados das 12 conexões originais foram comparados e permanecem iguais.

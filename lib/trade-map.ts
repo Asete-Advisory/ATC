@@ -433,15 +433,20 @@ export function projectTradeCoordinates([longitude, latitude]: Coordinates) {
   return { x: (longitude + 180) * 4, y: (85 - latitude) * 4 };
 }
 
-function connectionPath(connection: TradeConnection) {
+function connectionPoints(connection: TradeConnection) {
   const from = tradeHubs.find((hub) => hub.id === connection.from)!;
   const to = tradeHubs.find((hub) => hub.id === connection.to);
   const end =
     to?.coordinates ??
     tradePassages.find((passage) => passage.id === connection.to)!.coordinates;
-  const points = [from.coordinates, ...connection.waypoints, end].map(
+  return [from.coordinates, ...connection.waypoints, end].map(
     projectTradeCoordinates,
   );
+}
+
+type MapPoint = ReturnType<typeof projectTradeCoordinates>;
+
+function curvePath(points: MapPoint[]) {
   const coordinate = (value: number) => value.toFixed(1);
   let path = `M${coordinate(points[0].x)},${coordinate(points[0].y)}`;
 
@@ -457,8 +462,94 @@ function connectionPath(connection: TradeConnection) {
   return path;
 }
 
+// Only selected corridors get a return lane. Offsets are SVG units, not
+// geographic claims; the base paths, six hubs and passage anchors stay intact.
+const parallelOffsets: Record<string, number> = {
+  "brazil-china": 4,
+  "brazil-japan": -3.2,
+  "us-west-central-america": 2.8,
+  "central-america-europe": 4,
+  "europe-brazil": -4,
+  "china-japan": -2.6,
+  "europe-suez-china": -3,
+  "china-hormuz": 3,
+};
+const passagePoints = tradePassages.map((passage) =>
+  projectTradeCoordinates(passage.coordinates),
+);
+
+function parallelPoints(points: MapPoint[], offset: number) {
+  return points.map((point, index) => {
+    if (index === 0 || index === points.length - 1) return point;
+    const previous = points[index - 1];
+    const next = points[index + 1];
+    const dx = next.x - previous.x;
+    const dy = next.y - previous.y;
+    const length = Math.hypot(dx, dy) || 1;
+    const passageDistance = Math.min(
+      ...passagePoints.map((passage) =>
+        Math.hypot(point.x - passage.x, point.y - passage.y),
+      ),
+    );
+    // Converge at canals/straits and taper near endpoints instead of shifting
+    // an entire curve across the coast or moving a reference point.
+    const taper = Math.min(
+      1,
+      index / 2,
+      (points.length - 1 - index) / 2,
+      Math.max(0, (passageDistance - 12) / 28),
+    );
+    return {
+      x: point.x - (dy / length) * offset * taper,
+      y: point.y + (dx / length) * offset * taper,
+    };
+  });
+}
+
+function laneShips(
+  connection: TradeConnection,
+  routeIndex: number,
+  returning: boolean,
+) {
+  const count = connection.featured ? (returning ? 3 : 4) : 2;
+  return Array.from({ length: count }, (_, index) => {
+    const duration = Number(
+      (
+        connection.duration *
+        (0.9 + index * 0.13 + (returning ? 0.09 : 0))
+      ).toFixed(2),
+    );
+    const phase =
+      (0.12 + routeIndex * 0.137 + index / count + (returning ? 0.19 : 0)) % 1;
+    return {
+      id: `${connection.id}-${returning ? "return" : "outbound"}-${index}`,
+      duration,
+      delay: Number((-phase * duration).toFixed(2)),
+      scale: Number((0.82 + ((routeIndex + index) % 3) * 0.1).toFixed(2)),
+    };
+  });
+}
+
 // Calculated once, with no frame-by-frame JavaScript or network requests.
-export const tradeConnections = connections.map((connection) => ({
-  ...connection,
-  path: connectionPath(connection),
-}));
+export const tradeConnections = connections.map((connection, index) => {
+  const points = connectionPoints(connection);
+  const path = curvePath(points);
+  const lanes = [
+    {
+      id: `${connection.id}-outbound`,
+      path,
+      returning: false,
+      ships: laneShips(connection, index, false),
+    },
+  ];
+  const offset = parallelOffsets[connection.id];
+  if (offset !== undefined) {
+    lanes.push({
+      id: `${connection.id}-return`,
+      path: curvePath(parallelPoints(points, offset).reverse()),
+      returning: true,
+      ships: laneShips(connection, index, true),
+    });
+  }
+  return { ...connection, path, lanes };
+});

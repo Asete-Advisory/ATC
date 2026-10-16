@@ -1,13 +1,13 @@
 "use client";
 
-import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { RadioTower, Repeat2, TrendingDown, TrendingUp } from "lucide-react";
+import { TrendingDown, TrendingUp } from "lucide-react";
 import { HeroVideoBackground } from "@/components/hero-video-background";
 import { MarketBoard } from "@/components/market-board";
 import { TradeRoutesMap } from "@/components/trade-routes-map";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { ShowcaseHeader } from "@/components/showcase-header";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { copy, getLanguage, type Language } from "@/lib/i18n";
 import {
   showcaseLocales,
@@ -49,6 +49,8 @@ export function ShowcaseScreen({ lang: initialLanguage }: { lang: Language }) {
   const text = showcaseText[lang];
   const [displayMode, setDisplayMode] = useState<DisplayMode>("auto");
   const [autoSlide, setAutoSlide] = useState<PresentationSlide>("original");
+  const [mapPaused, setMapPaused] = useState(false);
+  const reducedMotion = useReducedMotion();
   const autoRotationTimerRef = useRef<number | null>(null);
   const [quotes, setQuotes] = useState<CommodityQuote[]>([]);
   const [updatedAt, setUpdatedAt] = useState<string | null>(null);
@@ -165,69 +167,25 @@ export function ShowcaseScreen({ lang: initialLanguage }: { lang: Language }) {
       data-slide={activeSlide}
       data-mode={displayMode}
     >
-      <header className="showcase-header">
-        <Image
-          src="/global/atc-icon-white.svg"
-          alt="ATC China Brasil"
-          width={1205}
-          height={375}
-          priority
-          className="showcase-logo"
-        />
-        <ToggleGroup
-          type="single"
-          value={displayMode}
-          onValueChange={handleModeChange}
-          size="sm"
-          spacing={1}
-          aria-label={text.displayMode}
-          className="showcase-navigation"
-        >
-          {(["auto", "original", "map", "market"] as const).map((mode) => (
-            <ToggleGroupItem
-              key={mode}
-              value={mode}
-              data-mode={mode}
-              aria-controls={mode === "auto" ? undefined : `show-${mode}`}
-            >
-              {mode === "auto" ? <Repeat2 aria-hidden="true" /> : null}
-              {mode === "auto" && displayMode === "auto"
-                ? text.autoActive
-                : text[mode]}
-            </ToggleGroupItem>
-          ))}
-        </ToggleGroup>
-        <div className="showcase-header-tools">
-          <span className="showcase-live">
-            <RadioTower aria-hidden="true" />
-            {quotes.length > 0 ? text.live : text.loading}
-          </span>
-          {currentTime ? (
-            <time
-              className="showcase-clock"
-              dateTime={currentTime.toISOString()}
-            >
-              {timeFormatter.format(currentTime)}
-            </time>
-          ) : null}
-          <ToggleGroup
-            type="single"
-            value={lang}
-            onValueChange={changeLanguage}
-            size="sm"
-            spacing={1}
-            aria-label={text.language}
-            className="showcase-segmented"
-          >
-            <ToggleGroupItem value="pt" aria-label="Português">
-              PT
-            </ToggleGroupItem>
-            <ToggleGroupItem value="en" aria-label="English">
-              EN
-            </ToggleGroupItem>
-          </ToggleGroup>
-        </div>
-      </header>
+      <ShowcaseHeader
+        lang={lang}
+        mode={displayMode}
+        slide={activeSlide}
+        onModeChange={handleModeChange}
+        onLanguageChange={changeLanguage}
+        hasQuotes={quotes.length > 0}
+        time={
+          currentTime
+            ? {
+                dateTime: currentTime.toISOString(),
+                label: timeFormatter.format(currentTime),
+              }
+            : null
+        }
+        mapPaused={mapPaused}
+        reducedMotion={reducedMotion}
+        onMapPauseChange={() => setMapPaused((current) => !current)}
+      />
       <div className="showcase-tickers">
         <QuoteMarquee
           quotes={quotes}
@@ -287,7 +245,11 @@ export function ShowcaseScreen({ lang: initialLanguage }: { lang: Language }) {
           hidden={activeSlide !== "map"}
           aria-label={text.map}
         >
-          <TradeRoutesMap lang={lang} active={activeSlide === "map"} />
+          <TradeRoutesMap
+            lang={lang}
+            active={activeSlide === "map"}
+            paused={mapPaused || reducedMotion}
+          />
           <aside className="showcase-map-quotes" aria-label={text.market}>
             <p className="showcase-eyebrow">{text.market}</p>
             {panelQuotes.length > 0 ? (

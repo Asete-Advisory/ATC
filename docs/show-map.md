@@ -11,21 +11,29 @@ passagens. A implementação permanece exclusiva da `main`.
 
 ## Arquivos
 
-- `components/trade-routes-map.tsx`: SVG, marcadores, barcos e controle de pausa.
+- `components/trade-routes-map.tsx`: SVG, marcadores, faixas e barcos.
+- `components/showcase-header.tsx`: logo central, menu oculto, idiomas e pausa.
 - `lib/trade-map.ts`: polos, passagens, conexões, projeção e textos PT/EN/ZH.
 - `public/maps/world-countries.svg`: base geográfica local colorida por continente.
 - `scripts/generate-trade-map.py`: geração reproduzível da base e paleta.
 - `app/globals.css`: estilos e animações `trade-map` e apresentação `showcase`.
 - `hooks/use-page-visible.ts`: pausa quando a aba do navegador está oculta.
+- `hooks/use-reduced-motion.ts`: preferência de movimento reduzido compartilhada.
 - `components/showcase-screen.tsx` e `lib/showcase.ts`: modos, idiomas e tempos.
 - `components/hero-video-background.tsx`: sequência contínua dos vídeos locais,
   retomada na Home e pausa quando oculta.
 
 ## Apresentação e idiomas
 
-O seletor PT/EN fica no cabeçalho, junto de Auto, Início, Mapa e Mercado.
-O modo selecionado recebe fundo verde-claro. Durante o ciclo, o botão indica
-“Auto ativo” e permanece destacado; as telas não recebem um segundo destaque.
+O logo ATC fica centralizado no cabeçalho, com status à esquerda e relógio
+à direita. Auto, Início, Mapa, Mercado e PT/EN ficam em uma faixa oculta,
+revelada ao passar o mouse no topo e escondida ao sair da região. A faixa é
+sobreposta; abrir o menu não desloca o logo, o mapa nem as cotações.
+
+No celular, tocar no logo abre/fecha os controles; tocar fora fecha. Pelo
+teclado, focar o logo revela o menu e Escape o fecha. Os controles ocultos
+usam `inert` para não receber foco ou cliques. O modo escolhido conserva o
+fundo verde-claro e o texto “Auto ativo” durante o ciclo automático.
 Português é o padrão; `?lang=zh` continua disponível. Alterar o idioma atualiza
 somente o parâmetro `lang`, preservando outros parâmetros, fragmento, tela,
 formato do mercado e temporizador. F5 e voltar/avançar respeitam o idioma da URL.
@@ -48,8 +56,9 @@ O mapa conserva as faixas de cotações e, a partir de 1280 px, o painel lateral
 de commodities. Não tem título ou logo próprios. O SVG mantém
 `viewBox="160 20 1200 560"`. Em telas pequenas, sua área permite rolagem
 horizontal para preservar a leitura das passagens, sem esconder os rótulos.
-O rodapé exibe somente o controle discreto de pausar/retomar. A legenda
-Brasil–China / Rotas ilustrativas foi removida da interface; a descrição
+Não há controle visível dentro do mapa. Pausar/retomar fica junto de idiomas
+e navegação no menu oculto, disponível quando a tela Mapa está ativa.
+A legenda Brasil–China / Rotas ilustrativas foi removida da interface; a descrição
 acessível do SVG e esta documentação mantêm a natureza ilustrativa das linhas.
 
 ## Polos, passagens e linhas
@@ -67,6 +76,17 @@ Panamá, Gibraltar, Suez, Bab el-Mandeb, Ormuz, Malaca e Cabo da Boa Esperança.
 O cabo é uma referência ao corredor pelo sul da África, não um canal/estreito.
 Seu ponto fica ao largo da costa. Há 12 conexões: os nove pares originais,
 duas alternativas por Suez e um ramal China–Ormuz separado.
+
+O fluxo ampliado mantém os traçados originais e acrescenta oito faixas de
+retorno próximas: 20 faixas com 43 navios simultâneos. Brasil–China recebe mais
+navios; as demais faixas têm dois. Cada navio usa duração, posição inicial e
+escala determinísticas, evitando partidas sincronizadas ou saltos ao traduzir.
+Os navios de retorno seguem a curva invertida, incluindo sua orientação.
+
+`parallelOffsets` seleciona os corredores duplicados. O deslocamento máximo
+é de quatro unidades SVG, reduzido perto dos extremos e das passagens.
+As faixas convergem nos mesmos pontos dos canais/estreitos; nenhum novo polo
+é criado. Linhas de retorno mais finas preservam a legibilidade dos rótulos.
 
 `tradeHubs` contém somente os seis polos; `tradePassages` contém passagens e
 suas posições de rótulo. `passageCoordinates` é compartilhado com os pontos
@@ -122,6 +142,10 @@ Confira `/show?lang=pt`, `/show?lang=en` e `/show?lang=zh`. Teste:
 - Vídeo avançando sem interação, fim dos quatro clipes, retorno manual/Auto
   à Home e retorno à aba. Conferir também a Home `/`, que compartilha o player.
 - Manual/Auto, pausa do mapa, aba oculta e movimento reduzido.
+- Menu oculto ao carregar, hover e saída, toque no logo/fora, Tab e Escape;
+  logo central e posição das cotações invariáveis com o menu aberto.
+- Movimento simultâneo em sentidos/velocidades diferentes, pausa de todos
+  os navios e continuidade ao mudar o idioma ou fechar os controles.
 - Tabela como formato inicial, Setores como alternativa e fundo azul contínuo
   durante carregamento, exibição de dados e erro.
 - Seis polos, sete passagens, Brasil–China e ausência de sobreposição.
@@ -130,5 +154,6 @@ Confira `/show?lang=pt`, `/show?lang=en` e `/show?lang=zh`. Teste:
 - Tabela e setores usando a mesma resposta, valores nulos/zero, paginação,
   erro de atualização com dados anteriores e indisponibilidade inicial.
 
-O teste de geometria verifica que cada passagem está ancorada em uma rota.
+O teste de geometria verifica passagens ancoradas, extremos das faixas de
+retorno, limites de deslocamento e distribuição de velocidades/posições.
 A renderização do mapa é local; as cotações continuam dependentes das APIs.

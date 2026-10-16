@@ -92,3 +92,56 @@ test("the automatic presentation retains the original order and durations", () =
     market: 300_000,
   });
 });
+
+test("parallel maritime traffic preserves anchors and varies ship phases and speeds", () => {
+  function anchors(path) {
+    const numbers = path.match(/-?\d+\.\d+/g).map(Number);
+    const points = [numbers.slice(0, 2)];
+    for (let index = 6; index < numbers.length; index += 6)
+      points.push(numbers.slice(index, index + 2));
+    return points;
+  }
+  const lanes = tradeConnections.flatMap((route) => route.lanes);
+  const ships = lanes.flatMap((lane) => lane.ships);
+  assert.equal(new Set(lanes.map((lane) => lane.id)).size, lanes.length);
+  assert.equal(new Set(ships.map((ship) => ship.id)).size, ships.length);
+  assert.ok(lanes.length > tradeConnections.length && lanes.length <= 24);
+  assert.ok(ships.length > 24 && ships.length <= 60);
+
+  for (const route of tradeConnections) {
+    assert.equal(route.lanes[0].path, route.path);
+    const basePoints = anchors(route.path);
+    for (const lane of route.lanes) {
+      assert.ok(!/NaN|undefined/.test(lane.path));
+      assert.equal(
+        new Set(lane.ships.map((ship) => ship.duration)).size,
+        lane.ships.length,
+      );
+      for (const ship of lane.ships) {
+        assert.ok(
+          ship.duration > 0 && ship.delay <= 0 && ship.delay > -ship.duration,
+        );
+      }
+      if (!lane.returning) continue;
+      const points = anchors(lane.path).reverse();
+      assert.deepEqual(points[0], basePoints[0]);
+      assert.deepEqual(points.at(-1), basePoints.at(-1));
+      assert.equal(points.length, basePoints.length);
+      points.forEach((point, index) => {
+        assert.ok(
+          Math.hypot(
+            point[0] - basePoints[index][0],
+            point[1] - basePoints[index][1],
+          ) <= 4.15,
+        );
+      });
+      for (const passage of tradePassages) {
+        const { x, y } = projectTradeCoordinates(passage.coordinates);
+        const index = basePoints.findIndex(
+          (point) => Math.hypot(point[0] - x, point[1] - y) < 0.1,
+        );
+        if (index >= 0) assert.deepEqual(points[index], basePoints[index]);
+      }
+    }
+  }
+});

@@ -1,11 +1,8 @@
 "use client";
 
-import { useEffect, useId, useRef, useState, type CSSProperties } from "react";
-import { Pause, Play } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useEffect, useId, useRef, type CSSProperties } from "react";
 import { usePageVisible } from "@/hooks/use-page-visible";
 import type { Language } from "@/lib/i18n";
-import { showcaseText } from "@/lib/showcase";
 import {
   projectTradeCoordinates,
   tradeConnections,
@@ -33,26 +30,17 @@ const passageLabelStyle: CSSProperties = {
 export function TradeRoutesMap({
   lang,
   active,
+  paused,
 }: {
   lang: Language;
   active: boolean;
+  paused: boolean;
 }) {
   const content = tradeMapCopy[lang];
-  const text = showcaseText[lang];
   const id = useId().replace(/:/g, "");
   const svgRef = useRef<SVGSVGElement>(null);
-  const [paused, setPaused] = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(false);
   const pageVisible = usePageVisible();
-  const playing = active && pageVisible && !paused && !reducedMotion;
-
-  useEffect(() => {
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReducedMotion(media.matches);
-    update();
-    media.addEventListener("change", update);
-    return () => media.removeEventListener("change", update);
-  }, []);
+  const playing = active && pageVisible && !paused;
 
   useEffect(() => {
     const svg = svgRef.current;
@@ -79,6 +67,42 @@ export function TradeRoutesMap({
           <title id={`${id}-title`}>{content.title}</title>
           <desc id={`${id}-description`}>{content.description}</desc>
           <defs>
+            <g id={`${id}-ship`}>
+              <path
+                d="M-9 0H-15"
+                stroke="currentColor"
+                strokeOpacity="0.35"
+                strokeWidth="1"
+              />
+              <path
+                d="M-7 -3.4H4.5L9 0L4.5 3.4H-7Z"
+                fill="#e6f2f7"
+                stroke="#0b263d"
+                strokeWidth="0.7"
+              />
+              <rect
+                x="-5.5"
+                y="-2.4"
+                width="2.3"
+                height="4.8"
+                rx="0.4"
+                fill="#fff"
+                stroke="#24495d"
+                strokeWidth="0.5"
+              />
+              <path
+                d="M-1.5 -2.2H4V2.2H-1.5Z"
+                fill="currentColor"
+                stroke="#0b263d"
+                strokeWidth="0.5"
+              />
+              <path
+                d="M0.3 -2.2V2.2M2.1 -2.2V2.2M-1.5 0H4"
+                fill="none"
+                stroke="#0b263d"
+                strokeWidth="0.45"
+              />
+            </g>
             <pattern
               id={`${id}-grid`}
               width="80"
@@ -113,36 +137,50 @@ export function TradeRoutesMap({
                   } as CSSProperties
                 }
               >
-                {connection.featured ? (
-                  <path d={connection.path} className="trade-map-route-glow" />
-                ) : null}
-                <path
-                  id={`${id}-${connection.id}`}
-                  d={connection.path}
-                  className="trade-map-route"
-                />
-                <path
-                  d={connection.path}
-                  pathLength="100"
-                  className="trade-map-flow"
-                />
-                <g
-                  className="trade-map-ship"
-                  fill={connection.color}
-                  stroke="#0c263c"
-                  strokeWidth="0.8"
-                >
-                  <path d="M-6 -3L4 -3L8 0L4 3L-6 3Z" />
-                  <path d="M-3 -1.5H2M-3 1.5H2" fill="none" />
-                  <animateMotion
-                    dur={`${connection.duration}s`}
-                    begin={`${-index * 3.7}s`}
-                    repeatCount="indefinite"
-                    rotate="auto"
+                {connection.lanes.map((lane) => (
+                  <g
+                    key={lane.id}
+                    data-lane={lane.id}
+                    className={cn(
+                      "trade-map-lane",
+                      lane.returning && "is-parallel",
+                    )}
                   >
-                    <mpath href={`#${id}-${connection.id}`} />
-                  </animateMotion>
-                </g>
+                    {connection.featured && !lane.returning ? (
+                      <path d={lane.path} className="trade-map-route-glow" />
+                    ) : null}
+                    <path
+                      id={`${id}-${lane.id}`}
+                      d={lane.path}
+                      className="trade-map-route"
+                    />
+                    <path
+                      d={lane.path}
+                      pathLength="100"
+                      className="trade-map-flow"
+                    />
+                    {lane.ships.map((ship) => (
+                      <g
+                        key={ship.id}
+                        data-ship={ship.id}
+                        className="trade-map-ship"
+                      >
+                        <use
+                          href={`#${id}-ship`}
+                          transform={`scale(${ship.scale})`}
+                        />
+                        <animateMotion
+                          dur={`${ship.duration}s`}
+                          begin={`${ship.delay}s`}
+                          repeatCount="indefinite"
+                          rotate="auto"
+                        >
+                          <mpath href={`#${id}-${lane.id}`} />
+                        </animateMotion>
+                      </g>
+                    ))}
+                  </g>
+                ))}
               </g>
             ))}
           </g>
@@ -247,26 +285,6 @@ export function TradeRoutesMap({
             );
           })}
         </svg>
-      </div>
-      <div className="trade-map-footer">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setPaused((current) => !current)}
-          disabled={reducedMotion}
-          aria-pressed={paused || reducedMotion}
-        >
-          {paused || reducedMotion ? (
-            <Play data-icon="inline-start" />
-          ) : (
-            <Pause data-icon="inline-start" />
-          )}
-          {reducedMotion
-            ? text.reducedMotion
-            : paused
-              ? text.resume
-              : text.pause}
-        </Button>
       </div>
     </div>
   );
