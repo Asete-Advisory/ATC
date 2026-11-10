@@ -276,6 +276,58 @@ export const copy = {
       specialistLabel: "Falar com nosso time",
       specialistMessage: "Olá, quero falar com o time da ATC.",
     },
+    leadForm: {
+      eyebrow: "Primeiro passo",
+      title: "Conte para a gente o que sua empresa compra.",
+      description:
+        "Responda algumas perguntas rápidas e envie direto para o nosso time pelo WhatsApp. Com essas informações, chegamos à conversa já preparados para o seu caso.",
+      whatsappLabel: "WhatsApp",
+      emailLabel: "E-mail",
+      formTitle: "Fale com um especialista",
+      formDescription:
+        "Preencha os campos abaixo. Ao enviar, abrimos o WhatsApp com a mensagem pronta para você revisar.",
+      fields: {
+        name: { label: "Nome", placeholder: "Seu nome" },
+        company: { label: "Empresa", placeholder: "Nome da empresa" },
+        phone: { label: "WhatsApp", placeholder: "(00) 00000-0000" },
+        email: { label: "E-mail", placeholder: "voce@empresa.com" },
+      },
+      importStatus: {
+        label:
+          "Sua empresa já realiza importações ou compra apenas de fornecedores no Brasil?",
+        options: [
+          "Já importamos",
+          "Já importamos anteriormente",
+          "Compramos apenas no Brasil",
+          "Não importamos",
+        ],
+      },
+      questions: {
+        topSellers: {
+          label: "Quais produtos têm maior saída na sua empresa?",
+          placeholder: "Ex.: capas de celular, utensílios de cozinha, peças...",
+        },
+        frequentPurchases: {
+          label:
+            "Quais produtos vocês compram ou precisam repor com mais frequência?",
+          placeholder: "Ex.: cabos, embalagens, matéria-prima...",
+        },
+        competitiveProduct: {
+          label:
+            "Qual produto você gostaria de comprar com condições mais competitivas?",
+          placeholder: "Ex.: fones bluetooth, ferramentas, máquinas...",
+        },
+      },
+      requiredError: "Preencha este campo.",
+      selectError: "Selecione uma opção.",
+      phoneError: "Informe um WhatsApp válido com DDD.",
+      emailError: "Informe um e-mail válido.",
+      optionalLabel: "opcional",
+      privacyNote:
+        "Nada fica salvo no site: suas respostas vão apenas na mensagem que você envia pelo WhatsApp.",
+      submitLabel: "Enviar para nosso especialista",
+      messageIntro: "Olá, equipe ATC! Preenchi o formulário do site:",
+    },
     footer: {
       description:
         "Soluções em importação, exportação e sourcing internacional.",
@@ -544,6 +596,57 @@ export const copy = {
       specialistLabel: "Talk to our team",
       specialistMessage: "Hello, I would like to talk to the ATC team.",
     },
+    leadForm: {
+      eyebrow: "First step",
+      title: "Tell us what your company buys.",
+      description:
+        "Answer a few quick questions and send them straight to our team on WhatsApp. With this information, we come to the conversation already prepared for your case.",
+      whatsappLabel: "WhatsApp",
+      emailLabel: "Email",
+      formTitle: "Talk to a specialist",
+      formDescription:
+        "Fill in the fields below. When you submit, WhatsApp opens with a ready-to-send message for you to review.",
+      fields: {
+        name: { label: "Name", placeholder: "Your name" },
+        company: { label: "Company", placeholder: "Company name" },
+        phone: { label: "WhatsApp", placeholder: "+55 00 00000-0000" },
+        email: { label: "Email", placeholder: "you@company.com" },
+      },
+      importStatus: {
+        label:
+          "Does your company already import, or does it only buy from suppliers in Brazil?",
+        options: [
+          "We currently import",
+          "We have imported before",
+          "We only buy in Brazil",
+          "We do not import",
+        ],
+      },
+      questions: {
+        topSellers: {
+          label: "Which products sell the most at your company?",
+          placeholder: "E.g.: phone cases, kitchenware, parts...",
+        },
+        frequentPurchases: {
+          label: "Which products do you buy or restock most often?",
+          placeholder: "E.g.: cables, packaging, raw materials...",
+        },
+        competitiveProduct: {
+          label:
+            "Which product would you like to buy on more competitive terms?",
+          placeholder: "E.g.: bluetooth headphones, tools, machinery...",
+        },
+      },
+      requiredError: "Please fill in this field.",
+      selectError: "Please select an option.",
+      phoneError: "Enter a valid WhatsApp number with area code.",
+      emailError: "Enter a valid email address.",
+      optionalLabel: "optional",
+      privacyNote:
+        "Nothing is stored on the website: your answers only go in the message you send on WhatsApp.",
+      submitLabel: "Send to our specialist",
+      messageIntro: "Hello, ATC team! I filled in the form on your website:",
+    },
     footer: {
       description: "International import, export and sourcing solutions.",
       rights: "All rights reserved.",
@@ -799,6 +902,50 @@ export const copy = {
       quoteMessage: "您好，我想申请一份国际报价。",
       specialistLabel: "联系我们的团队",
       specialistMessage: "您好，我想与 ATC 团队沟通。",
+    },
+    leadForm: {
+      eyebrow: "第一步",
+      title: "告诉我们贵公司采购哪些产品。",
+      description:
+        "回答几个简单问题，并通过 WhatsApp 直接发送给我们的团队。有了这些信息，我们可以针对您的情况做好沟通准备。",
+      whatsappLabel: "WhatsApp",
+      emailLabel: "电子邮件",
+      formTitle: "联系专业顾问",
+      formDescription:
+        "请填写以下信息。提交后将打开 WhatsApp，并生成可供您确认的消息。",
+      fields: {
+        name: { label: "姓名", placeholder: "您的姓名" },
+        company: { label: "公司", placeholder: "公司名称" },
+        phone: { label: "WhatsApp", placeholder: "+55 00 00000-0000" },
+        email: { label: "电子邮件", placeholder: "you@company.com" },
+      },
+      importStatus: {
+        label: "贵公司是否已开展进口业务，还是仅向巴西供应商采购？",
+        options: ["目前在进口", "以前进口过", "仅在巴西采购", "不进口"],
+      },
+      questions: {
+        topSellers: {
+          label: "贵公司哪些产品销量最高？",
+          placeholder: "例如：手机壳、厨房用品、零部件……",
+        },
+        frequentPurchases: {
+          label: "贵公司最常采购或补货的产品有哪些？",
+          placeholder: "例如：数据线、包装、原材料……",
+        },
+        competitiveProduct: {
+          label: "您希望以更有竞争力的条件采购哪种产品？",
+          placeholder: "例如：蓝牙耳机、工具、机械……",
+        },
+      },
+      requiredError: "请填写此项。",
+      selectError: "请选择一个选项。",
+      phoneError: "请输入有效的 WhatsApp 号码（含区号）。",
+      emailError: "请输入有效的电子邮件地址。",
+      optionalLabel: "选填",
+      privacyNote:
+        "网站不会保存任何数据：您的回答只会包含在您通过 WhatsApp 发送的消息中。",
+      submitLabel: "发送给我们的专业顾问",
+      messageIntro: "您好，ATC 团队！我在网站上填写了表单：",
     },
     footer: {
       description: "国际进口、出口与采购解决方案。",

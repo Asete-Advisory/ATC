@@ -10,6 +10,7 @@ import { AuthorityMediaSection } from "@/components/authority-media-section";
 import { StatsSection } from "@/components/stats-section";
 import { FaqSection } from "@/components/faq-section";
 import { CtaSection } from "@/components/cta-section";
+import { LeadFormSection } from "@/components/lead-form-section";
 import { SiteFooter } from "@/components/site-footer";
 import { WhatsAppFab } from "@/components/whatsapp-fab";
 import { copy, getLanguage } from "@/lib/i18n";
@@ -38,6 +39,7 @@ export default async function Page({ searchParams }: PageProps) {
         <AuthorityMediaSection content={content.authorityMedia} />
         <FaqSection content={content.faq} />
         <CtaSection content={content.cta} />
+        <LeadFormSection key={lang} content={content.leadForm} />
       </main>
       <SiteFooter content={content.footer} />
       <WhatsAppFab
