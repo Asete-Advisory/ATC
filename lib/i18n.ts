@@ -354,6 +354,7 @@ export const copy = {
     },
     diagnosis: {
       kicker: "Diagnóstico de importação",
+      profilesLabel: "Os 4 perfis de importador",
       title: "Descubra o perfil e o potencial da sua empresa",
       description:
         "Responda a 4 perguntas rápidas, descubra em qual modelo de experiência de importação sua empresa se encaixa e desbloqueie um benefício exclusivo no final.",
@@ -405,7 +406,7 @@ export const copy = {
       profiles: [
         {
           name: "Importador Explorador",
-          focus: "Iniciante Estratégico",
+          focus: "Iniciante estratégico",
           meaning:
             "Empresa com alto potencial de crescimento que ainda compra no mercado interno ou está dando os primeiros passos.",
           summary:
@@ -413,7 +414,7 @@ export const copy = {
         },
         {
           name: "Importador Otimizador",
-          focus: "Foco em Margem e Eficiência",
+          focus: "Foco em margem e eficiência",
           meaning:
             "Empresa que já conhece o mercado ou já importa, mas sente que está deixando dinheiro na mesa com custos altos ou intermediários.",
           summary:
@@ -421,7 +422,7 @@ export const copy = {
         },
         {
           name: "Importador Construtor de Marca",
-          focus: "OEM / Exclusividade",
+          focus: "OEM / exclusividade",
           meaning:
             "Empresa visionária que quer diferenciar seu portfólio com produtos exclusivos, personalização ou marca própria.",
           summary:
@@ -429,7 +430,7 @@ export const copy = {
         },
         {
           name: "Importador de Alta Escala",
-          focus: "Volume e Contêiner",
+          focus: "Volume e contêiner",
           meaning:
             "Operação robusta (indústria, atacado ou grande distribuidor) focada em volume, reposição contínua e poder de compra.",
           summary:
@@ -810,6 +811,7 @@ export const copy = {
     },
     diagnosis: {
       kicker: "Import diagnosis",
+      profilesLabel: "The 4 importer profiles",
       title: "Discover your company's import profile and potential",
       description:
         "Answer 4 quick questions, find out which import experience model fits your company and unlock an exclusive benefit at the end.",
@@ -860,7 +862,7 @@ export const copy = {
       profiles: [
         {
           name: "Explorer Importer",
-          focus: "Strategic Beginner",
+          focus: "Strategic beginner",
           meaning:
             "A company with high growth potential that still buys in the domestic market or is taking its first steps.",
           summary:
@@ -868,7 +870,7 @@ export const copy = {
         },
         {
           name: "Optimizer Importer",
-          focus: "Margin and Efficiency Focus",
+          focus: "Margin and efficiency focus",
           meaning:
             "A company that already knows the market or already imports, but feels it is leaving money on the table due to high costs or intermediaries.",
           summary:
@@ -876,7 +878,7 @@ export const copy = {
         },
         {
           name: "Brand Builder Importer",
-          focus: "OEM / Exclusivity",
+          focus: "OEM / exclusivity",
           meaning:
             "A visionary company that wants to differentiate its portfolio with exclusive products, customization or a private label.",
           summary:
@@ -884,7 +886,7 @@ export const copy = {
         },
         {
           name: "High-Volume Importer",
-          focus: "Volume and Containers",
+          focus: "Volume and containers",
           meaning:
             "A robust operation (manufacturer, wholesaler or large distributor) focused on volume, continuous replenishment and purchasing power.",
           summary:
@@ -1245,6 +1247,7 @@ export const copy = {
     },
     diagnosis: {
       kicker: "进口诊断",
+      profilesLabel: "4 种进口商画像",
       title: "了解贵公司的进口画像与潜力",
       description:
         "回答 4 个简单问题，了解贵公司适合哪种进口经验模式，并在最后解锁一项专属权益。",
