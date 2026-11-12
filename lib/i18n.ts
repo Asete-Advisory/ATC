@@ -353,21 +353,14 @@ export const copy = {
       messageIntro: "Olá, equipe ATC! Preenchi o formulário do site:",
     },
     diagnosis: {
-      eyebrow: "Diagnóstico gratuito",
-      title:
-        "Diagnóstico de Importação: Descubra o Perfil e o Potencial da Sua Empresa",
+      kicker: "Diagnóstico de importação",
+      title: "Descubra o perfil e o potencial da sua empresa",
       description:
         "Responda a 4 perguntas rápidas, descubra em qual modelo de experiência de importação sua empresa se encaixa e desbloqueie um benefício exclusivo no final.",
-      highlights: [
-        "4 perguntas rápidas",
-        "Seu perfil de importador na hora",
-        "Benefício exclusivo no final",
-      ],
       progressLabel: "Pergunta {current} de {total}",
       backLabel: "Voltar",
       questions: [
         {
-          topic: "Expectativa e motivação",
           question:
             "O que você mais busca quando pensa em importar para a sua empresa?",
           options: [
@@ -378,7 +371,6 @@ export const copy = {
           ],
         },
         {
-          topic: "Benefícios e desafios",
           question:
             "O que sua empresa mais ganha e o que mais teme perder ao iniciar/expandir uma operação de importação?",
           options: [
@@ -389,7 +381,6 @@ export const copy = {
           ],
         },
         {
-          topic: "Visão de negócio",
           question:
             "Qual é a principal meta da sua empresa para os próximos 12 meses?",
           options: [
@@ -400,7 +391,6 @@ export const copy = {
           ],
         },
         {
-          topic: "Capacidade e estrutura de investimento",
           question:
             "Qual o porte ou faixa de investimento prevista para a sua operação de importação?",
           options: [
@@ -411,12 +401,9 @@ export const copy = {
           ],
         },
       ],
-      resultEyebrow: "Seu perfil de importador",
-      meaningLabel: "O que significa",
-      summaryLabel: "Resumo",
+      resultEyebrow: "Seu perfil",
       profiles: [
         {
-          label: "Perfil 1",
           name: "Importador Explorador",
           focus: "Iniciante Estratégico",
           meaning:
@@ -425,7 +412,6 @@ export const copy = {
             "Você busca validar a viabilidade financeira e começar com segurança total, sem correr riscos com burocracia ou fornecedores desconhecidos. O seu maior ganho imediato é sair da dependência de distribuidores locais.",
         },
         {
-          label: "Perfil 2",
           name: "Importador Otimizador",
           focus: "Foco em Margem e Eficiência",
           meaning:
@@ -434,7 +420,6 @@ export const copy = {
             "O seu foco é cortar atravessadores, negociar direto na fonte (China) e transformar a operação atual para capturar margens de 2x a 3x com previsibilidade logística.",
         },
         {
-          label: "Perfil 3",
           name: "Importador Construtor de Marca",
           focus: "OEM / Exclusividade",
           meaning:
@@ -443,7 +428,6 @@ export const copy = {
             "Você precisa de homologação rigorosa de fábricas, controle de qualidade na origem e desenvolvimento técnico para lançar produtos únicos no mercado brasileiro.",
         },
         {
-          label: "Perfil 4",
           name: "Importador de Alta Escala",
           focus: "Volume e Contêiner",
           meaning:
@@ -454,15 +438,10 @@ export const copy = {
       ],
       reward: {
         badge: "Benefício desbloqueado",
-        perks: [
-          "Análise Preliminar de Operação",
-          "Mapeamento de Fornecedores",
-        ],
-        freeTag: "Sem custo",
         title:
-          "Parabéns! Você desbloqueou uma Sessão de Viabilidade & Acesso Direto à China",
+          "Parabéns! Você desbloqueou uma sessão de viabilidade e acesso direto à China",
         description:
-          "Com base no seu perfil acima, a nossa equipe liberou uma Análise Preliminar de Operação + Mapeamento de Fornecedores sem custo para a sua empresa. Preencha abaixo para liberar seu acesso e falar direto com a equipe da ATC China Brasil no WhatsApp.",
+          "Com base no seu perfil, nossa equipe liberou uma Análise Preliminar de Operação + Mapeamento de Fornecedores sem custo para a sua empresa.",
         fields: {
           company: { label: "Nome da empresa", placeholder: "Nome da sua empresa" },
           name: { label: "Seu nome", placeholder: "Como podemos te chamar?" },
@@ -472,14 +451,10 @@ export const copy = {
           },
         },
         submitLabel: "Resgatar meu diagnóstico e falar no WhatsApp",
-        privacyNote:
-          "Nada fica salvo no site: suas respostas vão direto em mensagem que você envia ao WhatsApp.",
       },
       restartLabel: "Refazer diagnóstico",
-      analyzingTitle: "Analisando suas respostas…",
-      analyzingDetail: "Cruzando motivação, metas e porte da sua operação.",
-      completedEyebrow: "Diagnóstico concluído",
-      completedTitle: "Seu perfil e seu benefício estão prontos.",
+      analyzingTitle: "Calculando seu perfil…",
+      completedEyebrow: "Seu resultado",
       openResultLabel: "Ver resultado e resgatar benefício",
       closeLabel: "Fechar",
       requiredError: "Preencha este campo.",
@@ -834,21 +809,14 @@ export const copy = {
       messageIntro: "Hello, ATC team! I filled in the form on your website:",
     },
     diagnosis: {
-      eyebrow: "Free diagnosis",
-      title:
-        "Import Diagnosis: Discover Your Company's Profile and Potential",
+      kicker: "Import diagnosis",
+      title: "Discover your company's import profile and potential",
       description:
         "Answer 4 quick questions, find out which import experience model fits your company and unlock an exclusive benefit at the end.",
-      highlights: [
-        "4 quick questions",
-        "Your importer profile instantly",
-        "Exclusive benefit at the end",
-      ],
       progressLabel: "Question {current} of {total}",
       backLabel: "Back",
       questions: [
         {
-          topic: "Expectations and motivation",
           question:
             "What do you look for most when you think about importing for your company?",
           options: [
@@ -859,7 +827,6 @@ export const copy = {
           ],
         },
         {
-          topic: "Benefits and challenges",
           question:
             "What does your company stand to gain most, and what does it fear losing most, when starting or expanding an import operation?",
           options: [
@@ -870,7 +837,6 @@ export const copy = {
           ],
         },
         {
-          topic: "Business vision",
           question: "What is your company's main goal for the next 12 months?",
           options: [
             "Start importing from scratch with complete security.",
@@ -880,7 +846,6 @@ export const copy = {
           ],
         },
         {
-          topic: "Capacity and investment structure",
           question:
             "What is the expected size or investment range for your import operation?",
           options: [
@@ -891,12 +856,9 @@ export const copy = {
           ],
         },
       ],
-      resultEyebrow: "Your importer profile",
-      meaningLabel: "What it means",
-      summaryLabel: "Summary",
+      resultEyebrow: "Your profile",
       profiles: [
         {
-          label: "Profile 1",
           name: "Explorer Importer",
           focus: "Strategic Beginner",
           meaning:
@@ -905,7 +867,6 @@ export const copy = {
             "You want to validate financial viability and start with complete security, without risks from bureaucracy or unknown suppliers. Your biggest immediate gain is breaking free from dependence on local distributors.",
         },
         {
-          label: "Profile 2",
           name: "Optimizer Importer",
           focus: "Margin and Efficiency Focus",
           meaning:
@@ -914,7 +875,6 @@ export const copy = {
             "Your focus is cutting out middlemen, negotiating directly at the source (China) and transforming your current operation to capture 2x to 3x margins with predictable logistics.",
         },
         {
-          label: "Profile 3",
           name: "Brand Builder Importer",
           focus: "OEM / Exclusivity",
           meaning:
@@ -923,7 +883,6 @@ export const copy = {
             "You need rigorous factory qualification, quality control at origin and technical development to launch unique products in the Brazilian market.",
         },
         {
-          label: "Profile 4",
           name: "High-Volume Importer",
           focus: "Volume and Containers",
           meaning:
@@ -934,12 +893,10 @@ export const copy = {
       ],
       reward: {
         badge: "Benefit unlocked",
-        perks: ["Preliminary Operation Analysis", "Supplier Mapping"],
-        freeTag: "Free",
         title:
-          "Congratulations! You've unlocked a Feasibility Session & Direct Access to China",
+          "Congratulations! You've unlocked a feasibility session and direct access to China",
         description:
-          "Based on your profile above, our team has released a free Preliminary Operation Analysis + Supplier Mapping for your company. Fill in the fields below to unlock your access and talk directly with the ATC China Brasil team on WhatsApp.",
+          "Based on your profile, our team has unlocked a free Preliminary Operation Analysis + Supplier Mapping for your company.",
         fields: {
           company: { label: "Company name", placeholder: "Your company name" },
           name: { label: "Your name", placeholder: "What should we call you?" },
@@ -949,14 +906,10 @@ export const copy = {
           },
         },
         submitLabel: "Claim my diagnosis and chat on WhatsApp",
-        privacyNote:
-          "Nothing is stored on the website: your answers go straight into a message you send on WhatsApp.",
       },
       restartLabel: "Retake diagnosis",
-      analyzingTitle: "Analyzing your answers…",
-      analyzingDetail: "Matching your motivation, goals and operation size.",
-      completedEyebrow: "Diagnosis complete",
-      completedTitle: "Your profile and your benefit are ready.",
+      analyzingTitle: "Calculating your profile…",
+      completedEyebrow: "Your result",
       openResultLabel: "See result and claim benefit",
       closeLabel: "Close",
       requiredError: "Please fill in this field.",
@@ -1291,16 +1244,14 @@ export const copy = {
       messageIntro: "您好，ATC 团队！我在网站上填写了表单：",
     },
     diagnosis: {
-      eyebrow: "免费诊断",
-      title: "进口诊断：了解贵公司的进口画像与潜力",
+      kicker: "进口诊断",
+      title: "了解贵公司的进口画像与潜力",
       description:
         "回答 4 个简单问题，了解贵公司适合哪种进口经验模式，并在最后解锁一项专属权益。",
-      highlights: ["4 个简单问题", "即时获得进口商画像", "最后解锁专属权益"],
       progressLabel: "第 {current} 题，共 {total} 题",
       backLabel: "返回",
       questions: [
         {
-          topic: "期望与动机",
           question: "考虑为公司开展进口时，您最看重什么？",
           options: [
             "通过降低产品单位成本来提高利润率。",
@@ -1310,7 +1261,6 @@ export const copy = {
           ],
         },
         {
-          topic: "收益与挑战",
           question:
             "开始或扩大进口业务时，贵公司最期待获得什么？最担心失去什么？",
           options: [
@@ -1321,7 +1271,6 @@ export const copy = {
           ],
         },
         {
-          topic: "业务愿景",
           question: "未来 12 个月，贵公司的主要目标是什么？",
           options: [
             "在充分保障下从零开始进口。",
@@ -1331,7 +1280,6 @@ export const copy = {
           ],
         },
         {
-          topic: "能力与投资结构",
           question: "贵公司进口业务的预计规模或投资范围是多少？",
           options: [
             "起步阶段／市场测试（小批量订单或拼箱）。",
@@ -1341,12 +1289,9 @@ export const copy = {
           ],
         },
       ],
-      resultEyebrow: "您的进口商画像",
-      meaningLabel: "含义",
-      summaryLabel: "概述",
+      resultEyebrow: "您的画像",
       profiles: [
         {
-          label: "画像 1",
           name: "探索型进口商",
           focus: "战略起步者",
           meaning:
@@ -1355,7 +1300,6 @@ export const copy = {
             "您希望验证财务可行性，并在充分保障下起步，避免繁琐手续或陌生供应商带来的风险。您最直接的收益是摆脱对本地分销商的依赖。",
         },
         {
-          label: "画像 2",
           name: "优化型进口商",
           focus: "聚焦利润与效率",
           meaning:
@@ -1364,7 +1308,6 @@ export const copy = {
             "您的重点是减少中间环节、直接在源头（中国）谈判，并改造现有业务，在物流可预期的前提下获得 2 至 3 倍的利润空间。",
         },
         {
-          label: "画像 3",
           name: "品牌建设型进口商",
           focus: "OEM／独家产品",
           meaning:
@@ -1373,7 +1316,6 @@ export const copy = {
             "您需要严格的工厂资质审核、源头质量控制和技术开发，以便在巴西市场推出独特产品。",
         },
         {
-          label: "画像 4",
           name: "规模型进口商",
           focus: "大批量与整柜",
           meaning:
@@ -1384,11 +1326,10 @@ export const copy = {
       ],
       reward: {
         badge: "权益已解锁",
-        perks: ["初步业务分析", "供应商匹配"],
-        freeTag: "免费",
-        title: "恭喜！您已解锁可行性评估会议及中国直连通道",
+        title:
+          "恭喜！您已解锁可行性评估会议及中国直连通道",
         description:
-          "根据您的上述画像，我们的团队为贵公司免费提供初步业务分析及供应商匹配。请填写以下信息以领取权益，并通过 WhatsApp 直接联系 ATC China Brasil 团队。",
+          "根据您的画像，我们的团队为贵公司免费提供初步业务分析及供应商匹配。",
         fields: {
           company: { label: "公司名称", placeholder: "贵公司名称" },
           name: { label: "您的姓名", placeholder: "我们该如何称呼您？" },
@@ -1398,14 +1339,10 @@ export const copy = {
           },
         },
         submitLabel: "领取诊断结果并在 WhatsApp 沟通",
-        privacyNote:
-          "网站不会保存任何数据：您的回答将直接生成一条由您通过 WhatsApp 发送的消息。",
       },
       restartLabel: "重新诊断",
-      analyzingTitle: "正在分析您的回答…",
-      analyzingDetail: "正在综合您的动机、目标与业务规模。",
-      completedEyebrow: "诊断完成",
-      completedTitle: "您的画像与专属权益已准备就绪。",
+      analyzingTitle: "正在计算您的画像…",
+      completedEyebrow: "您的结果",
       openResultLabel: "查看结果并领取权益",
       closeLabel: "关闭",
       requiredError: "请填写此项。",

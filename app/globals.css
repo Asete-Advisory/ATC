@@ -492,15 +492,7 @@
     /* Diagnóstico de importação: análise e revelação do resultado */
     .diagnosis-analyze-bar {
         transform-origin: left;
-        animation: diagnosis-analyze 2000ms cubic-bezier(0.65, 0, 0.35, 1) both;
-    }
-
-    .reward-pop {
-        animation: reward-pop 750ms cubic-bezier(0.34, 1.56, 0.64, 1) 150ms both;
-    }
-
-    .reward-ring {
-        animation: reward-ring 1.6s ease-out 3;
+        animation: diagnosis-analyze 1200ms cubic-bezier(0.65, 0, 0.35, 1) both;
     }
 
     .reward-wiggle {
@@ -526,7 +518,7 @@
             transparent 70%
         );
         transform: translateX(-120%);
-        animation: reward-shine 3s ease-in-out 1.2s infinite;
+        animation: reward-shine 2.4s ease-in-out 1s 2;
     }
 
     @keyframes diagnosis-analyze {
@@ -536,35 +528,6 @@
 
         to {
             transform: scaleX(1);
-        }
-    }
-
-    @keyframes reward-pop {
-        0% {
-            opacity: 0;
-            transform: scale(0.3) rotate(-14deg);
-        }
-
-        60% {
-            opacity: 1;
-            transform: scale(1.12) rotate(4deg);
-        }
-
-        100% {
-            opacity: 1;
-            transform: scale(1) rotate(0);
-        }
-    }
-
-    @keyframes reward-ring {
-        from {
-            opacity: 0.7;
-            transform: scale(1);
-        }
-
-        to {
-            opacity: 0;
-            transform: scale(1.6);
         }
     }
 
@@ -604,14 +567,8 @@
 
     @media (prefers-reduced-motion: reduce) {
         .diagnosis-analyze-bar,
-        .reward-pop,
-        .reward-ring,
         .reward-wiggle {
             animation: none;
-        }
-
-        .reward-ring {
-            opacity: 0;
         }
 
         .reward-shine::after {
