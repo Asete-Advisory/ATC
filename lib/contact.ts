@@ -5,3 +5,14 @@ export const CONTACT_EMAIL = "contato@atcchinabrasil.com";
 export function buildWhatsAppUrl(message: string) {
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 }
+
+export function openWhatsAppMessage(message: string) {
+  const url = buildWhatsAppUrl(message);
+  const popup = window.open(url, "_blank");
+
+  if (popup) {
+    popup.opener = null;
+  } else {
+    window.location.href = url;
+  }
+}

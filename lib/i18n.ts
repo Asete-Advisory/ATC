@@ -278,23 +278,23 @@ export const copy = {
     },
     leadForm: {
       eyebrow: "Primeiro passo",
-      title: "Conte para a gente o que sua empresa compra.",
+      title: "Conte para a gente o que sua empresa busca.",
       description:
         "Responda algumas perguntas rápidas e envie direto para o nosso time pelo WhatsApp. Com essas informações, chegamos à conversa já preparados para o seu caso.",
       whatsappLabel: "WhatsApp",
       emailLabel: "E-mail",
-      formTitle: "Fale com um especialista",
+      formTitle: "Fale com nosso time",
       formDescription:
         "Preencha os campos abaixo. Ao enviar, abrimos o WhatsApp com a mensagem pronta para você revisar.",
       fields: {
-        name: { label: "Nome", placeholder: "Seu nome" },
-        company: { label: "Empresa", placeholder: "Nome da empresa" },
+        company: { label: "Nome da empresa", placeholder: "Nome da sua empresa" },
+        name: { label: "Seu nome", placeholder: "Como podemos te chamar?" },
         phone: { label: "WhatsApp", placeholder: "(00) 00000-0000" },
-        email: { label: "E-mail", placeholder: "voce@empresa.com" },
+        email: { label: "E-mail", placeholder: "voce@suaempresa.com" },
       },
       importStatus: {
         label:
-          "Sua empresa já realiza importações ou compra apenas de fornecedores no Brasil?",
+          "Sua empresa já realiza operações internacionais ou compra apenas de fornecedores no Brasil?",
         options: [
           "Já importamos",
           "Já importamos anteriormente",
@@ -302,11 +302,34 @@ export const copy = {
           "Não importamos",
         ],
       },
+      operationType: {
+        label: "O seu foco atual é voltado para importação ou exportação?",
+        options: [
+          "Importação (trazer produtos/insumos de fora para o Brasil)",
+          "Exportação (levar produtos nacionais para o mercado externo)",
+          "Ambos / Preciso de suporte nas duas pontas",
+        ],
+      },
+      segments: {
+        label: "Quais produtos ou segmentos têm maior giro na sua empresa?",
+        hint: "Selecione as principais opções abaixo ou especifique no campo “Outro”.",
+        options: [
+          "Componentes e Maquinário Industrial (automação, peças e ferramentas)",
+          "Matéria-prima e Insumos Químicos / Plásticos",
+          "Têxtil, Tecidos e Aviamentos",
+          "Eletrônicos, Componentes de TI e Tecnologia",
+          "Embalagens (Papelão, Plástico, Biodegradáveis)",
+          "Ferragens, Aço, Alumínio e Perfis Metálicos",
+          "Artigos de Iluminação (Luminárias LED, Refletores e Painéis)",
+          "Casa, Decoração e Utilidades Domésticas",
+          "Brinquedos, Utilidades e Produtos de Varejo Geral",
+          "Alimentos, Bebidas e Insumos do Agronegócio",
+        ],
+        otherLabel: "Outro produto ou segmento",
+        otherPlaceholder: "Especifique o produto ou segmento",
+        otherMessageLabel: "Outro",
+      },
       questions: {
-        topSellers: {
-          label: "Quais produtos têm maior saída na sua empresa?",
-          placeholder: "Ex.: capas de celular, utensílios de cozinha, peças...",
-        },
         frequentPurchases: {
           label:
             "Quais produtos vocês compram ou precisam repor com mais frequência?",
@@ -314,19 +337,157 @@ export const copy = {
         },
         competitiveProduct: {
           label:
-            "Qual produto você gostaria de comprar com condições mais competitivas?",
+            "Qual produto ou insumo você gostaria de comprar com condições mais competitivas?",
           placeholder: "Ex.: fones bluetooth, ferramentas, máquinas...",
         },
       },
       requiredError: "Preencha este campo.",
       selectError: "Selecione uma opção.",
+      segmentsError: "Selecione ao menos uma opção ou especifique em “Outro”.",
       phoneError: "Informe um WhatsApp válido com DDD.",
       emailError: "Informe um e-mail válido.",
       optionalLabel: "opcional",
       privacyNote:
-        "Nada fica salvo no site: suas respostas vão apenas na mensagem que você envia pelo WhatsApp.",
-      submitLabel: "Enviar para nosso especialista",
+        "Nada fica salvo no site: suas respostas vão direto em mensagem que você envia ao WhatsApp.",
+      submitLabel: "Enviar para nosso time e falar no WhatsApp",
       messageIntro: "Olá, equipe ATC! Preenchi o formulário do site:",
+    },
+    diagnosis: {
+      eyebrow: "Diagnóstico gratuito",
+      title:
+        "Diagnóstico de Importação: Descubra o Perfil e o Potencial da Sua Empresa",
+      description:
+        "Responda a 4 perguntas rápidas, descubra em qual modelo de experiência de importação sua empresa se encaixa e desbloqueie um benefício exclusivo no final.",
+      highlights: [
+        "4 perguntas rápidas",
+        "Seu perfil de importador na hora",
+        "Benefício exclusivo no final",
+      ],
+      progressLabel: "Pergunta {current} de {total}",
+      backLabel: "Voltar",
+      questions: [
+        {
+          topic: "Expectativa e motivação",
+          question:
+            "O que você mais busca quando pensa em importar para a sua empresa?",
+          options: [
+            "Aumentar margem de lucro reduzindo o custo unitário do produto.",
+            "Acessar produtos exclusivos e tecnologias que não existem no Brasil.",
+            "Escalar a produção e garantir fornecimento contínuo sem falhas.",
+            "Ainda estou avaliando se a importação é viável para o meu negócio.",
+          ],
+        },
+        {
+          topic: "Benefícios e desafios",
+          question:
+            "O que sua empresa mais ganha e o que mais teme perder ao iniciar/expandir uma operação de importação?",
+          options: [
+            "Ganho: Alta lucratividade / Receio: Burocracia fiscal e riscos operacionais.",
+            "Ganho: Controle da qualidade e marca própria / Receio: Fornecedores não confiáveis na China.",
+            "Ganho: Competitividade no mercado / Receio: Prazos longos e custos de frete internacional.",
+            "Ganho: Diversificação de portfólio / Receio: Falta de conhecimento técnico do processo.",
+          ],
+        },
+        {
+          topic: "Visão de negócio",
+          question:
+            "Qual é a principal meta da sua empresa para os próximos 12 meses?",
+          options: [
+            "Começar a importar do zero com segurança total.",
+            "Otimizar os custos de uma operação de importação que já existe.",
+            "Desenvolver produtos sob medida (OEM) diretamente com fábricas chinesas.",
+            "Apenas entender como funciona o mercado internacional.",
+          ],
+        },
+        {
+          topic: "Capacidade e estrutura de investimento",
+          question:
+            "Qual o porte ou faixa de investimento prevista para a sua operação de importação?",
+          options: [
+            "Operação inicial / teste de mercado (pedidos menores ou carga compartilhada).",
+            "Operação recorrente de médio porte (compras regulares para reposição de estoque).",
+            "Operação de grande escala / contêiner fechado (FCL) direto de fábrica.",
+            "Ainda não defini o orçamento e preciso de um estudo de viabilidade.",
+          ],
+        },
+      ],
+      resultEyebrow: "Seu perfil de importador",
+      meaningLabel: "O que significa",
+      summaryLabel: "Resumo",
+      profiles: [
+        {
+          label: "Perfil 1",
+          name: "Importador Explorador",
+          focus: "Iniciante Estratégico",
+          meaning:
+            "Empresa com alto potencial de crescimento que ainda compra no mercado interno ou está dando os primeiros passos.",
+          summary:
+            "Você busca validar a viabilidade financeira e começar com segurança total, sem correr riscos com burocracia ou fornecedores desconhecidos. O seu maior ganho imediato é sair da dependência de distribuidores locais.",
+        },
+        {
+          label: "Perfil 2",
+          name: "Importador Otimizador",
+          focus: "Foco em Margem e Eficiência",
+          meaning:
+            "Empresa que já conhece o mercado ou já importa, mas sente que está deixando dinheiro na mesa com custos altos ou intermediários.",
+          summary:
+            "O seu foco é cortar atravessadores, negociar direto na fonte (China) e transformar a operação atual para capturar margens de 2x a 3x com previsibilidade logística.",
+        },
+        {
+          label: "Perfil 3",
+          name: "Importador Construtor de Marca",
+          focus: "OEM / Exclusividade",
+          meaning:
+            "Empresa visionária que quer diferenciar seu portfólio com produtos exclusivos, personalização ou marca própria.",
+          summary:
+            "Você precisa de homologação rigorosa de fábricas, controle de qualidade na origem e desenvolvimento técnico para lançar produtos únicos no mercado brasileiro.",
+        },
+        {
+          label: "Perfil 4",
+          name: "Importador de Alta Escala",
+          focus: "Volume e Contêiner",
+          meaning:
+            "Operação robusta (indústria, atacado ou grande distribuidor) focada em volume, reposição contínua e poder de compra.",
+          summary:
+            "O seu objetivo é eficiência máxima de ponta a ponta: auditoria fabril, consolidação de cargas, redução tributária/logística e fornecimento ininterrupto direto das maiores fábricas chinesas.",
+        },
+      ],
+      reward: {
+        badge: "Benefício desbloqueado",
+        perks: [
+          "Análise Preliminar de Operação",
+          "Mapeamento de Fornecedores",
+        ],
+        freeTag: "Sem custo",
+        title:
+          "Parabéns! Você desbloqueou uma Sessão de Viabilidade & Acesso Direto à China",
+        description:
+          "Com base no seu perfil acima, a nossa equipe liberou uma Análise Preliminar de Operação + Mapeamento de Fornecedores sem custo para a sua empresa. Preencha abaixo para liberar seu acesso e falar direto com a equipe da ATC China Brasil no WhatsApp.",
+        fields: {
+          company: { label: "Nome da empresa", placeholder: "Nome da sua empresa" },
+          name: { label: "Seu nome", placeholder: "Como podemos te chamar?" },
+          contact: {
+            label: "WhatsApp com DDD ou e-mail corporativo",
+            placeholder: "(00) 00000-0000 ou voce@suaempresa.com",
+          },
+        },
+        submitLabel: "Resgatar meu diagnóstico e falar no WhatsApp",
+        privacyNote:
+          "Nada fica salvo no site: suas respostas vão direto em mensagem que você envia ao WhatsApp.",
+      },
+      restartLabel: "Refazer diagnóstico",
+      analyzingTitle: "Analisando suas respostas…",
+      analyzingDetail: "Cruzando motivação, metas e porte da sua operação.",
+      completedEyebrow: "Diagnóstico concluído",
+      completedTitle: "Seu perfil e seu benefício estão prontos.",
+      openResultLabel: "Ver resultado e resgatar benefício",
+      closeLabel: "Fechar",
+      requiredError: "Preencha este campo.",
+      contactError: "Informe um WhatsApp com DDD ou um e-mail válido.",
+      messageIntro:
+        "Olá, equipe ATC! Fiz o Diagnóstico de Importação e quero resgatar minha Sessão de Viabilidade.",
+      profileMessageLabel: "Perfil",
+      contactMessageLabel: "WhatsApp / E-mail",
     },
     footer: {
       description:
@@ -598,23 +759,23 @@ export const copy = {
     },
     leadForm: {
       eyebrow: "First step",
-      title: "Tell us what your company buys.",
+      title: "Tell us what your company is looking for.",
       description:
         "Answer a few quick questions and send them straight to our team on WhatsApp. With this information, we come to the conversation already prepared for your case.",
       whatsappLabel: "WhatsApp",
       emailLabel: "Email",
-      formTitle: "Talk to a specialist",
+      formTitle: "Talk to our team",
       formDescription:
         "Fill in the fields below. When you submit, WhatsApp opens with a ready-to-send message for you to review.",
       fields: {
-        name: { label: "Name", placeholder: "Your name" },
-        company: { label: "Company", placeholder: "Company name" },
+        company: { label: "Company name", placeholder: "Your company name" },
+        name: { label: "Your name", placeholder: "What should we call you?" },
         phone: { label: "WhatsApp", placeholder: "+55 00 00000-0000" },
-        email: { label: "Email", placeholder: "you@company.com" },
+        email: { label: "Email", placeholder: "you@yourcompany.com" },
       },
       importStatus: {
         label:
-          "Does your company already import, or does it only buy from suppliers in Brazil?",
+          "Does your company already carry out international operations, or does it only buy from suppliers in Brazil?",
         options: [
           "We currently import",
           "We have imported before",
@@ -622,30 +783,188 @@ export const copy = {
           "We do not import",
         ],
       },
+      operationType: {
+        label: "Is your current focus on importing or exporting?",
+        options: [
+          "Import (bringing products/inputs into Brazil)",
+          "Export (taking Brazilian products to foreign markets)",
+          "Both / I need support on both ends",
+        ],
+      },
+      segments: {
+        label:
+          "Which products or segments have the highest turnover at your company?",
+        hint: "Select the main options below or specify under “Other”.",
+        options: [
+          "Industrial Components and Machinery (automation, parts and tools)",
+          "Raw Materials and Chemical / Plastic Inputs",
+          "Textiles, Fabrics and Trims",
+          "Electronics, IT Components and Technology",
+          "Packaging (Cardboard, Plastic, Biodegradable)",
+          "Hardware, Steel, Aluminum and Metal Profiles",
+          "Lighting (LED Fixtures, Floodlights and Panels)",
+          "Home, Décor and Household Goods",
+          "Toys, Utilities and General Retail Products",
+          "Food, Beverages and Agribusiness Inputs",
+        ],
+        otherLabel: "Other product or segment",
+        otherPlaceholder: "Specify the product or segment",
+        otherMessageLabel: "Other",
+      },
       questions: {
-        topSellers: {
-          label: "Which products sell the most at your company?",
-          placeholder: "E.g.: phone cases, kitchenware, parts...",
-        },
         frequentPurchases: {
           label: "Which products do you buy or restock most often?",
           placeholder: "E.g.: cables, packaging, raw materials...",
         },
         competitiveProduct: {
           label:
-            "Which product would you like to buy on more competitive terms?",
+            "Which product or input would you like to buy on more competitive terms?",
           placeholder: "E.g.: bluetooth headphones, tools, machinery...",
         },
       },
       requiredError: "Please fill in this field.",
       selectError: "Please select an option.",
+      segmentsError: "Select at least one option or specify under “Other”.",
       phoneError: "Enter a valid WhatsApp number with area code.",
       emailError: "Enter a valid email address.",
       optionalLabel: "optional",
       privacyNote:
-        "Nothing is stored on the website: your answers only go in the message you send on WhatsApp.",
-      submitLabel: "Send to our specialist",
+        "Nothing is stored on the website: your answers go straight into a message you send on WhatsApp.",
+      submitLabel: "Send to our team and chat on WhatsApp",
       messageIntro: "Hello, ATC team! I filled in the form on your website:",
+    },
+    diagnosis: {
+      eyebrow: "Free diagnosis",
+      title:
+        "Import Diagnosis: Discover Your Company's Profile and Potential",
+      description:
+        "Answer 4 quick questions, find out which import experience model fits your company and unlock an exclusive benefit at the end.",
+      highlights: [
+        "4 quick questions",
+        "Your importer profile instantly",
+        "Exclusive benefit at the end",
+      ],
+      progressLabel: "Question {current} of {total}",
+      backLabel: "Back",
+      questions: [
+        {
+          topic: "Expectations and motivation",
+          question:
+            "What do you look for most when you think about importing for your company?",
+          options: [
+            "Increase profit margins by lowering the product's unit cost.",
+            "Access exclusive products and technologies not available in Brazil.",
+            "Scale production and secure continuous, uninterrupted supply.",
+            "I'm still assessing whether importing is viable for my business.",
+          ],
+        },
+        {
+          topic: "Benefits and challenges",
+          question:
+            "What does your company stand to gain most, and what does it fear losing most, when starting or expanding an import operation?",
+          options: [
+            "Gain: High profitability / Concern: Tax bureaucracy and operational risks.",
+            "Gain: Quality control and private label / Concern: Unreliable suppliers in China.",
+            "Gain: Market competitiveness / Concern: Long lead times and international freight costs.",
+            "Gain: Portfolio diversification / Concern: Lack of technical knowledge of the process.",
+          ],
+        },
+        {
+          topic: "Business vision",
+          question: "What is your company's main goal for the next 12 months?",
+          options: [
+            "Start importing from scratch with complete security.",
+            "Optimize the costs of an existing import operation.",
+            "Develop custom (OEM) products directly with Chinese factories.",
+            "Just understand how the international market works.",
+          ],
+        },
+        {
+          topic: "Capacity and investment structure",
+          question:
+            "What is the expected size or investment range for your import operation?",
+          options: [
+            "Initial operation / market test (smaller orders or shared cargo).",
+            "Recurring mid-sized operation (regular purchases to restock inventory).",
+            "Large-scale operation / full container load (FCL) direct from the factory.",
+            "I haven't set a budget yet and need a feasibility study.",
+          ],
+        },
+      ],
+      resultEyebrow: "Your importer profile",
+      meaningLabel: "What it means",
+      summaryLabel: "Summary",
+      profiles: [
+        {
+          label: "Profile 1",
+          name: "Explorer Importer",
+          focus: "Strategic Beginner",
+          meaning:
+            "A company with high growth potential that still buys in the domestic market or is taking its first steps.",
+          summary:
+            "You want to validate financial viability and start with complete security, without risks from bureaucracy or unknown suppliers. Your biggest immediate gain is breaking free from dependence on local distributors.",
+        },
+        {
+          label: "Profile 2",
+          name: "Optimizer Importer",
+          focus: "Margin and Efficiency Focus",
+          meaning:
+            "A company that already knows the market or already imports, but feels it is leaving money on the table due to high costs or intermediaries.",
+          summary:
+            "Your focus is cutting out middlemen, negotiating directly at the source (China) and transforming your current operation to capture 2x to 3x margins with predictable logistics.",
+        },
+        {
+          label: "Profile 3",
+          name: "Brand Builder Importer",
+          focus: "OEM / Exclusivity",
+          meaning:
+            "A visionary company that wants to differentiate its portfolio with exclusive products, customization or a private label.",
+          summary:
+            "You need rigorous factory qualification, quality control at origin and technical development to launch unique products in the Brazilian market.",
+        },
+        {
+          label: "Profile 4",
+          name: "High-Volume Importer",
+          focus: "Volume and Containers",
+          meaning:
+            "A robust operation (manufacturer, wholesaler or large distributor) focused on volume, continuous replenishment and purchasing power.",
+          summary:
+            "Your goal is maximum end-to-end efficiency: factory audits, cargo consolidation, tax and logistics savings, and uninterrupted supply directly from China's largest factories.",
+        },
+      ],
+      reward: {
+        badge: "Benefit unlocked",
+        perks: ["Preliminary Operation Analysis", "Supplier Mapping"],
+        freeTag: "Free",
+        title:
+          "Congratulations! You've unlocked a Feasibility Session & Direct Access to China",
+        description:
+          "Based on your profile above, our team has released a free Preliminary Operation Analysis + Supplier Mapping for your company. Fill in the fields below to unlock your access and talk directly with the ATC China Brasil team on WhatsApp.",
+        fields: {
+          company: { label: "Company name", placeholder: "Your company name" },
+          name: { label: "Your name", placeholder: "What should we call you?" },
+          contact: {
+            label: "WhatsApp with area code or business email",
+            placeholder: "+55 00 00000-0000 or you@yourcompany.com",
+          },
+        },
+        submitLabel: "Claim my diagnosis and chat on WhatsApp",
+        privacyNote:
+          "Nothing is stored on the website: your answers go straight into a message you send on WhatsApp.",
+      },
+      restartLabel: "Retake diagnosis",
+      analyzingTitle: "Analyzing your answers…",
+      analyzingDetail: "Matching your motivation, goals and operation size.",
+      completedEyebrow: "Diagnosis complete",
+      completedTitle: "Your profile and your benefit are ready.",
+      openResultLabel: "See result and claim benefit",
+      closeLabel: "Close",
+      requiredError: "Please fill in this field.",
+      contactError: "Enter a WhatsApp number with area code or a valid email.",
+      messageIntro:
+        "Hello, ATC team! I took the Import Diagnosis and would like to claim my Feasibility Session.",
+      profileMessageLabel: "Profile",
+      contactMessageLabel: "WhatsApp / Email",
     },
     footer: {
       description: "International import, export and sourcing solutions.",
@@ -905,47 +1224,195 @@ export const copy = {
     },
     leadForm: {
       eyebrow: "第一步",
-      title: "告诉我们贵公司采购哪些产品。",
+      title: "告诉我们贵公司在寻找什么。",
       description:
         "回答几个简单问题，并通过 WhatsApp 直接发送给我们的团队。有了这些信息，我们可以针对您的情况做好沟通准备。",
       whatsappLabel: "WhatsApp",
       emailLabel: "电子邮件",
-      formTitle: "联系专业顾问",
+      formTitle: "联系我们的团队",
       formDescription:
         "请填写以下信息。提交后将打开 WhatsApp，并生成可供您确认的消息。",
       fields: {
-        name: { label: "姓名", placeholder: "您的姓名" },
-        company: { label: "公司", placeholder: "公司名称" },
+        company: { label: "公司名称", placeholder: "贵公司名称" },
+        name: { label: "您的姓名", placeholder: "我们该如何称呼您？" },
         phone: { label: "WhatsApp", placeholder: "+55 00 00000-0000" },
-        email: { label: "电子邮件", placeholder: "you@company.com" },
+        email: { label: "电子邮件", placeholder: "you@yourcompany.com" },
       },
       importStatus: {
-        label: "贵公司是否已开展进口业务，还是仅向巴西供应商采购？",
+        label: "贵公司是否已开展国际业务，还是仅向巴西供应商采购？",
         options: ["目前在进口", "以前进口过", "仅在巴西采购", "不进口"],
       },
+      operationType: {
+        label: "贵公司目前的重点是进口还是出口？",
+        options: [
+          "进口（将产品/原料引入巴西）",
+          "出口（将巴西产品推向海外市场）",
+          "两者皆有／需要双向支持",
+        ],
+      },
+      segments: {
+        label: "贵公司哪些产品或行业的周转量最高？",
+        hint: "请选择以下主要选项，或在“其他”中注明。",
+        options: [
+          "工业零部件与机械（自动化、配件与工具）",
+          "原材料与化工／塑料原料",
+          "纺织品、面料与辅料",
+          "电子产品、IT 组件与科技产品",
+          "包装（纸板、塑料、可降解材料）",
+          "五金、钢材、铝材与金属型材",
+          "照明产品（LED 灯具、投光灯与面板）",
+          "家居、装饰与日用品",
+          "玩具、实用品与综合零售商品",
+          "食品、饮料与农业投入品",
+        ],
+        otherLabel: "其他产品或行业",
+        otherPlaceholder: "请注明产品或行业",
+        otherMessageLabel: "其他",
+      },
       questions: {
-        topSellers: {
-          label: "贵公司哪些产品销量最高？",
-          placeholder: "例如：手机壳、厨房用品、零部件……",
-        },
         frequentPurchases: {
           label: "贵公司最常采购或补货的产品有哪些？",
           placeholder: "例如：数据线、包装、原材料……",
         },
         competitiveProduct: {
-          label: "您希望以更有竞争力的条件采购哪种产品？",
+          label: "您希望以更有竞争力的条件采购哪种产品或原料？",
           placeholder: "例如：蓝牙耳机、工具、机械……",
         },
       },
       requiredError: "请填写此项。",
       selectError: "请选择一个选项。",
+      segmentsError: "请至少选择一个选项，或在“其他”中注明。",
       phoneError: "请输入有效的 WhatsApp 号码（含区号）。",
       emailError: "请输入有效的电子邮件地址。",
       optionalLabel: "选填",
       privacyNote:
-        "网站不会保存任何数据：您的回答只会包含在您通过 WhatsApp 发送的消息中。",
-      submitLabel: "发送给我们的专业顾问",
+        "网站不会保存任何数据：您的回答将直接生成一条由您通过 WhatsApp 发送的消息。",
+      submitLabel: "发送给我们的团队并在 WhatsApp 沟通",
       messageIntro: "您好，ATC 团队！我在网站上填写了表单：",
+    },
+    diagnosis: {
+      eyebrow: "免费诊断",
+      title: "进口诊断：了解贵公司的进口画像与潜力",
+      description:
+        "回答 4 个简单问题，了解贵公司适合哪种进口经验模式，并在最后解锁一项专属权益。",
+      highlights: ["4 个简单问题", "即时获得进口商画像", "最后解锁专属权益"],
+      progressLabel: "第 {current} 题，共 {total} 题",
+      backLabel: "返回",
+      questions: [
+        {
+          topic: "期望与动机",
+          question: "考虑为公司开展进口时，您最看重什么？",
+          options: [
+            "通过降低产品单位成本来提高利润率。",
+            "获取巴西市场没有的独家产品和技术。",
+            "扩大生产规模，确保持续稳定的供应。",
+            "仍在评估进口对我的业务是否可行。",
+          ],
+        },
+        {
+          topic: "收益与挑战",
+          question:
+            "开始或扩大进口业务时，贵公司最期待获得什么？最担心失去什么？",
+          options: [
+            "收获：高盈利能力／顾虑：税务繁琐与运营风险。",
+            "收获：质量把控与自有品牌／顾虑：中国供应商不可靠。",
+            "收获：市场竞争力／顾虑：交期长与国际运费高。",
+            "收获：产品组合多元化／顾虑：缺乏流程专业知识。",
+          ],
+        },
+        {
+          topic: "业务愿景",
+          question: "未来 12 个月，贵公司的主要目标是什么？",
+          options: [
+            "在充分保障下从零开始进口。",
+            "优化现有进口业务的成本。",
+            "直接与中国工厂开发定制（OEM）产品。",
+            "只是想了解国际市场如何运作。",
+          ],
+        },
+        {
+          topic: "能力与投资结构",
+          question: "贵公司进口业务的预计规模或投资范围是多少？",
+          options: [
+            "起步阶段／市场测试（小批量订单或拼箱）。",
+            "中等规模的持续采购（定期补货）。",
+            "大规模运营／工厂直发整柜（FCL）。",
+            "尚未确定预算，需要可行性研究。",
+          ],
+        },
+      ],
+      resultEyebrow: "您的进口商画像",
+      meaningLabel: "含义",
+      summaryLabel: "概述",
+      profiles: [
+        {
+          label: "画像 1",
+          name: "探索型进口商",
+          focus: "战略起步者",
+          meaning:
+            "具有高增长潜力的企业，目前仍在国内市场采购或刚刚起步。",
+          summary:
+            "您希望验证财务可行性，并在充分保障下起步，避免繁琐手续或陌生供应商带来的风险。您最直接的收益是摆脱对本地分销商的依赖。",
+        },
+        {
+          label: "画像 2",
+          name: "优化型进口商",
+          focus: "聚焦利润与效率",
+          meaning:
+            "已经了解市场或已在进口的企业，但感到因成本过高或中间商过多而错失利润。",
+          summary:
+            "您的重点是减少中间环节、直接在源头（中国）谈判，并改造现有业务，在物流可预期的前提下获得 2 至 3 倍的利润空间。",
+        },
+        {
+          label: "画像 3",
+          name: "品牌建设型进口商",
+          focus: "OEM／独家产品",
+          meaning:
+            "富有远见的企业，希望通过独家产品、定制或自有品牌实现产品组合差异化。",
+          summary:
+            "您需要严格的工厂资质审核、源头质量控制和技术开发，以便在巴西市场推出独特产品。",
+        },
+        {
+          label: "画像 4",
+          name: "规模型进口商",
+          focus: "大批量与整柜",
+          meaning:
+            "以批量、持续补货和采购议价能力为核心的成熟业务（工业、批发或大型分销商）。",
+          summary:
+            "您的目标是实现端到端的最高效率：工厂审核、货物拼装、降低税务与物流成本，并由中国大型工厂直接持续供货。",
+        },
+      ],
+      reward: {
+        badge: "权益已解锁",
+        perks: ["初步业务分析", "供应商匹配"],
+        freeTag: "免费",
+        title: "恭喜！您已解锁可行性评估会议及中国直连通道",
+        description:
+          "根据您的上述画像，我们的团队为贵公司免费提供初步业务分析及供应商匹配。请填写以下信息以领取权益，并通过 WhatsApp 直接联系 ATC China Brasil 团队。",
+        fields: {
+          company: { label: "公司名称", placeholder: "贵公司名称" },
+          name: { label: "您的姓名", placeholder: "我们该如何称呼您？" },
+          contact: {
+            label: "WhatsApp（含区号）或企业邮箱",
+            placeholder: "+55 00 00000-0000 或 you@yourcompany.com",
+          },
+        },
+        submitLabel: "领取诊断结果并在 WhatsApp 沟通",
+        privacyNote:
+          "网站不会保存任何数据：您的回答将直接生成一条由您通过 WhatsApp 发送的消息。",
+      },
+      restartLabel: "重新诊断",
+      analyzingTitle: "正在分析您的回答…",
+      analyzingDetail: "正在综合您的动机、目标与业务规模。",
+      completedEyebrow: "诊断完成",
+      completedTitle: "您的画像与专属权益已准备就绪。",
+      openResultLabel: "查看结果并领取权益",
+      closeLabel: "关闭",
+      requiredError: "请填写此项。",
+      contactError: "请输入含区号的 WhatsApp 号码或有效的电子邮件。",
+      messageIntro: "您好，ATC 团队！我完成了进口诊断，想领取可行性评估会议。",
+      profileMessageLabel: "画像",
+      contactMessageLabel: "WhatsApp／电子邮件",
     },
     footer: {
       description: "国际进口、出口与采购解决方案。",
