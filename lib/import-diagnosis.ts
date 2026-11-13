@@ -41,11 +41,3 @@ export function resolveImporterProfile(answers: readonly number[]): ProfileIndex
 
   return 0;
 }
-
-// Foto de cada perfil, na mesma ordem de `copy[lang].diagnosis.profiles`.
-export const PROFILE_IMAGES = [
-  "/how-it-works/estrategico-1.webp", // Explorador: planejamento e viabilidade
-  "/audience-section/distributors.webp", // Otimizador: estoque, reposição e margem
-  "/audience-section/industry.webp", // Construtor de Marca: fábrica e qualidade na origem
-  "/differentials-section/container-ship.jpg", // Alta Escala: volume e contêiner
-] as const;

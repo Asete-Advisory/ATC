@@ -353,11 +353,56 @@ export const copy = {
       messageIntro: "Olá, equipe ATC! Preenchi o formulário do site:",
     },
     diagnosis: {
-      kicker: "Diagnóstico de importação",
-      profilesLabel: "Os 4 perfis de importador",
-      title: "Descubra o perfil e o potencial da sua empresa",
+      title: {
+        start: "Descubra o perfil de importador da sua empresa e ",
+        highlight: "ganhe uma sessão de viabilidade",
+        end: ".",
+      },
       description:
-        "Responda a 4 perguntas rápidas, descubra em qual modelo de experiência de importação sua empresa se encaixa e desbloqueie um benefício exclusivo no final.",
+        "Responda a 4 perguntas rápidas, veja em qual perfil sua empresa se encaixa e desbloqueie acesso direto à China com o time da ATC.",
+      tagline: "Sem custo e sem compromisso.",
+      startLabel: "Fazer meu diagnóstico",
+      steps: {
+        eyebrow: "Leva menos de um minuto",
+        title: "Veja como funciona",
+        items: [
+          {
+            title: "Responda 4 perguntas",
+            description: "Sobre o momento e os objetivos da sua empresa.",
+          },
+          {
+            title: "Descubra seu perfil",
+            description: "Mostramos qual dos 4 perfis de importador é o seu.",
+          },
+          {
+            title: "Resgate seu prêmio",
+            description: "Uma sessão de viabilidade com o nosso time, sem custo.",
+          },
+        ],
+      },
+      rewardSection: {
+        title: "O seu prêmio",
+        description:
+          "Ao concluir o diagnóstico, sua empresa desbloqueia uma sessão de viabilidade com o time da ATC.",
+        items: [
+          {
+            title: "Análise preliminar da operação",
+            description: "Custos, prazos e riscos de importar o que você precisa.",
+          },
+          {
+            title: "Mapeamento de fornecedores",
+            description: "Fábricas na China alinhadas ao que sua empresa busca.",
+          },
+          {
+            title: "Acesso direto à China",
+            description: "Negociação na origem, com presença local da ATC.",
+          },
+        ],
+      },
+      profilesLabel: "Os 4 perfis de importador",
+      profilesDescription:
+        "Seu resultado mostra em qual deles a sua empresa está hoje.",
+      trustTitle: "Com a confiança de mais de 3.000 empresas",
       progressLabel: "Pergunta {current} de {total}",
       backLabel: "Voltar",
       questions: [
@@ -810,11 +855,55 @@ export const copy = {
       messageIntro: "Hello, ATC team! I filled in the form on your website:",
     },
     diagnosis: {
-      kicker: "Import diagnosis",
-      profilesLabel: "The 4 importer profiles",
-      title: "Discover your company's import profile and potential",
+      title: {
+        start: "Discover your company's importer profile and ",
+        highlight: "earn a feasibility session",
+        end: ".",
+      },
       description:
-        "Answer 4 quick questions, find out which import experience model fits your company and unlock an exclusive benefit at the end.",
+        "Answer 4 quick questions, see which profile fits your company and unlock direct access to China with the ATC team.",
+      tagline: "Free and with no commitment.",
+      startLabel: "Take my diagnosis",
+      steps: {
+        eyebrow: "Takes less than a minute",
+        title: "How it works",
+        items: [
+          {
+            title: "Answer 4 questions",
+            description: "About your company's moment and goals.",
+          },
+          {
+            title: "Discover your profile",
+            description: "We show which of the 4 importer profiles is yours.",
+          },
+          {
+            title: "Claim your reward",
+            description: "A feasibility session with our team, free of charge.",
+          },
+        ],
+      },
+      rewardSection: {
+        title: "Your reward",
+        description:
+          "When you finish the diagnosis, your company unlocks a feasibility session with the ATC team.",
+        items: [
+          {
+            title: "Preliminary operation analysis",
+            description: "Costs, lead times and risks of importing what you need.",
+          },
+          {
+            title: "Supplier mapping",
+            description: "Factories in China aligned with what your company needs.",
+          },
+          {
+            title: "Direct access to China",
+            description: "Negotiation at the source, with ATC's local presence.",
+          },
+        ],
+      },
+      profilesLabel: "The 4 importer profiles",
+      profilesDescription: "Your result shows which one fits your company today.",
+      trustTitle: "Trusted by more than 3,000 companies",
       progressLabel: "Question {current} of {total}",
       backLabel: "Back",
       questions: [
@@ -1246,11 +1335,54 @@ export const copy = {
       messageIntro: "您好，ATC 团队！我在网站上填写了表单：",
     },
     diagnosis: {
-      kicker: "进口诊断",
-      profilesLabel: "4 种进口商画像",
-      title: "了解贵公司的进口画像与潜力",
+      title: {
+        start: "了解贵公司的进口商画像，",
+        highlight: "赢取一次可行性评估",
+        end: "。",
+      },
       description:
-        "回答 4 个简单问题，了解贵公司适合哪种进口经验模式，并在最后解锁一项专属权益。",
+        "回答 4 个简单问题，了解贵公司属于哪种画像，并解锁与 ATC 团队直连中国的机会。",
+      tagline: "免费，无任何义务。",
+      startLabel: "开始诊断",
+      steps: {
+        eyebrow: "不到一分钟",
+        title: "如何进行",
+        items: [
+          {
+            title: "回答 4 个问题",
+            description: "关于贵公司的现状与目标。",
+          },
+          {
+            title: "了解您的画像",
+            description: "告诉您属于 4 种进口商画像中的哪一种。",
+          },
+          {
+            title: "领取奖励",
+            description: "与我们团队进行一次免费的可行性评估。",
+          },
+        ],
+      },
+      rewardSection: {
+        title: "您的奖励",
+        description: "完成诊断后，贵公司将获得一次与 ATC 团队的可行性评估。",
+        items: [
+          {
+            title: "初步运营分析",
+            description: "进口所需产品的成本、周期与风险。",
+          },
+          {
+            title: "供应商匹配",
+            description: "与贵公司需求相符的中国工厂。",
+          },
+          {
+            title: "直连中国",
+            description: "依托 ATC 本地团队，在源头谈判。",
+          },
+        ],
+      },
+      profilesLabel: "4 种进口商画像",
+      profilesDescription: "诊断结果会显示贵公司目前属于哪一种。",
+      trustTitle: "超过 3,000 家企业的信赖",
       progressLabel: "第 {current} 题，共 {total} 题",
       backLabel: "返回",
       questions: [

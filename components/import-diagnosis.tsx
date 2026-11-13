@@ -11,12 +11,10 @@ import {
 import { ArrowLeft, ArrowRight, LockOpen, RotateCcw, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ConfettiBurst } from "@/components/confetti-burst";
-import { ImporterProfileCard } from "@/components/importer-profile-card";
 import { openWhatsAppMessage } from "@/lib/contact";
 import { copy, type Language } from "@/lib/i18n";
 import {
   DIAGNOSIS_QUESTION_COUNT,
-  PROFILE_IMAGES,
   resolveImporterProfile,
 } from "@/lib/import-diagnosis";
 import { cn } from "@/lib/utils";
@@ -100,9 +98,28 @@ function prefersReducedMotion() {
 const enterClassName =
   "motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2 motion-safe:duration-500";
 
-// No celular o quiz ocupa a página sem moldura; o card aparece a partir de sm.
 const cardClassName =
-  "scroll-mt-4 sm:rounded-3xl sm:border sm:border-border sm:bg-card sm:px-8 sm:py-7 sm:shadow-[0_24px_56px_-40px_hsl(from_var(--primary)_h_s_l/0.45)]";
+  "flex flex-col scroll-mt-6 rounded-2xl border border-border bg-card px-5 py-6 shadow-[0_18px_48px_-28px_rgba(7,22,37,0.28)] sm:px-8 sm:py-8";
+
+// Linha de opção no estilo de formulário: indicador de rádio + texto.
+function OptionIndicator({ selected }: { selected: boolean }) {
+  return (
+    <span
+      aria-hidden
+      className={cn(
+        "mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors",
+        selected ? "border-accent" : "border-[#c9d3de] group-hover:border-accent/60",
+      )}
+    >
+      <span
+        className={cn(
+          "size-2.5 rounded-full bg-accent transition-transform duration-150",
+          selected ? "scale-100" : "scale-0",
+        )}
+      />
+    </span>
+  );
+}
 
 const darkControlClassName =
   "h-12 w-full rounded-xl border border-white/15 bg-white/8 px-4 text-base text-white outline-none transition-[border-color,background-color,box-shadow] duration-200 placeholder:text-white/40 hover:border-white/30 focus:border-accent focus:bg-white/12 focus:ring-4 focus:ring-accent/20 aria-invalid:border-red-400/80 aria-invalid:focus:ring-red-400/20 sm:h-11 sm:text-sm";
@@ -297,7 +314,7 @@ export function ImportDiagnosis({ content }: ImportDiagnosisProps) {
             {question.question}
           </h2>
 
-          <div className="mt-5 grid gap-2">
+          <div className="mt-5 grid gap-2.5">
             {question.options.map((option, index) => (
               <button
                 key={option}
@@ -305,11 +322,12 @@ export function ImportDiagnosis({ content }: ImportDiagnosisProps) {
                 onClick={() => selectOption(index)}
                 aria-pressed={answers[step] === index}
                 className={cn(
-                  "w-full rounded-2xl border border-border bg-white px-4 py-3.5 text-left text-[15px] leading-snug text-foreground transition-[border-color,background-color,transform] duration-150 hover:border-accent/60 hover:bg-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent/15 active:scale-[0.99] sm:bg-secondary/40 sm:px-5",
-                  answers[step] === index && "border-accent bg-accent/10",
+                  "group flex w-full items-start gap-3 rounded-xl border border-[#d5dde6] bg-white px-4 py-3.5 text-left text-[15px] leading-snug text-foreground transition-[border-color,background-color,transform] duration-150 hover:border-accent/60 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent/15 active:scale-[0.99]",
+                  answers[step] === index && "border-accent bg-accent/8",
                 )}
               >
-                {option}
+                <OptionIndicator selected={answers[step] === index} />
+                <span>{option}</span>
               </button>
             ))}
           </div>
@@ -363,6 +381,7 @@ export function ImportDiagnosis({ content }: ImportDiagnosisProps) {
           aria-live="polite"
           data-diagnosis-roulette=""
         >
+          <div className="my-auto">
           <h2
             ref={headingRef}
             tabIndex={-1}
@@ -370,17 +389,30 @@ export function ImportDiagnosis({ content }: ImportDiagnosisProps) {
           >
             {content.analyzingTitle}
           </h2>
-          <div className="mt-5 grid gap-2 lg:grid-cols-2 lg:gap-2.5">
+          <div className="mt-5 grid gap-2.5">
             {content.profiles.map((item, index) => (
-              <ImporterProfileCard
+              <div
                 key={item.name}
-                name={item.name}
-                focus={item.focus}
-                image={PROFILE_IMAGES[index]}
-                active={highlight === index}
-                muted={highlight !== null && highlight !== index}
-              />
+                className={cn(
+                  "flex items-start gap-3 rounded-xl border bg-white px-4 py-3.5 transition-[border-color,background-color,opacity,transform] duration-150",
+                  highlight === index
+                    ? "scale-[1.02] border-accent bg-accent/8 shadow-[0_0_0_3px_color-mix(in_oklch,var(--accent)_30%,transparent)]"
+                    : "border-[#d5dde6]",
+                  highlight !== null && highlight !== index && "opacity-50",
+                )}
+              >
+                <OptionIndicator selected={highlight === index} />
+                <span className="min-w-0">
+                  <span className="block text-[15px] leading-snug font-semibold text-foreground">
+                    {item.name}
+                  </span>
+                  <span className="mt-0.5 block text-sm leading-snug text-muted-foreground">
+                    {item.focus}
+                  </span>
+                </span>
+              </div>
             ))}
+          </div>
           </div>
         </div>
       ) : (
@@ -388,7 +420,7 @@ export function ImportDiagnosis({ content }: ImportDiagnosisProps) {
           ref={containerRef}
           className={cn(
             cardClassName,
-            "lg:flex lg:min-h-[20rem] lg:flex-col lg:justify-center",
+            "justify-center",
             enterClassName,
           )}
         >
