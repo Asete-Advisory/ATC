@@ -41,7 +41,7 @@ const authorityImages = [
   "/authority-media-section/images/img43.jpeg",
   "/authority-media-section/images/img26.jpeg",
   "/authority-media-section/images/img33.jpeg",
-  "/authority-media-section/images/img19.png",
+  "/authority-media-section/images/img19.jpeg",
   "/authority-media-section/images/img42.jpeg",
   "/authority-media-section/images/img31.jpeg",
   "/authority-media-section/images/img23.jpeg",

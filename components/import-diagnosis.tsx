@@ -1,22 +1,28 @@
 "use client";
 
-import {
-  useEffect,
-  useId,
-  useRef,
-  useState,
-  type FormEvent,
-  type MouseEvent,
-} from "react";
-import { ArrowLeft, ArrowRight, LockOpen, RotateCcw, X } from "lucide-react";
+import { useEffect, useId, useRef, useState, type MouseEvent } from "react";
+import { ArrowRight, Check, LockOpen, RotateCcw, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ConfettiBurst } from "@/components/confetti-burst";
+import { DiagnosisQuestionnaire } from "@/components/diagnosis-questionnaire";
+import {
+  OptionIndicator,
+  diagnosisCardClassName as cardClassName,
+  diagnosisEnterClassName as enterClassName,
+} from "@/components/diagnosis-ui";
 import { openWhatsAppMessage } from "@/lib/contact";
 import { copy, type Language } from "@/lib/i18n";
 import {
   DIAGNOSIS_QUESTION_COUNT,
   resolveImporterProfile,
 } from "@/lib/import-diagnosis";
+import {
+  contactFields,
+  formatIntakeAnswer,
+  type ContactValues,
+  type IntakeAnswer,
+  type IntakeQuestion,
+} from "@/lib/import-intake";
 import { cn } from "@/lib/utils";
 
 type DiagnosisContent = (typeof copy)[Language]["diagnosis"];
@@ -25,68 +31,62 @@ type ImportDiagnosisProps = {
   content: DiagnosisContent;
 };
 
-type LeadField = "company" | "name" | "contact";
-type LeadValues = Record<LeadField, string>;
-type LeadErrors = Partial<Record<LeadField, string>>;
-type ResultPhase = "analyzing" | "done";
+type Stage = "questions" | "analyzing" | "done";
 
-const leadFields: LeadField[] = ["company", "name", "contact"];
-const emptyLead: LeadValues = { company: "", name: "", contact: "" };
-const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const RESULT_STEP = DIAGNOSIS_QUESTION_COUNT;
 // "Roleta" entre os 4 perfis antes do resultado: o destaque desacelera e para
 // no perfil calculado. Voltas mínimas em múltiplo de 4 para terminar no índice certo.
 const ROULETTE_MIN_STEPS = 8;
 const ROULETTE_LAND_PAUSE_MS = 650;
 const ROULETTE_REDUCED_MS = 500;
 
-function validateLead(values: LeadValues, content: DiagnosisContent) {
-  const errors: LeadErrors = {};
-
-  for (const field of leadFields) {
-    if (!values[field].trim()) {
-      errors[field] = content.requiredError;
-    }
-  }
-
-  const contact = values.contact.trim();
-  if (contact) {
-    const digits = contact.replace(/\D/g, "");
-    const isValid = contact.includes("@")
-      ? emailPattern.test(contact)
-      : digits.length >= 10 && digits.length <= 15;
-
-    if (!isValid) {
-      errors.contact = content.contactError;
-    }
-  }
-
-  return errors;
+/** As 4 perguntas do perfil (escolha única) seguidas das perguntas de dúvidas. */
+function buildQuestions(content: DiagnosisContent): IntakeQuestion[] {
+  return [
+    ...content.questions.map(
+      (item): IntakeQuestion => ({
+        kind: "single",
+        question: item.question,
+        options: item.options,
+      }),
+    ),
+    ...(content.intake.questions as readonly IntakeQuestion[]),
+  ];
 }
 
 function buildMessage(
-  answers: number[],
-  lead: LeadValues,
+  questions: IntakeQuestion[],
+  answers: IntakeAnswer[],
+  contact: ContactValues,
+  profileAnswers: number[],
   content: DiagnosisContent,
 ) {
-  const profile = content.profiles[resolveImporterProfile(answers)];
-  const { fields } = content.reward;
+  const profile = content.profiles[resolveImporterProfile(profileAnswers)];
+  const contactQuestion = questions.find((item) => item.kind === "contact");
 
-  const contactLines = [
-    `*${fields.company.label}:* ${lead.company.trim()}`,
-    `*${fields.name.label}:* ${lead.name.trim()}`,
-    `*${content.contactMessageLabel}:* ${lead.contact.trim()}`,
-  ];
+  const contactLines = contactFields
+    .filter((field) => contact[field].trim())
+    .map((field) => {
+      const label =
+        contactQuestion?.kind === "contact"
+          ? contactQuestion.fields[field].label
+          : field;
+      return `*${label}:* ${contact[field].trim()}`;
+    });
 
-  const answerLines = content.questions.map(
-    (question, index) =>
-      `*${index + 1}. ${question.question}*\n${question.options[answers[index]]}`,
-  );
+  // Numeração contínua, sem a pergunta de contato (que já vai no bloco acima).
+  let number = 0;
+  const answerLines = questions.flatMap((item, index) => {
+    if (item.kind === "contact") return [];
+    number += 1;
+    const text = formatIntakeAnswer(item, answers[index]);
+    return text ? [`*${number}. ${item.question}*\n${text}`] : [];
+  });
 
   return [
     content.messageIntro,
     `*${content.profileMessageLabel}:* ${profile.name} (${profile.focus})`,
-    contactLines.join("\n"),
+    `*— ${content.contactMessageLabel} —*\n${contactLines.join("\n")}`,
+    `*— ${content.answersMessageLabel} —*`,
     ...answerLines,
   ].join("\n\n");
 }
@@ -95,68 +95,33 @@ function prefersReducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-const enterClassName =
-  "motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2 motion-safe:duration-500";
-
-const cardClassName =
-  "flex flex-col scroll-mt-6 rounded-2xl border border-border bg-card px-5 py-6 shadow-[0_18px_48px_-28px_rgba(7,22,37,0.28)] sm:px-8 sm:py-8";
-
-// Linha de opção no estilo de formulário: indicador de rádio + texto.
-function OptionIndicator({ selected }: { selected: boolean }) {
-  return (
-    <span
-      aria-hidden
-      className={cn(
-        "mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors",
-        selected ? "border-accent" : "border-[#c9d3de] group-hover:border-accent/60",
-      )}
-    >
-      <span
-        className={cn(
-          "size-2.5 rounded-full bg-accent transition-transform duration-150",
-          selected ? "scale-100" : "scale-0",
-        )}
-      />
-    </span>
-  );
-}
-
-const darkControlClassName =
-  "h-12 w-full rounded-xl border border-white/15 bg-white/8 px-4 text-base text-white outline-none transition-[border-color,background-color,box-shadow] duration-200 placeholder:text-white/40 hover:border-white/30 focus:border-accent focus:bg-white/12 focus:ring-4 focus:ring-accent/20 aria-invalid:border-red-400/80 aria-invalid:focus:ring-red-400/20 sm:h-11 sm:text-sm";
-
 export function ImportDiagnosis({ content }: ImportDiagnosisProps) {
   const baseId = useId();
   const containerRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const dialogHeadingRef = useRef<HTMLHeadingElement>(null);
-  const hasInteracted = useRef(false);
 
-  const [step, setStep] = useState(0);
-  const [answers, setAnswers] = useState<number[]>([]);
-  const [phase, setPhase] = useState<ResultPhase>("analyzing");
+  const [questions] = useState(() => buildQuestions(content));
+  const [round, setRound] = useState(0);
+  const [stage, setStage] = useState<Stage>("questions");
+  const [profileAnswers, setProfileAnswers] = useState<number[]>([]);
+  const [message, setMessage] = useState("");
   const [highlight, setHighlight] = useState<number | null>(null);
   const [resultOpen, setResultOpen] = useState(false);
   const [confettiKey, setConfettiKey] = useState(0);
-  const [lead, setLead] = useState<LeadValues>(emptyLead);
-  const [submitted, setSubmitted] = useState(false);
+  const [sent, setSent] = useState(false);
 
-  const isResult = step === RESULT_STEP;
-  const errors = submitted ? validateLead(lead, content) : {};
-  const fieldId = (field: LeadField) => `${baseId}-${field}`;
-  const errorId = (field: LeadField) => `${baseId}-${field}-error`;
   const dialogTitleId = `${baseId}-result-title`;
 
-  // Ao trocar de etapa, leva o foco para o novo título e mantém o card visível.
+  // Ao sair do questionário: foco no novo título e card de volta à tela.
   useEffect(() => {
-    if (!hasInteracted.current) return;
+    if (stage === "questions") return;
 
     headingRef.current?.focus({ preventScroll: true });
-
     const container = containerRef.current;
     if (!container) return;
 
-    // Só rola quando o card saiu da tela (ex.: celular, abaixo do título).
     const { top } = container.getBoundingClientRect();
     if (top < 0 || top > window.innerHeight * 0.6) {
       container.scrollIntoView({
@@ -164,15 +129,15 @@ export function ImportDiagnosis({ content }: ImportDiagnosisProps) {
         block: "start",
       });
     }
-  }, [step, phase]);
+  }, [stage]);
 
   useEffect(() => {
-    if (!isResult || phase !== "analyzing") return;
+    if (stage !== "analyzing") return;
 
-    const target = resolveImporterProfile(answers);
+    const target = resolveImporterProfile(profileAnswers);
     const timers: number[] = [];
     const finish = () => {
-      setPhase("done");
+      setStage("done");
       setResultOpen(true);
       setConfettiKey((key) => key + 1);
     };
@@ -187,16 +152,14 @@ export function ImportDiagnosis({ content }: ImportDiagnosisProps) {
       for (let step = 0; step <= steps; step += 1) {
         // Intervalos crescentes: começa rápido e desacelera até parar.
         elapsed += 70 + 280 * Math.pow(step / steps, 2.4);
-        timers.push(
-          window.setTimeout(() => setHighlight(step % 4), elapsed),
-        );
+        timers.push(window.setTimeout(() => setHighlight(step % 4), elapsed));
       }
 
       timers.push(window.setTimeout(finish, elapsed + ROULETTE_LAND_PAUSE_MS));
     }
 
     return () => timers.forEach((timer) => window.clearTimeout(timer));
-  }, [isResult, phase, answers]);
+  }, [stage, profileAnswers]);
 
   // Sincroniza o <dialog> nativo (foco preso, Esc, camada superior).
   useEffect(() => {
@@ -217,32 +180,28 @@ export function ImportDiagnosis({ content }: ImportDiagnosisProps) {
     };
   }, [resultOpen]);
 
-  const goTo = (nextStep: number) => {
-    hasInteracted.current = true;
-    setStep(nextStep);
-  };
+  const complete = (answers: IntakeAnswer[], contact: ContactValues) => {
+    const diagnosisAnswers = answers
+      .slice(0, DIAGNOSIS_QUESTION_COUNT)
+      .map((item) => item.choice ?? 0);
 
-  const selectOption = (optionIndex: number) => {
-    setAnswers((current) => {
-      const next = current.slice(0, step);
-      next[step] = optionIndex;
-      return next;
-    });
-    if (step + 1 === RESULT_STEP) {
-      setHighlight(null);
-      setPhase("analyzing");
-    }
-    goTo(step + 1);
+    setProfileAnswers(diagnosisAnswers);
+    setMessage(
+      buildMessage(questions, answers, contact, diagnosisAnswers, content),
+    );
+    setHighlight(null);
+    setSent(false);
+    setStage("analyzing");
   };
 
   const restart = () => {
     setResultOpen(false);
-    setAnswers([]);
-    setLead(emptyLead);
-    setSubmitted(false);
+    setProfileAnswers([]);
+    setMessage("");
     setHighlight(null);
-    setPhase("analyzing");
-    goTo(0);
+    setSent(false);
+    setStage("questions");
+    setRound((value) => value + 1);
   };
 
   const openResult = () => {
@@ -250,130 +209,31 @@ export function ImportDiagnosis({ content }: ImportDiagnosisProps) {
     setConfettiKey((key) => key + 1);
   };
 
+  const sendAnswers = () => {
+    openWhatsAppMessage(message);
+    setSent(true);
+  };
+
   const handleBackdropClick = (event: MouseEvent<HTMLDialogElement>) => {
     if (event.target === event.currentTarget) setResultOpen(false);
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setSubmitted(true);
-
-    const currentErrors = validateLead(lead, content);
-    const firstInvalid = leadFields.find((field) => currentErrors[field]);
-
-    if (firstInvalid) {
-      document.getElementById(fieldId(firstInvalid))?.focus();
-      return;
-    }
-
-    openWhatsAppMessage(buildMessage(answers, lead, content));
-  };
-
-  if (!isResult) {
-    const question = content.questions[step];
-    const progressLabel = content.progressLabel
-      .replace("{current}", String(step + 1))
-      .replace("{total}", String(DIAGNOSIS_QUESTION_COUNT));
-
+  if (stage === "questions") {
     return (
-      <div ref={containerRef} className={cardClassName}>
-        <div className="flex min-h-8 items-center justify-between gap-4">
-          <span className="text-sm text-muted-foreground">{progressLabel}</span>
-          {step > 0 && (
-            <button
-              type="button"
-              onClick={() => goTo(step - 1)}
-              className="-mr-3 inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent/15"
-            >
-              <ArrowLeft className="size-3.5" aria-hidden />
-              {content.backLabel}
-            </button>
-          )}
-        </div>
-
-        <div
-          className="mt-2 h-1 overflow-hidden rounded-full bg-border"
-          role="progressbar"
-          aria-label={progressLabel}
-          aria-valuemin={0}
-          aria-valuemax={DIAGNOSIS_QUESTION_COUNT}
-          aria-valuenow={step}
-        >
-          <div
-            className="h-full rounded-full bg-accent transition-[width] duration-500 ease-out"
-            style={{ width: `${((step + 1) / DIAGNOSIS_QUESTION_COUNT) * 100}%` }}
-          />
-        </div>
-
-        <div key={step} className={cn("mt-6", enterClassName)}>
-          <h2
-            ref={headingRef}
-            tabIndex={-1}
-            className="text-xl leading-snug font-semibold tracking-[-0.01em] text-balance text-foreground outline-none sm:text-2xl"
-          >
-            {question.question}
-          </h2>
-
-          <div className="mt-5 grid gap-2.5">
-            {question.options.map((option, index) => (
-              <button
-                key={option}
-                type="button"
-                onClick={() => selectOption(index)}
-                aria-pressed={answers[step] === index}
-                className={cn(
-                  "group flex w-full items-start gap-3 rounded-xl border border-[#d5dde6] bg-white px-4 py-3.5 text-left text-[15px] leading-snug text-foreground transition-[border-color,background-color,transform] duration-150 hover:border-accent/60 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent/15 active:scale-[0.99]",
-                  answers[step] === index && "border-accent bg-accent/8",
-                )}
-              >
-                <OptionIndicator selected={answers[step] === index} />
-                <span>{option}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
+      <DiagnosisQuestionnaire
+        key={round}
+        content={content}
+        questions={questions}
+        onComplete={complete}
+      />
     );
   }
 
-  const profile = content.profiles[resolveImporterProfile(answers)];
-
-  const leadField = (
-    field: LeadField,
-    options: { autoComplete: string; className?: string },
-  ) => (
-    <div className={options.className}>
-      <label
-        htmlFor={fieldId(field)}
-        className="mb-1.5 block text-sm text-white/80"
-      >
-        {content.reward.fields[field].label}
-      </label>
-      <input
-        id={fieldId(field)}
-        name={field}
-        type="text"
-        autoComplete={options.autoComplete}
-        value={lead[field]}
-        onChange={(event) =>
-          setLead((current) => ({ ...current, [field]: event.target.value }))
-        }
-        placeholder={content.reward.fields[field].placeholder}
-        aria-invalid={errors[field] ? true : undefined}
-        aria-describedby={errors[field] ? errorId(field) : undefined}
-        className={darkControlClassName}
-      />
-      {errors[field] && (
-        <p id={errorId(field)} className="mt-1.5 text-xs text-red-300">
-          {errors[field]}
-        </p>
-      )}
-    </div>
-  );
+  const profile = content.profiles[resolveImporterProfile(profileAnswers)];
 
   return (
     <>
-      {phase === "analyzing" ? (
+      {stage === "analyzing" ? (
         <div
           ref={containerRef}
           className={cardClassName}
@@ -382,47 +242,43 @@ export function ImportDiagnosis({ content }: ImportDiagnosisProps) {
           data-diagnosis-roulette=""
         >
           <div className="my-auto">
-          <h2
-            ref={headingRef}
-            tabIndex={-1}
-            className="text-xl font-semibold tracking-[-0.01em] text-foreground outline-none sm:text-2xl"
-          >
-            {content.analyzingTitle}
-          </h2>
-          <div className="mt-5 grid gap-2.5">
-            {content.profiles.map((item, index) => (
-              <div
-                key={item.name}
-                className={cn(
-                  "flex items-start gap-3 rounded-xl border bg-white px-4 py-3.5 transition-[border-color,background-color,opacity,transform] duration-150",
-                  highlight === index
-                    ? "scale-[1.02] border-accent bg-accent/8 shadow-[0_0_0_3px_color-mix(in_oklch,var(--accent)_30%,transparent)]"
-                    : "border-[#d5dde6]",
-                  highlight !== null && highlight !== index && "opacity-50",
-                )}
-              >
-                <OptionIndicator selected={highlight === index} />
-                <span className="min-w-0">
-                  <span className="block text-[15px] leading-snug font-semibold text-foreground">
-                    {item.name}
+            <h2
+              ref={headingRef}
+              tabIndex={-1}
+              className="text-xl font-semibold tracking-[-0.01em] text-foreground outline-none sm:text-2xl"
+            >
+              {content.analyzingTitle}
+            </h2>
+            <div className="mt-5 grid gap-2.5">
+              {content.profiles.map((item, index) => (
+                <div
+                  key={item.name}
+                  className={cn(
+                    "flex items-start gap-3 rounded-xl border bg-white px-4 py-3.5 transition-[border-color,background-color,opacity,transform] duration-150",
+                    highlight === index
+                      ? "scale-[1.02] border-accent bg-accent/8 shadow-[0_0_0_3px_color-mix(in_oklch,var(--accent)_30%,transparent)]"
+                      : "border-[#d5dde6]",
+                    highlight !== null && highlight !== index && "opacity-50",
+                  )}
+                >
+                  <OptionIndicator selected={highlight === index} />
+                  <span className="min-w-0">
+                    <span className="block text-[15px] leading-snug font-semibold text-foreground">
+                      {item.name}
+                    </span>
+                    <span className="mt-0.5 block text-sm leading-snug text-muted-foreground">
+                      {item.focus}
+                    </span>
                   </span>
-                  <span className="mt-0.5 block text-sm leading-snug text-muted-foreground">
-                    {item.focus}
-                  </span>
-                </span>
-              </div>
-            ))}
-          </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       ) : (
         <div
           ref={containerRef}
-          className={cn(
-            cardClassName,
-            "justify-center",
-            enterClassName,
-          )}
+          className={cn(cardClassName, "justify-center", enterClassName)}
         >
           <p className="text-sm text-muted-foreground">
             {content.completedEyebrow}
@@ -480,7 +336,7 @@ export function ImportDiagnosis({ content }: ImportDiagnosisProps) {
               <X className="size-5" aria-hidden />
             </button>
 
-            <div className="relative m-auto grid min-h-dvh w-full max-w-5xl overflow-hidden bg-card sm:min-h-0 sm:rounded-[2rem] shadow-[0_40px_120px_-40px_rgba(0,0,0,0.6)] motion-safe:animate-in motion-safe:fade-in-0 motion-safe:zoom-in-95 motion-safe:duration-500 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+            <div className="relative m-auto grid min-h-dvh w-full max-w-5xl overflow-hidden bg-card shadow-[0_40px_120px_-40px_rgba(0,0,0,0.6)] motion-safe:animate-in motion-safe:fade-in-0 motion-safe:zoom-in-95 motion-safe:duration-500 sm:min-h-0 sm:rounded-[2rem] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
               <button
                 type="button"
                 onClick={() => setResultOpen(false)}
@@ -499,7 +355,7 @@ export function ImportDiagnosis({ content }: ImportDiagnosisProps) {
                   id={dialogTitleId}
                   ref={dialogHeadingRef}
                   tabIndex={-1}
-                  className="mt-1.5 pr-10 text-[1.875rem] leading-[1.1] font-semibold lg:pr-0 tracking-[-0.015em] text-balance text-primary outline-none motion-safe:animate-in motion-safe:fade-in-0 motion-safe:zoom-in-90 motion-safe:duration-700 motion-safe:delay-150 motion-safe:fill-mode-backwards sm:text-[2.5rem]"
+                  className="mt-1.5 pr-10 text-[1.875rem] leading-[1.1] font-semibold tracking-[-0.015em] text-balance text-primary outline-none motion-safe:animate-in motion-safe:fade-in-0 motion-safe:zoom-in-90 motion-safe:duration-700 motion-safe:delay-150 motion-safe:fill-mode-backwards sm:text-[2.5rem] lg:pr-0"
                 >
                   {profile.name}
                 </h2>
@@ -516,10 +372,10 @@ export function ImportDiagnosis({ content }: ImportDiagnosisProps) {
                 </p>
               </article>
 
-              {/* Benefício desbloqueado + captura */}
+              {/* Benefício desbloqueado + envio das respostas */}
               <section
                 aria-label={content.reward.badge}
-                className="bg-[#071625] px-6 pt-7 pb-10 text-white sm:p-10"
+                className="flex flex-col justify-center bg-[#071625] px-6 pt-7 pb-10 text-white sm:p-10"
               >
                 <p className="flex items-center gap-2 text-sm font-medium text-[#f5c451]">
                   <LockOpen className="reward-wiggle size-4" aria-hidden />
@@ -532,25 +388,34 @@ export function ImportDiagnosis({ content }: ImportDiagnosisProps) {
                   {content.reward.description}
                 </p>
 
-                <form noValidate onSubmit={handleSubmit} className="mt-7">
-                  <div className="grid gap-3.5 sm:grid-cols-2">
-                    {leadField("company", { autoComplete: "organization" })}
-                    {leadField("name", { autoComplete: "name" })}
-                    {leadField("contact", {
-                      autoComplete: "tel",
-                      className: "sm:col-span-2",
-                    })}
+                {sent ? (
+                  <div className="mt-7 rounded-2xl border border-white/10 bg-white/5 p-5">
+                    <p className="flex items-center gap-2 font-semibold">
+                      <Check className="size-5 text-accent" aria-hidden />
+                      {content.reward.sentTitle}
+                    </p>
+                    <p className="mt-1.5 text-[15px] leading-relaxed text-white/70">
+                      {content.reward.sentDescription}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={sendAnswers}
+                      className="mt-3 text-sm font-medium text-accent underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent/25"
+                    >
+                      {content.reward.reopenLabel}
+                    </button>
                   </div>
-
+                ) : (
                   <Button
-                    type="submit"
+                    type="button"
                     size="lg"
-                    className="reward-shine mt-6 h-auto min-h-13 w-full whitespace-normal rounded-full bg-accent px-6 py-3 text-center text-[15px] leading-snug font-semibold text-accent-foreground hover:bg-accent/90 sm:px-8"
+                    onClick={sendAnswers}
+                    className="reward-shine mt-7 h-auto min-h-13 w-full whitespace-normal rounded-full bg-accent px-6 py-3 text-center text-[15px] leading-snug font-semibold text-accent-foreground hover:bg-accent/90 sm:px-8"
                   >
                     {content.reward.submitLabel}
-                    <ArrowRight className="hidden size-4 sm:block" />
+                    <ArrowRight className="size-4" />
                   </Button>
-                </form>
+                )}
               </section>
             </div>
           </>

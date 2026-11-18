@@ -21,7 +21,7 @@ import { copy, getLanguage, type Language } from "@/lib/i18n";
 export const metadata: Metadata = {
   title: "Diagnóstico de importação | ATC China Brasil",
   description:
-    "Responda a 4 perguntas rápidas, descubra o perfil de importador da sua empresa e desbloqueie uma sessão de viabilidade com a ATC China Brasil.",
+    "Tire suas dúvidas sobre importação, descubra o perfil de importador da sua empresa e desbloqueie uma sessão de viabilidade com a ATC China Brasil.",
   alternates: { canonical: "/diagnostico" },
 };
 
@@ -90,7 +90,7 @@ export default async function DiagnosisPage({
             {/* Altura fixa (a da maior etapa): trocar de pergunta não empurra o resto da página. */}
             <div
               id={QUIZ_ANCHOR}
-              className="grid min-h-[47rem] scroll-mt-6 min-[380px]:min-h-[42.5rem] sm:min-h-[36rem] lg:min-h-[38.5rem]"
+              className="grid min-h-[47rem] scroll-mt-6 min-[380px]:min-h-[42.5rem] sm:min-h-[36rem] lg:min-h-[47.5rem]"
             >
               <ImportDiagnosis key={lang} content={diagnosis} />
             </div>
