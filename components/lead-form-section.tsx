@@ -10,6 +10,14 @@ import {
   openWhatsAppMessage,
 } from "@/lib/contact";
 import { copy, type Language } from "@/lib/i18n";
+import {
+  formatPhoneInput,
+  inputLimits,
+  isValidEmail,
+  isValidPhone,
+  sanitizeEmail,
+  sanitizePersonName,
+} from "@/lib/input-masks";
 import { cn } from "@/lib/utils";
 
 type LeadFormContent = (typeof copy)[Language]["leadForm"];
@@ -30,6 +38,14 @@ type TextFieldName =
   | "competitiveProduct";
 
 type FieldName = TextFieldName | "segments";
+
+// Filtro/máscara aplicado enquanto a pessoa digita (os demais campos são livres).
+const fieldMasks: Partial<Record<TextFieldName, (value: string) => string>> = {
+  company: (value) => value.slice(0, inputLimits.company),
+  name: sanitizePersonName,
+  phone: formatPhoneInput,
+  email: sanitizeEmail,
+};
 
 type FormValues = Record<TextFieldName, string> & {
   segments: string[];
@@ -64,7 +80,6 @@ const emptyValues: FormValues = {
   competitiveProduct: "",
 };
 
-const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function validate(values: FormValues, content: LeadFormContent): FormErrors {
   const errors: FormErrors = {};
@@ -79,14 +94,13 @@ function validate(values: FormValues, content: LeadFormContent): FormErrors {
     }
   }
 
-  const phoneDigits = values.phone.replace(/\D/g, "");
   if (!values.phone.trim()) {
     errors.phone = content.requiredError;
-  } else if (phoneDigits.length < 10 || phoneDigits.length > 15) {
+  } else if (!isValidPhone(values.phone)) {
     errors.phone = content.phoneError;
   }
 
-  if (values.email.trim() && !emailPattern.test(values.email.trim())) {
+  if (values.email.trim() && !isValidEmail(values.email)) {
     errors.email = content.emailError;
   }
 
@@ -164,7 +178,10 @@ export function LeadFormSection({ content }: LeadFormSectionProps) {
   const errorId = (field: FieldName) => `${baseId}-${field}-error`;
 
   const update = (field: TextFieldName, value: string) =>
-    setValues((current) => ({ ...current, [field]: value }));
+    setValues((current) => ({
+      ...current,
+      [field]: fieldMasks[field]?.(value) ?? value,
+    }));
 
   const toggleSegment = (option: string, checked: boolean) =>
     setValues((current) => ({
@@ -227,7 +244,9 @@ export function LeadFormSection({ content }: LeadFormSectionProps) {
         name={field}
         type={options.type ?? "text"}
         autoComplete={options.autoComplete}
-        inputMode={field === "phone" ? "tel" : undefined}
+        inputMode={
+          field === "phone" ? "tel" : field === "email" ? "email" : undefined
+        }
         value={values[field]}
         onChange={(event) => update(field, event.target.value)}
         placeholder={content.fields[field].placeholder}
@@ -292,6 +311,7 @@ export function LeadFormSection({ content }: LeadFormSectionProps) {
         name={field}
         rows={2}
         value={values[field]}
+        maxLength={inputLimits.longText}
         onChange={(event) => update(field, event.target.value)}
         placeholder={content.questions[field].placeholder}
         aria-invalid={errors[field] ? true : undefined}
@@ -430,6 +450,7 @@ export function LeadFormSection({ content }: LeadFormSectionProps) {
                     id={fieldId("segmentOther")}
                     name="segmentOther"
                     type="text"
+                    maxLength={inputLimits.shortText}
                     value={values.segmentOther}
                     onChange={(event) =>
                       update("segmentOther", event.target.value)

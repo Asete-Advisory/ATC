@@ -3,8 +3,10 @@ import { cn } from "@/lib/utils";
 
 /** Peças visuais compartilhadas pelo diagnóstico e pelo formulário de dúvidas. */
 
+// Altura fixa em todas as etapas, limitada ao que cabe na primeira tela
+// (no desktop: viewport − header de 3.5rem − respiro da seção).
 export const diagnosisCardClassName =
-  "flex flex-col scroll-mt-6 rounded-2xl border border-border bg-card px-5 py-6 shadow-[0_18px_48px_-28px_rgba(7,22,37,0.28)] sm:px-8 sm:py-8";
+  "flex h-[min(38rem,calc(100svh-2rem))] flex-col scroll-mt-4 rounded-2xl lg:h-[min(42rem,calc(100svh-8.5rem))] border border-border bg-card px-5 py-6 shadow-[0_18px_48px_-28px_rgba(7,22,37,0.28)] sm:px-8 sm:py-8";
 
 export const diagnosisEnterClassName =
   "motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2 motion-safe:duration-500";

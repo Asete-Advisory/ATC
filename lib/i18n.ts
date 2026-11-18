@@ -507,6 +507,7 @@ export const copy = {
       contactMessageLabel: "Contato",
       intake: {
         continueLabel: "Continuar",
+        numberLocale: "pt-BR",
         optionalLabel: "Opcional",
         singleHint: "Selecione uma opção.",
         multiHint: "Pode selecionar mais de uma opção.",
@@ -672,7 +673,7 @@ export const copy = {
               "Sim, já tenho um valor previsto.",
             ],
             amountLabel: "Valor aproximado (opcional)",
-            amountPlaceholder: "R$ 0,00",
+            amountPlaceholder: "0,00",
             amountFor: [1, 2],
           },
           {
@@ -1219,6 +1220,7 @@ export const copy = {
       contactMessageLabel: "Contact",
       intake: {
         continueLabel: "Continue",
+        numberLocale: "en-US",
         optionalLabel: "Optional",
         singleHint: "Select one option.",
         multiHint: "You can select more than one option.",
@@ -1384,7 +1386,7 @@ export const copy = {
               "Yes, I already have a planned amount.",
             ],
             amountLabel: "Approximate amount (optional)",
-            amountPlaceholder: "R$ 0.00",
+            amountPlaceholder: "0.00",
             amountFor: [1, 2],
           },
           {
@@ -1907,6 +1909,7 @@ export const copy = {
       contactMessageLabel: "联系方式",
       intake: {
         continueLabel: "继续",
+        numberLocale: "zh-CN",
         optionalLabel: "选填",
         singleHint: "请选择一项。",
         multiHint: "可多选。",
@@ -2069,7 +2072,7 @@ export const copy = {
               "是，已有预算金额。",
             ],
             amountLabel: "大致金额（选填）",
-            amountPlaceholder: "R$ 0.00",
+            amountPlaceholder: "0.00",
             amountFor: [1, 2],
           },
           {

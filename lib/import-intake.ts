@@ -3,6 +3,8 @@
  * /diagnostico. A copy fica em `copy[lang].diagnosis.intake.questions`.
  */
 
+import { isValidEmail, isValidPhone } from "@/lib/input-masks";
+
 type BaseQuestion = { question: string; hint?: string };
 
 export type IntakeQuestion =
@@ -82,7 +84,6 @@ export type IntakeErrorMessages = {
 /** Erros por campo: "main" (a resposta), "other" (texto do "Outro") ou um campo de contato. */
 export type IntakeErrors = Partial<Record<"main" | "other" | ContactField, string>>;
 
-const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function isOtherSelected(question: IntakeQuestion, answer: IntakeAnswer) {
   if (question.kind === "single" && question.other) {
@@ -133,12 +134,11 @@ export function validateIntakeStep(
       for (const field of ["name", "company", "city", "phone"] as const) {
         if (!contact[field].trim()) errors[field] = messages.requiredError;
       }
-      const digits = contact.phone.replace(/\D/g, "");
-      if (!errors.phone && (digits.length < 10 || digits.length > 15)) {
+      if (!errors.phone && !isValidPhone(contact.phone)) {
         errors.phone = messages.phoneError;
       }
       const email = contact.email.trim();
-      if (email && !emailPattern.test(email)) errors.email = messages.emailError;
+      if (email && !isValidEmail(email)) errors.email = messages.emailError;
       break;
     }
   }
@@ -166,7 +166,7 @@ export function formatIntakeAnswer(question: IntakeQuestion, answer: IntakeAnswe
       if (answer.choice === undefined) return "";
       const label = withOther(answer.choice, question.options);
       const amount = showsAmount(question, answer) ? answer.amount?.trim() : "";
-      return amount ? `${label} (${amount})` : label;
+      return amount ? `${label} (R$ ${amount})` : label;
     }
     case "multi":
       return [...(answer.choices ?? [])]

@@ -68,6 +68,7 @@ export function SiteHeader({ lang, content }: SiteHeaderProps) {
           <input
             type="search"
             name="q"
+            maxLength={80}
             placeholder={searchPlaceholder[lang]}
             className="min-w-0 flex-1 bg-transparent text-xs text-white outline-none placeholder:text-white/45"
           />
@@ -161,6 +162,7 @@ export function SiteHeader({ lang, content }: SiteHeaderProps) {
                 <input
                   type="search"
                   name="q"
+                  maxLength={80}
                   placeholder={searchPlaceholder[lang]}
                   className="w-full min-w-0 flex-1 bg-transparent text-sm text-white outline-none placeholder:text-white/45"
                 />

@@ -87,10 +87,10 @@ export default async function DiagnosisPage({
               </p>
             </div>
 
-            {/* Altura fixa (a da maior etapa): trocar de pergunta não empurra o resto da página. */}
+            {/* O card tem altura fixa (ver diagnosisCardClassName): nada se move entre perguntas. */}
             <div
               id={QUIZ_ANCHOR}
-              className="grid min-h-[47rem] scroll-mt-6 min-[380px]:min-h-[42.5rem] sm:min-h-[36rem] lg:min-h-[47.5rem]"
+              className="grid scroll-mt-6"
             >
               <ImportDiagnosis key={lang} content={diagnosis} />
             </div>

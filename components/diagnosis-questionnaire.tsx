@@ -13,6 +13,15 @@ import {
 } from "@/components/diagnosis-ui";
 import { copy, type Language } from "@/lib/i18n";
 import {
+  formatAmountInput,
+  formatPhoneInput,
+  formatQuantityInput,
+  inputLimits,
+  sanitizeCity,
+  sanitizeEmail,
+  sanitizePersonName,
+} from "@/lib/input-masks";
+import {
   contactFields,
   emptyContact,
   isOtherSelected,
@@ -33,6 +42,20 @@ type DiagnosisQuestionnaireProps = {
   /** As 4 perguntas do perfil seguidas das perguntas de dúvidas. */
   questions: readonly IntakeQuestion[];
   onComplete: (answers: IntakeAnswer[], contact: ContactValues) => void;
+};
+
+// Filtro/máscara de cada campo de contato, aplicado enquanto a pessoa digita.
+const contactMasks: Record<ContactField, (value: string) => string> = {
+  name: sanitizePersonName,
+  company: (value) => value.slice(0, inputLimits.company),
+  city: sanitizeCity,
+  phone: formatPhoneInput,
+  email: sanitizeEmail,
+};
+
+const contactInputMode: Partial<Record<ContactField, "tel" | "email">> = {
+  phone: "tel",
+  email: "email",
 };
 
 const contactAutoComplete: Record<ContactField, string> = {
@@ -187,6 +210,11 @@ export function DiagnosisQuestionnaire({
       "lg:grid-cols-2",
   );
   const optional = question.kind === "text" && question.optional;
+  const needsButton =
+    isLast ||
+    question.kind !== "single" ||
+    isOtherSelected(question, answer) ||
+    showsAmount(question, answer);
   const multiHint =
     question.kind === "multi" ? (question.hint ?? intake.multiHint) : undefined;
   const hint =
@@ -213,6 +241,7 @@ export function DiagnosisQuestionnaire({
         ref={otherRef}
         id={id("other")}
         type="text"
+        maxLength={inputLimits.shortText}
         value={answer.other ?? ""}
         onChange={(event) => updateAnswer({ other: event.target.value })}
         placeholder={intake.otherPlaceholder}
@@ -238,8 +267,7 @@ export function DiagnosisQuestionnaire({
   );
 
   return (
-    // No desktop, altura da maior pergunta: o botão e a página não mudam de lugar.
-    <div ref={containerRef} className={cn(diagnosisCardClassName, "self-start lg:self-stretch")}>
+    <div ref={containerRef} className={diagnosisCardClassName}>
       <div className="flex min-h-8 items-center justify-between gap-4">
         <span className="text-sm text-muted-foreground">{progressLabel}</span>
         {step > 0 && (
@@ -271,8 +299,13 @@ export function DiagnosisQuestionnaire({
         key={step}
         noValidate
         onSubmit={handleSubmit}
-        className={cn("mt-6 flex flex-1 flex-col", diagnosisEnterClassName)}
+        className={cn(
+          "mt-5 flex min-h-0 flex-1 flex-col",
+          diagnosisEnterClassName,
+        )}
       >
+        {/* Altura do card é fixa: se a pergunta for maior, só esta área rola. */}
+        <div className="-mx-2 min-h-0 flex-1 overflow-y-auto overscroll-contain px-2 pt-1 pb-1">
         <h2
           ref={headingRef}
           tabIndex={-1}
@@ -327,16 +360,32 @@ export function DiagnosisQuestionnaire({
                   >
                     {question.amountLabel}
                   </label>
-                  <input
-                    ref={otherRef}
-                    id={id("amount")}
-                    type="text"
-                    inputMode="decimal"
-                    value={answer.amount ?? ""}
-                    onChange={(event) => updateAnswer({ amount: event.target.value })}
-                    placeholder={question.amountPlaceholder}
-                    className={cn(diagnosisInputClassName, "h-12")}
-                  />
+                  <div className="relative">
+                    <span
+                      aria-hidden
+                      className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-[15px] text-muted-foreground"
+                    >
+                      R$
+                    </span>
+                    <input
+                      ref={otherRef}
+                      id={id("amount")}
+                      type="text"
+                      inputMode="decimal"
+                      autoComplete="off"
+                      value={answer.amount ?? ""}
+                      onChange={(event) =>
+                        updateAnswer({
+                          amount: formatAmountInput(
+                            event.target.value,
+                            intake.numberLocale,
+                          ),
+                        })
+                      }
+                      placeholder={question.amountPlaceholder}
+                      className={cn(diagnosisInputClassName, "h-12 pl-11 tabular-nums")}
+                    />
+                  </div>
                 </div>
               )}
             </>
@@ -385,6 +434,7 @@ export function DiagnosisQuestionnaire({
                 rows={4}
                 value={answer.text ?? ""}
                 disabled={answer.unknown}
+                maxLength={inputLimits.longText}
                 onChange={(event) => updateAnswer({ text: event.target.value })}
                 placeholder={intake.textPlaceholder}
                 aria-label={question.question}
@@ -409,7 +459,15 @@ export function DiagnosisQuestionnaire({
                   inputMode="decimal"
                   value={answer.quantity ?? ""}
                   disabled={answer.unknown}
-                  onChange={(event) => updateAnswer({ quantity: event.target.value })}
+                  autoComplete="off"
+                  onChange={(event) =>
+                    updateAnswer({
+                      quantity: formatQuantityInput(
+                        event.target.value,
+                        intake.numberLocale,
+                      ),
+                    })
+                  }
                   placeholder={question.quantityPlaceholder}
                   aria-label={question.question}
                   aria-invalid={errors.main ? true : undefined}
@@ -461,12 +519,13 @@ export function DiagnosisQuestionnaire({
                     id={id(field)}
                     name={field}
                     type={field === "email" ? "email" : field === "phone" ? "tel" : "text"}
+                    inputMode={contactInputMode[field]}
                     autoComplete={contactAutoComplete[field]}
                     value={contact[field]}
                     onChange={(event) => {
                       setContact((current) => ({
                         ...current,
-                        [field]: event.target.value,
+                        [field]: contactMasks[field](event.target.value),
                       }));
                       setErrors((current) => ({ ...current, [field]: undefined }));
                     }}
@@ -481,9 +540,11 @@ export function DiagnosisQuestionnaire({
             </div>
           )}
         </div>
+        </div>
 
-        {/* No desktop fica no rodapé do card, na mesma posição em todas as perguntas. */}
-        <div className="pt-6 lg:mt-auto">
+        {/* Escolha única sem campo extra avança ao clicar: o botão só aparece quando faz falta. */}
+        {needsButton && (
+        <div className="shrink-0 pt-4">
           <Button
             type="submit"
             size="lg"
@@ -498,6 +559,7 @@ export function DiagnosisQuestionnaire({
             <ArrowRight className="size-4" aria-hidden />
           </Button>
         </div>
+        )}
       </form>
     </div>
   );
