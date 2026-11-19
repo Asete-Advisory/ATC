@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, Globe2, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   OptionIndicator,
@@ -333,22 +333,58 @@ export function DiagnosisQuestionnaire({
                 aria-describedby={errors.main ? id("main-error") : undefined}
                 className={optionsGridClassName}
               >
-                {question.options.map((option, index) => (
-                  <button
-                    key={option}
-                    type="button"
-                    onClick={() => chooseSingle(index)}
-                    aria-pressed={answer.choice === index}
-                    className={cn(
-                      diagnosisOptionClassName,
-                      "py-3",
-                      answer.choice === index && diagnosisOptionSelectedClassName,
-                    )}
-                  >
-                    <OptionIndicator selected={answer.choice === index} />
-                    <span>{option}</span>
-                  </button>
-                ))}
+                {question.options.map((option, index) => {
+                  const detail = question.optionDetails?.[index];
+                  const icon = question.optionIcons?.[index];
+                  const Icon = icon === "import" ? Package : icon === "export" ? Globe2 : null;
+                  const unavailable = question.disabledOptions?.includes(index) ?? false;
+
+                  return (
+                    <button
+                      key={option}
+                      type="button"
+                      onClick={() => chooseSingle(index)}
+                      aria-pressed={answer.choice === index}
+                      disabled={unavailable}
+                      className={cn(
+                        diagnosisOptionClassName,
+                        detail ? "items-center gap-4 px-5 py-4" : "py-3",
+                        answer.choice === index && diagnosisOptionSelectedClassName,
+                      )}
+                    >
+                      {Icon ? (
+                        <span
+                          aria-hidden
+                          className="flex size-11 shrink-0 items-center justify-center rounded-full bg-accent/12 text-[#0f86a8]"
+                        >
+                          <Icon className="size-5" />
+                        </span>
+                      ) : (
+                        <OptionIndicator selected={answer.choice === index} />
+                      )}
+                      <span className="min-w-0 flex-1">
+                        <span
+                          className={cn(
+                            "flex flex-wrap items-center gap-x-2 gap-y-1",
+                            detail && "text-base font-semibold",
+                          )}
+                        >
+                          {option}
+                          {unavailable && question.disabledBadge && (
+                            <span className="rounded-full bg-secondary px-2 py-0.5 text-xs font-medium text-muted-foreground">
+                              {question.disabledBadge}
+                            </span>
+                          )}
+                        </span>
+                        {detail && (
+                          <span className="mt-0.5 block text-sm leading-snug text-muted-foreground">
+                            {detail}
+                          </span>
+                        )}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
               {errorText("main")}
               {otherInput}
@@ -537,6 +573,23 @@ export function DiagnosisQuestionnaire({
                   {errorText(field)}
                 </div>
               ))}
+              {question.optInLabel && (
+                <div className="sm:col-span-2">
+                  <button
+                    type="button"
+                    onClick={() => updateAnswer({ optIn: !answer.optIn })}
+                    aria-pressed={answer.optIn ?? false}
+                    className={cn(
+                      diagnosisOptionClassName,
+                      "items-center py-3",
+                      answer.optIn && diagnosisOptionSelectedClassName,
+                    )}
+                  >
+                    <OptionIndicator selected={answer.optIn ?? false} multiple />
+                    <span className="font-medium">{question.optInLabel}</span>
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -555,7 +608,11 @@ export function DiagnosisQuestionnaire({
                 : "bg-primary text-primary-foreground hover:bg-primary/90",
             )}
           >
-            {isLast ? intake.submitLabel : intake.continueLabel}
+            {isLast
+              ? intake.submitLabel
+              : question.kind === "contact" && question.submitLabel
+                ? question.submitLabel
+                : intake.continueLabel}
             <ArrowRight className="size-4" aria-hidden />
           </Button>
         </div>

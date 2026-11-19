@@ -1,6 +1,7 @@
 /**
- * Formulário "Tire suas dúvidas" que segue o resultado do diagnóstico em
- * /diagnostico. A copy fica em `copy[lang].diagnosis.intake.questions`.
+ * Perguntas do /diagnostico: abertura (importação/exportação), 4 perguntas de
+ * perfil e as perguntas de dúvidas e necessidades. A copy fica em
+ * `copy[lang].diagnosis` (`pathQuestion`, `questions` e `intake.questions`).
  */
 
 import { isValidEmail, isValidPhone } from "@/lib/input-masks";
@@ -17,6 +18,12 @@ export type IntakeQuestion =
       amountFor?: readonly number[];
       amountLabel?: string;
       amountPlaceholder?: string;
+      /** Linha de apoio abaixo de cada opção (mesma ordem de `options`). */
+      optionDetails?: readonly string[];
+      optionIcons?: readonly ("import" | "export")[];
+      /** Opções visíveis mas indisponíveis, com a etiqueta `disabledBadge`. */
+      disabledOptions?: readonly number[];
+      disabledBadge?: string;
     })
   | (BaseQuestion & {
       kind: "multi";
@@ -39,6 +46,10 @@ export type IntakeQuestion =
     })
   | (BaseQuestion & {
       kind: "contact";
+      /** Caixa opcional abaixo dos campos (ex.: concorrer ao prêmio). */
+      optInLabel?: string;
+      /** Texto do botão nesta etapa, no lugar de "Continuar". */
+      submitLabel?: string;
       fields: Readonly<
         Record<ContactField, { readonly label: string; readonly placeholder: string }>
       >;
@@ -70,6 +81,8 @@ export type IntakeAnswer = {
   amount?: string;
   quantity?: string;
   unit?: number;
+  /** Caixa opcional da etapa de contato. */
+  optIn?: boolean;
 };
 
 export type IntakeErrorMessages = {

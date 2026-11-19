@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, type MouseEvent } from "react";
-import { ArrowRight, Check, LockOpen, RotateCcw, X } from "lucide-react";
+import { ArrowRight, Check, LockOpen, RotateCcw, Ticket, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ConfettiBurst } from "@/components/confetti-burst";
 import { DiagnosisQuestionnaire } from "@/components/diagnosis-questionnaire";
@@ -39,9 +39,25 @@ const ROULETTE_MIN_STEPS = 8;
 const ROULETTE_LAND_PAUSE_MS = 650;
 const ROULETTE_REDUCED_MS = 500;
 
-/** As 4 perguntas do perfil (escolha única) seguidas das perguntas de dúvidas. */
+// A abertura (importação/exportação) vem antes das 4 perguntas do perfil.
+const PROFILE_START = 1;
+// Exportação aparece como "Em breve" até as perguntas desse caminho chegarem.
+const EXPORT_OPTION = 1;
+
+/** Abertura, 4 perguntas do perfil (escolha única) e perguntas de dúvidas. */
 function buildQuestions(content: DiagnosisContent): IntakeQuestion[] {
+  const path = content.pathQuestion;
+
   return [
+    {
+      kind: "single",
+      question: path.question,
+      options: path.options.map((option) => option.title),
+      optionDetails: path.options.map((option) => option.description),
+      optionIcons: ["import", "export"],
+      disabledOptions: [EXPORT_OPTION],
+      disabledBadge: path.soonLabel,
+    },
     ...content.questions.map(
       (item): IntakeQuestion => ({
         kind: "single",
@@ -72,6 +88,14 @@ function buildMessage(
           : field;
       return `*${label}:* ${contact[field].trim()}`;
     });
+
+  const contactIndex = questions.findIndex((item) => item.kind === "contact");
+  if (contactQuestion?.kind === "contact" && contactQuestion.optInLabel) {
+    const optIn = answers[contactIndex]?.optIn;
+    contactLines.push(
+      `*${content.prizeMessageLabel}:* ${optIn ? content.yesLabel : content.noLabel}`,
+    );
+  }
 
   // Numeração contínua, sem a pergunta de contato (que já vai no bloco acima).
   let number = 0;
@@ -111,6 +135,7 @@ export function ImportDiagnosis({ content }: ImportDiagnosisProps) {
   const [resultOpen, setResultOpen] = useState(false);
   const [confettiKey, setConfettiKey] = useState(0);
   const [sent, setSent] = useState(false);
+  const [prizeOptIn, setPrizeOptIn] = useState(false);
 
   const dialogTitleId = `${baseId}-result-title`;
 
@@ -182,13 +207,15 @@ export function ImportDiagnosis({ content }: ImportDiagnosisProps) {
 
   const complete = (answers: IntakeAnswer[], contact: ContactValues) => {
     const diagnosisAnswers = answers
-      .slice(0, DIAGNOSIS_QUESTION_COUNT)
+      .slice(PROFILE_START, PROFILE_START + DIAGNOSIS_QUESTION_COUNT)
       .map((item) => item.choice ?? 0);
+    const contactIndex = questions.findIndex((item) => item.kind === "contact");
 
     setProfileAnswers(diagnosisAnswers);
     setMessage(
       buildMessage(questions, answers, contact, diagnosisAnswers, content),
     );
+    setPrizeOptIn(Boolean(answers[contactIndex]?.optIn));
     setHighlight(null);
     setSent(false);
     setStage("analyzing");
@@ -387,6 +414,12 @@ export function ImportDiagnosis({ content }: ImportDiagnosisProps) {
                 <p className="mt-3 text-[15px] leading-relaxed text-white/70">
                   {content.reward.description}
                 </p>
+                {prizeOptIn && (
+                  <p className="mt-4 flex items-start gap-2 rounded-xl border border-[#f5c451]/30 bg-[#f5c451]/10 px-4 py-3 text-[15px] leading-snug font-medium text-[#f5c451]">
+                    <Ticket className="mt-0.5 size-4 shrink-0" aria-hidden />
+                    {content.reward.prizeLine}
+                  </p>
+                )}
 
                 {sent ? (
                   <div className="mt-7 rounded-2xl border border-white/10 bg-white/5 p-5">

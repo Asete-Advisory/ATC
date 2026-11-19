@@ -405,45 +405,55 @@ export const copy = {
       trustTitle: "Com a confiança de mais de 3.000 empresas",
       progressLabel: "Pergunta {current} de {total}",
       backLabel: "Voltar",
+      pathQuestion: {
+        question: "O que você quer entender melhor?",
+        options: [
+          {
+            title: "Importação",
+            description: "Comprar produtos de outros países e trazê-los para o Brasil.",
+          },
+          {
+            title: "Exportação",
+            description: "Vender produtos do Brasil para outros países.",
+          },
+        ],
+        soonLabel: "Em breve",
+      },
       questions: [
         {
-          question:
-            "O que você mais busca quando pensa em importar para a sua empresa?",
+          question: "Antes de importar, qual destas perguntas você mais gostaria de ver respondida?",
           options: [
-            "Aumentar margem de lucro reduzindo o custo unitário do produto.",
-            "Acessar produtos exclusivos e tecnologias que não existem no Brasil.",
-            "Escalar a produção e garantir fornecimento contínuo sem falhas.",
-            "Ainda estou avaliando se a importação é viável para o meu negócio.",
+            "Quanto o produto realmente vai custar até chegar à minha empresa?",
+            "Como encontrar um fornecedor confiável e conferir a qualidade do produto?",
+            "Como funciona uma importação na prática e por onde começar?",
+            "Será que importar vale a pena para o meu negócio?",
           ],
         },
         {
-          question:
-            "O que sua empresa mais ganha e o que mais teme perder ao iniciar/expandir uma operação de importação?",
+          question: "O que mais preocupa você ao importar da China?",
           options: [
-            "Ganho: Alta lucratividade / Receio: Burocracia fiscal e riscos operacionais.",
-            "Ganho: Controle da qualidade e marca própria / Receio: Fornecedores não confiáveis na China.",
-            "Ganho: Competitividade no mercado / Receio: Prazos longos e custos de frete internacional.",
-            "Ganho: Diversificação de portfólio / Receio: Falta de conhecimento técnico do processo.",
+            "Os custos ficarem maiores que o esperado.",
+            "O fornecedor não entregar o combinado.",
+            "A mercadoria atrasar.",
+            "Não saber como funciona o processo.",
           ],
         },
         {
-          question:
-            "Qual é a principal meta da sua empresa para os próximos 12 meses?",
+          question: "Nos próximos 12 meses, sua empresa pretende:",
           options: [
-            "Começar a importar do zero com segurança total.",
-            "Otimizar os custos de uma operação de importação que já existe.",
-            "Desenvolver produtos sob medida (OEM) diretamente com fábricas chinesas.",
-            "Apenas entender como funciona o mercado internacional.",
+            "Fazer a primeira importação.",
+            "Reduzir custos das importações atuais.",
+            "Desenvolver produtos personalizados ou com marca própria.",
+            "Entender o processo antes de decidir.",
           ],
         },
         {
-          question:
-            "Qual o porte ou faixa de investimento prevista para a sua operação de importação?",
+          question: "Qual destas opções descreve o que sua empresa pretende importar?",
           options: [
-            "Operação inicial / teste de mercado (pedidos menores ou carga compartilhada).",
-            "Operação recorrente de médio porte (compras regulares para reposição de estoque).",
-            "Operação de grande escala / contêiner fechado (FCL) direto de fábrica.",
-            "Ainda não defini o orçamento e preciso de um estudo de viabilidade.",
+            "Uma pequena quantidade para testar o mercado.",
+            "Pedidos frequentes para repor o estoque.",
+            "Um grande volume, como um contêiner completo.",
+            "Ainda não defini a quantidade nem o investimento.",
           ],
         },
       ],
@@ -493,6 +503,7 @@ export const copy = {
         sentDescription:
           "Abrimos o WhatsApp com tudo preenchido. É só enviar a mensagem para o nosso time.",
         reopenLabel: "Abrir o WhatsApp novamente",
+        prizeLine: "Você também está concorrendo a R$ 10 mil para sua importação.",
       },
       restartLabel: "Refazer diagnóstico",
       analyzingTitle: "Calculando seu perfil…",
@@ -505,6 +516,9 @@ export const copy = {
       profileMessageLabel: "Perfil",
       answersMessageLabel: "Respostas",
       contactMessageLabel: "Contato",
+      prizeMessageLabel: "Concorrer aos R$ 10 mil",
+      yesLabel: "Sim",
+      noLabel: "Não",
       intake: {
         continueLabel: "Continuar",
         numberLocale: "pt-BR",
@@ -522,52 +536,29 @@ export const copy = {
         emailError: "Informe um e-mail válido.",
         questions: [
           {
-            kind: "single",
-            question: "Qual é a sua principal dúvida sobre importar para sua empresa?",
-            options: [
-              "Quanto preciso investir?",
-              "Como encontrar um fornecedor confiável?",
-              "Quanto o produto custa depois de chegar ao Brasil?",
-              "Qual é a quantidade mínima de compra?",
-              "Como funcionam o transporte e os prazos?",
-              "Como conferir a qualidade dos produtos?",
-              "Quais documentos e exigências preciso atender?",
-              "Como saber se importar compensa para minha empresa?",
-              "Outra dúvida.",
-            ],
-            other: true,
-          },
-          {
             kind: "multi",
-            question:
-              "Além dessa dúvida principal, quais assuntos você também gostaria de entender?",
+            question: "Quais outros assuntos você quer entender sobre importação?",
             options: [
-              "Etapas da primeira importação.",
-              "Impostos e custos envolvidos.",
-              "Pagamento ao fornecedor e segurança da compra.",
-              "Amostras e conferência de qualidade.",
-              "Transporte e entrega no Brasil.",
-              "Produtos que minha empresa pode importar.",
-              "Importação com marca própria.",
-              "Como melhorar uma operação que já existe.",
+              "Por onde começar.",
+              "Impostos e custo total.",
+              "Como pagar o fornecedor com segurança.",
+              "Como solicitar amostras e conferir a qualidade.",
+              "Transporte, prazos e entrega no Brasil.",
+              "Quais produtos podem ser importados.",
+              "Como importar com marca própria.",
+              "Como melhorar as importações atuais.",
               "Outro assunto.",
             ],
             other: true,
           },
           {
-            kind: "text",
-            question:
-              "Sobre essas dúvidas, existe alguma pergunta específica que você gostaria de fazer?",
-          },
-          {
             kind: "single",
-            question: "Em qual momento sua empresa está hoje?",
+            question: "Sua empresa já importa?",
             options: [
-              "Compra apenas de fornecedores no Brasil e quer conhecer a importação.",
-              "Já está pesquisando produtos e fornecedores para a primeira importação.",
-              "Já realiza importações e quer melhorar ou ampliar a operação.",
-              "Já tentou importar, mas não concluiu a operação.",
-              "Meu interesse principal é exportação.",
+              "Ainda não, quero entender como funciona.",
+              "Ainda não, mas já pesquiso produtos e fornecedores.",
+              "Sim, quero melhorar ou ampliar as importações.",
+              "Já tentei, mas não concluí a importação.",
             ],
           },
           {
@@ -600,7 +591,7 @@ export const copy = {
           },
           {
             kind: "single",
-            question: "Esse produto seria destinado a quê?",
+            question: "Qual é a finalidade desse produto?",
             options: [
               "Revenda.",
               "Uso na própria empresa.",
@@ -701,7 +692,10 @@ export const copy = {
           },
           {
             kind: "contact",
-            question: "Como podemos falar com você sobre sua dúvida?",
+            question: "Inscreva-se e concorra a R$ 10 mil para sua importação!",
+            hint: "Preencha seus dados para participar.",
+            optInLabel: "Quero concorrer aos R$ 10 mil para minha importação.",
+            submitLabel: "Quero participar",
             fields: {
               name: { label: "Nome", placeholder: "Seu nome" },
               company: { label: "Empresa", placeholder: "Nome da empresa" },
@@ -1119,44 +1113,55 @@ export const copy = {
       trustTitle: "Trusted by more than 3,000 companies",
       progressLabel: "Question {current} of {total}",
       backLabel: "Back",
+      pathQuestion: {
+        question: "What would you like to understand better?",
+        options: [
+          {
+            title: "Importing",
+            description: "Buying products from other countries and bringing them to Brazil.",
+          },
+          {
+            title: "Exporting",
+            description: "Selling Brazilian products to other countries.",
+          },
+        ],
+        soonLabel: "Coming soon",
+      },
       questions: [
         {
-          question:
-            "What do you look for most when you think about importing for your company?",
+          question: "Before importing, which of these questions would you most like answered?",
           options: [
-            "Increase profit margins by lowering the product's unit cost.",
-            "Access exclusive products and technologies not available in Brazil.",
-            "Scale production and secure continuous, uninterrupted supply.",
-            "I'm still assessing whether importing is viable for my business.",
+            "How much will the product really cost by the time it reaches my company?",
+            "How do I find a reliable supplier and check product quality?",
+            "How does importing work in practice, and where do I start?",
+            "Is importing worth it for my business?",
           ],
         },
         {
-          question:
-            "What does your company stand to gain most, and what does it fear losing most, when starting or expanding an import operation?",
+          question: "What worries you most about importing from China?",
           options: [
-            "Gain: High profitability / Concern: Tax bureaucracy and operational risks.",
-            "Gain: Quality control and private label / Concern: Unreliable suppliers in China.",
-            "Gain: Market competitiveness / Concern: Long lead times and international freight costs.",
-            "Gain: Portfolio diversification / Concern: Lack of technical knowledge of the process.",
+            "Costs ending up higher than expected.",
+            "The supplier not delivering what was agreed.",
+            "The goods arriving late.",
+            "Not knowing how the process works.",
           ],
         },
         {
-          question: "What is your company's main goal for the next 12 months?",
+          question: "In the next 12 months, your company plans to:",
           options: [
-            "Start importing from scratch with complete security.",
-            "Optimize the costs of an existing import operation.",
-            "Develop custom (OEM) products directly with Chinese factories.",
-            "Just understand how the international market works.",
+            "Make its first import.",
+            "Reduce the cost of current imports.",
+            "Develop custom or private-label products.",
+            "Understand the process before deciding.",
           ],
         },
         {
-          question:
-            "What is the expected size or investment range for your import operation?",
+          question: "Which of these best describes what your company plans to import?",
           options: [
-            "Initial operation / market test (smaller orders or shared cargo).",
-            "Recurring mid-sized operation (regular purchases to restock inventory).",
-            "Large-scale operation / full container load (FCL) direct from the factory.",
-            "I haven't set a budget yet and need a feasibility study.",
+            "A small quantity to test the market.",
+            "Frequent orders to restock inventory.",
+            "A large volume, such as a full container.",
+            "I haven't defined the quantity or investment yet.",
           ],
         },
       ],
@@ -1206,6 +1211,7 @@ export const copy = {
         sentDescription:
           "We opened WhatsApp with everything filled in. Just send the message to our team.",
         reopenLabel: "Open WhatsApp again",
+        prizeLine: "You're also entered to win R$ 10,000 for your import.",
       },
       restartLabel: "Retake diagnosis",
       analyzingTitle: "Calculating your profile…",
@@ -1218,6 +1224,9 @@ export const copy = {
       profileMessageLabel: "Profile",
       answersMessageLabel: "Answers",
       contactMessageLabel: "Contact",
+      prizeMessageLabel: "Enter the R$ 10,000 draw",
+      yesLabel: "Yes",
+      noLabel: "No",
       intake: {
         continueLabel: "Continue",
         numberLocale: "en-US",
@@ -1235,52 +1244,29 @@ export const copy = {
         emailError: "Enter a valid email.",
         questions: [
           {
-            kind: "single",
-            question: "What is your main question about importing for your company?",
-            options: [
-              "How much do I need to invest?",
-              "How do I find a reliable supplier?",
-              "How much does the product cost once it arrives in Brazil?",
-              "What is the minimum order quantity?",
-              "How do shipping and lead times work?",
-              "How do I check product quality?",
-              "Which documents and requirements do I need to meet?",
-              "How do I know if importing pays off for my company?",
-              "Another question.",
-            ],
-            other: true,
-          },
-          {
             kind: "multi",
-            question:
-              "Besides that main question, which other topics would you like to understand?",
+            question: "What other topics would you like to understand about importing?",
             options: [
-              "Steps of a first import.",
-              "Taxes and costs involved.",
-              "Paying the supplier and purchase security.",
-              "Samples and quality checks.",
-              "Shipping and delivery in Brazil.",
-              "Products my company can import.",
-              "Importing under my own brand.",
-              "How to improve an existing operation.",
+              "Where to start.",
+              "Taxes and total cost.",
+              "How to pay the supplier safely.",
+              "How to request samples and check quality.",
+              "Shipping, lead times and delivery in Brazil.",
+              "Which products can be imported.",
+              "How to import under your own brand.",
+              "How to improve current imports.",
               "Another topic.",
             ],
             other: true,
           },
           {
-            kind: "text",
-            question:
-              "About these topics, is there a specific question you would like to ask?",
-          },
-          {
             kind: "single",
-            question: "Where is your company today?",
+            question: "Does your company already import?",
             options: [
-              "Buys only from suppliers in Brazil and wants to learn about importing.",
-              "Already researching products and suppliers for a first import.",
-              "Already imports and wants to improve or expand the operation.",
-              "Has tried to import but did not complete the operation.",
-              "My main interest is exporting.",
+              "Not yet, I want to understand how it works.",
+              "Not yet, but I'm already researching products and suppliers.",
+              "Yes, I want to improve or expand our imports.",
+              "I've tried, but didn't complete the import.",
             ],
           },
           {
@@ -1313,7 +1299,7 @@ export const copy = {
           },
           {
             kind: "single",
-            question: "What would this product be used for?",
+            question: "What is this product for?",
             options: [
               "Resale.",
               "Use within the company.",
@@ -1414,7 +1400,10 @@ export const copy = {
           },
           {
             kind: "contact",
-            question: "How can we reach you about your question?",
+            question: "Sign up and enter to win R$ 10,000 for your import!",
+            hint: "Fill in your details to take part.",
+            optInLabel: "I want to enter to win R$ 10,000 for my import.",
+            submitLabel: "I want to take part",
             fields: {
               name: { label: "Name", placeholder: "Your name" },
               company: { label: "Company", placeholder: "Company name" },
@@ -1811,42 +1800,55 @@ export const copy = {
       trustTitle: "超过 3,000 家企业的信赖",
       progressLabel: "第 {current} 题，共 {total} 题",
       backLabel: "返回",
+      pathQuestion: {
+        question: "您想进一步了解哪方面？",
+        options: [
+          {
+            title: "进口",
+            description: "从其他国家采购产品并运到巴西。",
+          },
+          {
+            title: "出口",
+            description: "将巴西产品销往其他国家。",
+          },
+        ],
+        soonLabel: "即将推出",
+      },
       questions: [
         {
-          question: "考虑为公司开展进口时，您最看重什么？",
+          question: "在进口之前，您最希望得到解答的是哪个问题？",
           options: [
-            "通过降低产品单位成本来提高利润率。",
-            "获取巴西市场没有的独家产品和技术。",
-            "扩大生产规模，确保持续稳定的供应。",
-            "仍在评估进口对我的业务是否可行。",
+            "产品运到我公司时，实际成本是多少？",
+            "如何找到可靠的供应商并检查产品质量？",
+            "进口实际如何运作，应从哪里开始？",
+            "进口对我的业务是否值得？",
           ],
         },
         {
-          question:
-            "开始或扩大进口业务时，贵公司最期待获得什么？最担心失去什么？",
+          question: "从中国进口，您最担心什么？",
           options: [
-            "收获：高盈利能力／顾虑：税务繁琐与运营风险。",
-            "收获：质量把控与自有品牌／顾虑：中国供应商不可靠。",
-            "收获：市场竞争力／顾虑：交期长与国际运费高。",
-            "收获：产品组合多元化／顾虑：缺乏流程专业知识。",
+            "成本高于预期。",
+            "供应商未按约定交付。",
+            "货物延误。",
+            "不了解流程如何运作。",
           ],
         },
         {
-          question: "未来 12 个月，贵公司的主要目标是什么？",
+          question: "未来 12 个月，贵公司计划：",
           options: [
-            "在充分保障下从零开始进口。",
-            "优化现有进口业务的成本。",
-            "直接与中国工厂开发定制（OEM）产品。",
-            "只是想了解国际市场如何运作。",
+            "进行首次进口。",
+            "降低现有进口成本。",
+            "开发定制或自有品牌产品。",
+            "先了解流程再做决定。",
           ],
         },
         {
-          question: "贵公司进口业务的预计规模或投资范围是多少？",
+          question: "以下哪项最能描述贵公司计划进口的规模？",
           options: [
-            "起步阶段／市场测试（小批量订单或拼箱）。",
-            "中等规模的持续采购（定期补货）。",
-            "大规模运营／工厂直发整柜（FCL）。",
-            "尚未确定预算，需要可行性研究。",
+            "少量采购，用于测试市场。",
+            "定期下单，补充库存。",
+            "大批量，例如整柜。",
+            "尚未确定数量和投资。",
           ],
         },
       ],
@@ -1896,6 +1898,7 @@ export const copy = {
         sentDescription:
           "我们已在 WhatsApp 中为您填好全部内容，只需发送给我们的团队即可。",
         reopenLabel: "再次打开 WhatsApp",
+        prizeLine: "您还将参与赢取 1 万雷亚尔进口资金。",
       },
       restartLabel: "重新诊断",
       analyzingTitle: "正在计算您的画像…",
@@ -1907,6 +1910,9 @@ export const copy = {
       profileMessageLabel: "画像",
       answersMessageLabel: "回答",
       contactMessageLabel: "联系方式",
+      prizeMessageLabel: "参与 1 万雷亚尔进口资金抽奖",
+      yesLabel: "是",
+      noLabel: "否",
       intake: {
         continueLabel: "继续",
         numberLocale: "zh-CN",
@@ -1924,50 +1930,29 @@ export const copy = {
         emailError: "请输入有效的电子邮件。",
         questions: [
           {
-            kind: "single",
-            question: "关于为贵公司进口，您最主要的疑问是什么？",
-            options: [
-              "需要投入多少资金？",
-              "如何找到可靠的供应商？",
-              "产品到达巴西后的成本是多少？",
-              "最低采购量是多少？",
-              "运输和时效如何安排？",
-              "如何检查产品质量？",
-              "需要满足哪些文件和要求？",
-              "如何判断进口对贵公司是否划算？",
-              "其他疑问。",
-            ],
-            other: true,
-          },
-          {
             kind: "multi",
-            question: "除了这个主要疑问，您还想了解哪些内容？",
+            question: "关于进口，您还想了解哪些主题？",
             options: [
-              "首次进口的步骤。",
-              "相关税费与成本。",
-              "向供应商付款及交易安全。",
-              "样品与质量检验。",
-              "运输及巴西境内配送。",
-              "贵公司可以进口的产品。",
-              "自有品牌进口。",
-              "如何优化现有业务。",
+              "从哪里开始。",
+              "税费与总成本。",
+              "如何安全地向供应商付款。",
+              "如何索取样品并检查质量。",
+              "运输、时效及巴西境内交付。",
+              "哪些产品可以进口。",
+              "如何以自有品牌进口。",
+              "如何优化现有进口。",
               "其他主题。",
             ],
             other: true,
           },
           {
-            kind: "text",
-            question: "关于这些疑问，您是否有想具体询问的问题？",
-          },
-          {
             kind: "single",
-            question: "贵公司目前处于哪个阶段？",
+            question: "贵公司目前是否已在进口？",
             options: [
-              "仅从巴西供应商采购，想了解进口。",
-              "正在为首次进口调研产品和供应商。",
-              "已在进口，希望优化或扩大业务。",
-              "曾尝试进口，但未完成。",
-              "我主要关注出口。",
+              "还没有，想了解如何运作。",
+              "还没有，但已在调研产品和供应商。",
+              "是的，希望优化或扩大进口。",
+              "尝试过，但没有完成进口。",
             ],
           },
           {
@@ -2100,7 +2085,10 @@ export const copy = {
           },
           {
             kind: "contact",
-            question: "我们如何就您的疑问与您联系？",
+            question: "报名参加，有机会赢取 1 万雷亚尔进口资金！",
+            hint: "填写您的信息即可参与。",
+            optInLabel: "我想参与赢取 1 万雷亚尔进口资金。",
+            submitLabel: "我要参与",
             fields: {
               name: { label: "姓名", placeholder: "您的姓名" },
               company: { label: "公司", placeholder: "公司名称" },

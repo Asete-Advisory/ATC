@@ -10,18 +10,18 @@ export type ProfileIndex = 0 | 1 | 2 | 3;
 export const DIAGNOSIS_QUESTION_COUNT = 4;
 
 const answerProfiles: ProfileIndex[][] = [
-  // 1. Expectativa: margem · exclusividade · escala · avaliando
+  // 1. Principal curiosidade: custo final · fornecedor/qualidade · como começar · vale a pena?
+  [1, 2, 0, 0],
+  // 2. Receio: custos maiores · fornecedor não entregar · atraso · não saber o processo
   [1, 2, 3, 0],
-  // 2. Ganho/receio: lucratividade · marca própria · competitividade · diversificação
-  [1, 2, 3, 0],
-  // 3. Meta 12 meses: começar do zero · otimizar · OEM · entender o mercado
+  // 3. Próximos 12 meses: primeira importação · reduzir custos · marca própria · entender antes
   [0, 1, 2, 0],
-  // 4. Porte: teste · médio recorrente · FCL · sem orçamento
+  // 4. Tamanho: teste de mercado · reposição frequente · contêiner completo · não definido
   [0, 1, 3, 0],
 ];
 
-// Em empate, vale o perfil indicado pela meta (3), depois porte (4),
-// motivação (1) e ganho/receio (2).
+// Em empate, vale o perfil indicado pelo objetivo (3), depois tamanho (4),
+// curiosidade (1) e receio (2).
 const tieBreakQuestions = [2, 3, 0, 1];
 
 export function resolveImporterProfile(answers: readonly number[]): ProfileIndex {
