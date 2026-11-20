@@ -72,14 +72,14 @@ export default async function DiagnosisPage({
       <main className="bg-white">
         {/* Hero: chamada à esquerda, diagnóstico em card à direita. */}
         <section className="bg-[linear-gradient(180deg,#f4f8fc_0%,#ffffff_100%)] lg:flex lg:min-h-[calc(100svh-3.5rem)] lg:items-center">
-          <div className="mx-auto grid w-full max-w-6xl gap-7 px-4 pt-7 pb-14 sm:px-6 sm:pt-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:items-center lg:gap-16 lg:py-10">
+          <div className="mx-auto grid w-full max-w-6xl gap-5 px-4 pt-5 pb-14 sm:gap-7 sm:px-6 sm:pt-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:items-center lg:gap-16 lg:py-10">
             <div className="motion-reveal px-1 sm:px-0">
-              <h1 className="max-w-xl text-[1.75rem] leading-[1.15] font-bold tracking-[-0.015em] text-balance text-foreground sm:text-[2.5rem] lg:text-[2.75rem]">
+              <h1 className="max-w-xl text-[1.5rem] leading-[1.18] font-bold tracking-[-0.015em] text-balance text-foreground sm:text-[2.5rem] lg:text-[2.75rem]">
                 {diagnosis.title.start}
                 <span className="text-[#0f86a8]">{diagnosis.title.highlight}</span>
                 {diagnosis.title.end}
               </h1>
-              <p className="mt-4 max-w-lg text-[15px] leading-relaxed text-muted-foreground sm:text-lg">
+              <p className="mt-2.5 max-w-lg text-sm leading-relaxed text-muted-foreground sm:mt-4 sm:text-lg">
                 {diagnosis.description}
               </p>
               <p className="mt-3 hidden text-lg font-medium text-foreground/80 sm:block">

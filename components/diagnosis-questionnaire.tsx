@@ -1,7 +1,13 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
-import { ArrowLeft, ArrowRight, Globe2, Package } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  ChevronDown,
+  Globe2,
+  Package,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   OptionIndicator,
@@ -58,6 +64,14 @@ const contactInputMode: Partial<Record<ContactField, "tel" | "email">> = {
   email: "email",
 };
 
+const contactAutoCapitalize: Record<ContactField, string> = {
+  name: "words",
+  company: "words",
+  city: "words",
+  phone: "off",
+  email: "none",
+};
+
 const contactAutoComplete: Record<ContactField, string> = {
   name: "name",
   company: "organization",
@@ -86,6 +100,7 @@ export function DiagnosisQuestionnaire({
   const containerRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const otherRef = useRef<HTMLInputElement>(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
   const hasMoved = useRef(false);
 
   const [step, setStep] = useState(0);
@@ -94,6 +109,8 @@ export function DiagnosisQuestionnaire({
   );
   const [contact, setContact] = useState<ContactValues>(emptyContact);
   const [errors, setErrors] = useState<IntakeErrors>({});
+  // Há conteúdo abaixo da área visível da pergunta (mostra o degradê de "role").
+  const [moreBelow, setMoreBelow] = useState(false);
 
   const question = questions[step];
   const answer = answers[step];
@@ -109,13 +126,32 @@ export function DiagnosisQuestionnaire({
     const container = containerRef.current;
     if (!container) return;
 
-    const { top } = container.getBoundingClientRect();
-    if (top < 0 || top > window.innerHeight * 0.6) {
+    // O card cabe inteiro na tela: se qualquer parte estiver cortada
+    // (comum no celular, onde ele começa abaixo do título), traz de volta.
+    const { top, bottom } = container.getBoundingClientRect();
+    if (top < 0 || bottom > window.innerHeight + 1) {
       container.scrollIntoView({
         behavior: prefersReducedMotion() ? "auto" : "smooth",
         block: "start",
       });
     }
+  }, [step]);
+
+  const updateMoreBelow = () => {
+    const area = scrollAreaRef.current;
+    if (!area) return;
+    setMoreBelow(area.scrollHeight - area.scrollTop - area.clientHeight > 8);
+  };
+
+  // Recalcula ao trocar de pergunta, ao abrir campos extras e ao redimensionar.
+  useEffect(() => {
+    const area = scrollAreaRef.current;
+    if (!area) return;
+    updateMoreBelow();
+    const observer = new ResizeObserver(updateMoreBelow);
+    observer.observe(area);
+    if (area.firstElementChild) observer.observe(area.firstElementChild);
+    return () => observer.disconnect();
   }, [step]);
 
   const updateAnswer = (patch: Partial<IntakeAnswer>) => {
@@ -199,6 +235,12 @@ export function DiagnosisQuestionnaire({
     }
   };
 
+  // No teclado do celular, "Enter"/"Próximo" passa para o campo seguinte.
+  const focusNextContactField = (field: ContactField) => {
+    const next = contactFields[contactFields.indexOf(field) + 1];
+    if (next) document.getElementById(id(next))?.focus();
+  };
+
   const progressLabel = content.progressLabel
     .replace("{current}", String(step + 1))
     .replace("{total}", String(total));
@@ -245,6 +287,7 @@ export function DiagnosisQuestionnaire({
         value={answer.other ?? ""}
         onChange={(event) => updateAnswer({ other: event.target.value })}
         placeholder={intake.otherPlaceholder}
+        enterKeyHint={isLast ? "done" : "next"}
         aria-label={intake.otherPlaceholder}
         aria-invalid={errors.other ? true : undefined}
         aria-describedby={errors.other ? id("other-error") : undefined}
@@ -259,7 +302,7 @@ export function DiagnosisQuestionnaire({
       type="button"
       onClick={() => updateAnswer({ unknown: !answer.unknown })}
       aria-pressed={answer.unknown ?? false}
-      className="group mt-3 flex items-center gap-2.5 rounded-lg py-1 text-[15px] text-foreground focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent/15"
+      className="group mt-2 -ml-1 flex min-h-11 items-center gap-2.5 rounded-lg px-1 py-2 text-left text-[15px] text-foreground focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent/15"
     >
       <OptionIndicator selected={answer.unknown ?? false} multiple />
       {label}
@@ -268,13 +311,13 @@ export function DiagnosisQuestionnaire({
 
   return (
     <div ref={containerRef} className={diagnosisCardClassName}>
-      <div className="flex min-h-8 items-center justify-between gap-4">
+      <div className="flex min-h-11 items-center justify-between gap-4">
         <span className="text-sm text-muted-foreground">{progressLabel}</span>
         {step > 0 && (
           <button
             type="button"
             onClick={() => goTo(step - 1)}
-            className="-mr-3 inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent/15"
+            className="-mr-3 inline-flex min-h-11 items-center gap-1.5 rounded-full px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent/15"
           >
             <ArrowLeft className="size-3.5" aria-hidden />
             {content.backLabel}
@@ -305,7 +348,13 @@ export function DiagnosisQuestionnaire({
         )}
       >
         {/* Altura do card é fixa: se a pergunta for maior, só esta área rola. */}
-        <div className="-mx-2 min-h-0 flex-1 overflow-y-auto overscroll-contain px-2 pt-1 pb-1">
+        <div className="relative -mx-2 flex min-h-0 flex-1 flex-col">
+        <div
+          ref={scrollAreaRef}
+          onScroll={updateMoreBelow}
+          className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-2 pt-1 pb-1"
+        >
+        <div>
         <h2
           ref={headingRef}
           tabIndex={-1}
@@ -408,6 +457,7 @@ export function DiagnosisQuestionnaire({
                       id={id("amount")}
                       type="text"
                       inputMode="decimal"
+                      enterKeyHint={isLast ? "done" : "next"}
                       autoComplete="off"
                       value={answer.amount ?? ""}
                       onChange={(event) =>
@@ -493,6 +543,7 @@ export function DiagnosisQuestionnaire({
                   id={id("main")}
                   type="text"
                   inputMode="decimal"
+                  enterKeyHint="next"
                   value={answer.quantity ?? ""}
                   disabled={answer.unknown}
                   autoComplete="off"
@@ -557,6 +608,16 @@ export function DiagnosisQuestionnaire({
                     type={field === "email" ? "email" : field === "phone" ? "tel" : "text"}
                     inputMode={contactInputMode[field]}
                     autoComplete={contactAutoComplete[field]}
+                    autoCapitalize={contactAutoCapitalize[field]}
+                    autoCorrect="off"
+                    spellCheck={false}
+                    enterKeyHint={field === "email" ? "done" : "next"}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" && field !== "email") {
+                        event.preventDefault();
+                        focusNextContactField(field);
+                      }
+                    }}
                     value={contact[field]}
                     onChange={(event) => {
                       setContact((current) => ({
@@ -592,6 +653,18 @@ export function DiagnosisQuestionnaire({
               )}
             </div>
           )}
+        </div>
+        </div>
+        </div>
+        {/* Indica que há mais opções abaixo (some ao chegar no fim). */}
+        <div
+          aria-hidden
+          className={cn(
+            "pointer-events-none absolute inset-x-0 bottom-0 flex h-12 items-end justify-center bg-linear-to-t from-card via-card/85 to-transparent pb-0.5 transition-opacity duration-200",
+            moreBelow ? "opacity-100" : "opacity-0",
+          )}
+        >
+          <ChevronDown className="size-5 animate-bounce text-muted-foreground motion-reduce:animate-none" />
         </div>
         </div>
 

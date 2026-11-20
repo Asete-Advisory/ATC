@@ -12,7 +12,7 @@ export const diagnosisEnterClassName =
   "motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2 motion-safe:duration-500";
 
 export const diagnosisOptionClassName =
-  "group flex w-full items-start gap-3 rounded-xl border border-[#d5dde6] bg-white px-4 py-3.5 text-left text-[15px] leading-snug text-foreground transition-[border-color,background-color,opacity,transform] duration-150 hover:border-accent/60 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent/15 active:scale-[0.99] disabled:pointer-events-none disabled:opacity-45";
+  "group flex w-full touch-manipulation items-start gap-3 rounded-xl border border-[#d5dde6] bg-white px-4 py-3.5 text-left text-[15px] leading-snug text-foreground transition-[border-color,background-color,opacity,transform] duration-150 hover:border-accent/60 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent/15 active:scale-[0.99] disabled:pointer-events-none disabled:opacity-45";
 
 export const diagnosisOptionSelectedClassName = "border-accent bg-accent/8";
 

@@ -29,8 +29,15 @@ export function sanitizeCity(value: string) {
     .slice(0, inputLimits.city);
 }
 
+/** E-mail: só letras sem acento, números, ".", "_", "-", "+" e um único "@". */
 export function sanitizeEmail(value: string) {
-  return value.replace(/\s/g, "").slice(0, inputLimits.email);
+  const cleaned = value.replace(/[^a-zA-Z0-9._+@-]/g, "");
+  const at = cleaned.indexOf("@");
+  const single =
+    at === -1
+      ? cleaned
+      : cleaned.slice(0, at + 1) + cleaned.slice(at + 1).replace(/@/g, "");
+  return single.slice(0, inputLimits.email);
 }
 
 /**
@@ -105,10 +112,11 @@ export function formatQuantityInput(value: string, locale = "pt-BR") {
   return formatDecimalInput(value, locale, 9, 3);
 }
 
-// usuario@dominio.tld — partes do domínio só com letras, números e hífen,
-// terminação com pelo menos 2 letras. Recusa "asd@asd", "a@b.c", "a@@b.com".
+// usuario@dominio.tld — antes do @: letras, números, "_", "-", "+" e pontos
+// (sem ponto no início/fim nem "..") · domínio: letras, números e hífen,
+// terminação com pelo menos 2 letras. Recusa "asd@asd", "a#b@c.com", "a..b@c.com".
 const emailPattern =
-  /^[a-z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)*\.[a-z]{2,}$/i;
+  /^[a-z0-9_+-]+(?:\.[a-z0-9_+-]+)*@[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)*\.[a-z]{2,}$/i;
 
 export function isValidEmail(value: string) {
   const email = value.trim();

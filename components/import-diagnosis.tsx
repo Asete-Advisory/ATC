@@ -147,8 +147,8 @@ export function ImportDiagnosis({ content }: ImportDiagnosisProps) {
     const container = containerRef.current;
     if (!container) return;
 
-    const { top } = container.getBoundingClientRect();
-    if (top < 0 || top > window.innerHeight * 0.6) {
+    const { top, bottom } = container.getBoundingClientRect();
+    if (top < 0 || bottom > window.innerHeight + 1) {
       container.scrollIntoView({
         behavior: prefersReducedMotion() ? "auto" : "smooth",
         block: "start",
@@ -331,7 +331,7 @@ export function ImportDiagnosis({ content }: ImportDiagnosisProps) {
           <button
             type="button"
             onClick={restart}
-            className="mx-auto mt-3 flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent/15"
+            className="mx-auto mt-3 flex min-h-11 items-center justify-center gap-2 rounded-full px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent/15"
           >
             <RotateCcw className="size-3.5" aria-hidden />
             {content.restartLabel}
@@ -363,7 +363,7 @@ export function ImportDiagnosis({ content }: ImportDiagnosisProps) {
               <X className="size-5" aria-hidden />
             </button>
 
-            <div className="relative m-auto grid min-h-dvh w-full max-w-5xl overflow-hidden bg-card shadow-[0_40px_120px_-40px_rgba(0,0,0,0.6)] motion-safe:animate-in motion-safe:fade-in-0 motion-safe:zoom-in-95 motion-safe:duration-500 sm:min-h-0 sm:rounded-[2rem] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+            <div className="relative m-auto grid min-h-dvh w-full max-w-5xl overflow-clip bg-card shadow-[0_40px_120px_-40px_rgba(0,0,0,0.6)] motion-safe:animate-in motion-safe:fade-in-0 motion-safe:zoom-in-95 motion-safe:duration-500 sm:min-h-0 sm:rounded-[2rem] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
               <button
                 type="button"
                 onClick={() => setResultOpen(false)}
@@ -402,7 +402,7 @@ export function ImportDiagnosis({ content }: ImportDiagnosisProps) {
               {/* Benefício desbloqueado + envio das respostas */}
               <section
                 aria-label={content.reward.badge}
-                className="flex flex-col justify-center bg-[#071625] px-6 pt-7 pb-10 text-white sm:p-10"
+                className="flex flex-col justify-center bg-[#071625] px-6 pt-7 pb-3 text-white sm:p-10"
               >
                 <p className="flex items-center gap-2 text-sm font-medium text-[#f5c451]">
                   <LockOpen className="reward-wiggle size-4" aria-hidden />
@@ -421,8 +421,10 @@ export function ImportDiagnosis({ content }: ImportDiagnosisProps) {
                   </p>
                 )}
 
+                {/* No celular o botão do WhatsApp fica preso ao pé da tela enquanto o texto rola. */}
+                <div className="sticky bottom-0 z-10 -mx-6 mt-7 bg-[#071625] px-6 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-[0_-16px_24px_-8px_#071625] sm:static sm:mx-0 sm:mt-0 sm:bg-transparent sm:p-0 sm:shadow-none">
                 {sent ? (
-                  <div className="mt-7 rounded-2xl border border-white/10 bg-white/5 p-5">
+                  <div className="rounded-2xl sm:mt-7 border border-white/10 bg-white/5 p-5">
                     <p className="flex items-center gap-2 font-semibold">
                       <Check className="size-5 text-accent" aria-hidden />
                       {content.reward.sentTitle}
@@ -433,7 +435,7 @@ export function ImportDiagnosis({ content }: ImportDiagnosisProps) {
                     <button
                       type="button"
                       onClick={sendAnswers}
-                      className="mt-3 text-sm font-medium text-accent underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent/25"
+                      className="mt-1 inline-flex min-h-11 items-center text-sm font-medium text-accent underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent/25"
                     >
                       {content.reward.reopenLabel}
                     </button>
@@ -443,12 +445,13 @@ export function ImportDiagnosis({ content }: ImportDiagnosisProps) {
                     type="button"
                     size="lg"
                     onClick={sendAnswers}
-                    className="reward-shine mt-7 h-auto min-h-13 w-full whitespace-normal rounded-full bg-accent px-6 py-3 text-center text-[15px] leading-snug font-semibold text-accent-foreground hover:bg-accent/90 sm:px-8"
+                    className="reward-shine h-auto min-h-13 sm:mt-7 w-full whitespace-normal rounded-full bg-accent px-6 py-3 text-center text-[15px] leading-snug font-semibold text-accent-foreground hover:bg-accent/90 sm:px-8"
                   >
                     {content.reward.submitLabel}
                     <ArrowRight className="size-4" />
                   </Button>
                 )}
+                </div>
               </section>
             </div>
           </>
