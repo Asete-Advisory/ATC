@@ -1,6 +1,13 @@
 "use client";
 
-import { useId, useRef, useState, type FormEvent, type ReactNode } from "react";
+import {
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type FormEvent,
+  type ReactNode,
+} from "react";
 import { ArrowRight, Mail, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,13 +24,19 @@ import {
   isValidPhone,
   sanitizeEmail,
   sanitizePersonName,
+  todayInputValue,
 } from "@/lib/input-masks";
+import { formatDateValue } from "@/lib/import-intake";
+import { buildLeadMessage, type LeadMessageLine } from "@/lib/lead-message";
+import { captureLeadSource } from "@/lib/lead-source";
 import { cn } from "@/lib/utils";
 
 type LeadFormContent = (typeof copy)[Language]["leadForm"];
+type LeadMessageCopy = (typeof copy)[Language]["leadMessage"];
 
 type LeadFormSectionProps = {
   content: LeadFormContent;
+  messageCopy: LeadMessageCopy;
 };
 
 type TextFieldName =
@@ -33,6 +46,10 @@ type TextFieldName =
   | "email"
   | "importStatus"
   | "operationType"
+  | "radar"
+  | "radarLimit"
+  | "radarPlan"
+  | "radarDate"
   | "segmentOther"
   | "frequentPurchases"
   | "competitiveProduct";
@@ -52,6 +69,12 @@ type FormValues = Record<TextFieldName, string> & {
   segmentOtherSelected: boolean;
 };
 type FormErrors = Partial<Record<FieldName, string>>;
+type RadioFieldName =
+  | "importStatus"
+  | "operationType"
+  | "radar"
+  | "radarLimit"
+  | "radarPlan";
 
 const fieldOrder: FieldName[] = [
   "company",
@@ -60,6 +83,10 @@ const fieldOrder: FieldName[] = [
   "email",
   "importStatus",
   "operationType",
+  "radar",
+  "radarLimit",
+  "radarPlan",
+  "radarDate",
   "segments",
   "segmentOther",
   "frequentPurchases",
@@ -73,6 +100,10 @@ const emptyValues: FormValues = {
   email: "",
   importStatus: "",
   operationType: "",
+  radar: "",
+  radarLimit: "",
+  radarPlan: "",
+  radarDate: "",
   segments: [],
   segmentOtherSelected: false,
   segmentOther: "",
@@ -80,6 +111,17 @@ const emptyValues: FormValues = {
   competitiveProduct: "",
 };
 
+// RADAR: "Sim" (1ª opção) pergunta a modalidade; "Não" pergunta se há
+// planejamento, e "Sim" no planejamento pede a data prevista.
+function radarVisibility(values: FormValues, content: LeadFormContent) {
+  const hasRadar = values.radar === content.radar.options[0];
+  const noRadar = values.radar === content.radar.options[1];
+  return {
+    limit: hasRadar,
+    plan: noRadar,
+    date: noRadar && values.radarPlan === content.radarPlan.options[0],
+  };
+}
 
 function validate(values: FormValues, content: LeadFormContent): FormErrors {
   const errors: FormErrors = {};
@@ -104,11 +146,15 @@ function validate(values: FormValues, content: LeadFormContent): FormErrors {
     errors.email = content.emailError;
   }
 
-  for (const field of ["importStatus", "operationType"] as const) {
+  const radar = radarVisibility(values, content);
+  for (const field of ["importStatus", "operationType", "radar"] as const) {
     if (!values[field]) {
       errors[field] = content.selectError;
     }
   }
+  if (radar.limit && !values.radarLimit) errors.radarLimit = content.selectError;
+  if (radar.plan && !values.radarPlan) errors.radarPlan = content.selectError;
+  if (radar.date && !values.radarDate) errors.radarDate = content.dateError;
 
   if (!values.segments.length && !values.segmentOtherSelected) {
     errors.segments = content.segmentsError;
@@ -119,40 +165,50 @@ function validate(values: FormValues, content: LeadFormContent): FormErrors {
   return errors;
 }
 
-function buildMessage(values: FormValues, content: LeadFormContent) {
-  const { fields, importStatus, operationType, segments, questions } = content;
-  const contactLines = [`*${fields.company.label}:* ${values.company.trim()}`];
-
-  if (values.name.trim()) {
-    contactLines.push(`*${fields.name.label}:* ${values.name.trim()}`);
-  }
-
-  contactLines.push(`*${fields.phone.label}:* ${values.phone.trim()}`);
-
-  if (values.email.trim()) {
-    contactLines.push(`*${fields.email.label}:* ${values.email.trim()}`);
-  }
+function buildMessage(
+  values: FormValues,
+  content: LeadFormContent,
+  messageCopy: LeadMessageCopy,
+) {
+  const labels = content.messageLabels;
+  const radar = radarVisibility(values, content);
 
   // Mantém a ordem exibida no formulário, não a ordem de clique.
-  const selectedSegments = segments.options
-    .filter((option) => values.segments.includes(option))
-    .map((option) => `• ${option}`);
-
-  if (values.segmentOtherSelected) {
+  const selectedSegments: string[] = content.segments.options.filter((option) =>
+    values.segments.includes(option),
+  );
+  if (values.segmentOtherSelected && values.segmentOther.trim()) {
     selectedSegments.push(
-      `• ${segments.otherMessageLabel}: ${values.segmentOther.trim()}`,
+      `${content.segments.otherMessageLabel}: ${values.segmentOther.trim()}`,
     );
   }
 
-  const answers = [
-    [importStatus.label, values.importStatus],
-    [operationType.label, values.operationType],
-    [segments.label, selectedSegments.join("\n")],
-    [questions.frequentPurchases.label, values.frequentPurchases.trim()],
-    [questions.competitiveProduct.label, values.competitiveProduct.trim()],
-  ].map(([question, answer], index) => `*${index + 1}. ${question}*\n${answer}`);
+  const radarPlan =
+    radar.date && values.radarDate
+      ? `${values.radarPlan} (${content.radarPlan.dateMessageLabel}: ${formatDateValue(values.radarDate, messageCopy.locale)})`
+      : values.radarPlan;
 
-  return [content.messageIntro, contactLines.join("\n"), ...answers].join("\n\n");
+  const lines: LeadMessageLine[] = [
+    { section: "interest", label: labels.operationType, value: values.operationType },
+    { section: "interest", label: labels.importStatus, value: values.importStatus },
+    { section: "interest", label: labels.radar, value: values.radar },
+    { section: "interest", label: labels.radarLimit, value: radar.limit ? values.radarLimit : "" },
+    { section: "interest", label: labels.radarPlan, value: radar.plan ? radarPlan : "" },
+    { section: "operation", label: labels.segments, value: selectedSegments.join("; ") },
+    { section: "operation", label: labels.frequentPurchases, value: values.frequentPurchases.trim() },
+    { section: "operation", label: labels.competitiveProduct, value: values.competitiveProduct.trim() },
+    { section: "other", label: messageCopy.phone, value: values.phone.trim() },
+    { section: "other", label: messageCopy.email, value: values.email.trim() },
+  ];
+
+  return buildLeadMessage({
+    copy: messageCopy,
+    origin: "form",
+    source: captureLeadSource(),
+    name: values.name,
+    company: values.company,
+    lines,
+  });
 }
 
 const controlClassName =
@@ -167,13 +223,19 @@ function QuestionNumber({ children }: { children: ReactNode }) {
   return <span className="mr-1.5 font-mono text-accent">{children}.</span>;
 }
 
-export function LeadFormSection({ content }: LeadFormSectionProps) {
+export function LeadFormSection({ content, messageCopy }: LeadFormSectionProps) {
   const baseId = useId();
   const formRef = useRef<HTMLFormElement>(null);
   const [values, setValues] = useState<FormValues>(emptyValues);
   const [submitted, setSubmitted] = useState(false);
 
   const errors = submitted ? validate(values, content) : {};
+  const radar = radarVisibility(values, content);
+
+  // Guarda o anúncio/campanha da URL de entrada para a mensagem final.
+  useEffect(() => {
+    captureLeadSource();
+  }, []);
   const fieldId = (field: FieldName) => `${baseId}-${field}`;
   const errorId = (field: FieldName) => `${baseId}-${field}-error`;
 
@@ -210,7 +272,7 @@ export function LeadFormSection({ content }: LeadFormSectionProps) {
       return;
     }
 
-    openWhatsAppMessage(buildMessage(values, content));
+    openWhatsAppMessage(buildMessage(values, content, messageCopy));
   };
 
   const errorText = (field: FieldName) =>
@@ -259,20 +321,38 @@ export function LeadFormSection({ content }: LeadFormSectionProps) {
   );
 
   const radioField = (
-    field: "importStatus" | "operationType",
-    number: number,
+    field: RadioFieldName,
+    number: number | null,
     columns: string,
-  ) => (
+  ) => {
+    const question = content[field];
+    const hint = "hint" in question ? question.hint : undefined;
+    const hintId = `${fieldId(field)}-hint`;
+
+    return (
     <fieldset
       aria-invalid={errors[field] ? true : undefined}
-      aria-describedby={describedBy(field)}
+      aria-describedby={
+        [hint && hintId, describedBy(field)].filter(Boolean).join(" ") ||
+        undefined
+      }
     >
-      <legend className="mb-3 text-sm font-medium leading-snug text-foreground">
-        <QuestionNumber>{number}</QuestionNumber>
-        {content[field].label}
+      <legend className="text-sm font-medium leading-snug text-foreground">
+        {number !== null && <QuestionNumber>{number}</QuestionNumber>}
+        {question.label}
       </legend>
+      {hint ? (
+        <p
+          id={hintId}
+          className="mt-1.5 mb-3 text-xs leading-relaxed text-muted-foreground"
+        >
+          {hint}
+        </p>
+      ) : (
+        <div className="mb-3" aria-hidden />
+      )}
       <div className={cn("grid gap-2.5", columns)}>
-        {content[field].options.map((option, index) => (
+        {question.options.map((option, index) => (
           <label
             key={option}
             className={cn(choiceClassName, errors[field] && choiceErrorClassName)}
@@ -283,7 +363,14 @@ export function LeadFormSection({ content }: LeadFormSectionProps) {
               name={field}
               value={option}
               checked={values[field] === option}
-              onChange={() => update(field, option)}
+              onChange={() => {
+                update(field, option);
+                if (field === "radarPlan" && index === 0) {
+                  requestAnimationFrame(() =>
+                    document.getElementById(fieldId("radarDate"))?.focus(),
+                  );
+                }
+              }}
               className="size-4 shrink-0 accent-[var(--primary)]"
             />
             {option}
@@ -292,7 +379,8 @@ export function LeadFormSection({ content }: LeadFormSectionProps) {
       </div>
       {errorText(field)}
     </fieldset>
-  );
+    );
+  };
 
   const questionField = (
     field: "frequentPurchases" | "competitiveProduct",
@@ -369,6 +457,42 @@ export function LeadFormSection({ content }: LeadFormSectionProps) {
             {radioField("importStatus", 1, "sm:grid-cols-2")}
             {radioField("operationType", 2, "")}
 
+            {/* RADAR: a pergunta seguinte depende do "Sim"/"Não". */}
+            <div>
+              {radioField("radar", 3, "grid-cols-2")}
+              {(radar.limit || radar.plan) && (
+                <div className="mt-5 border-l-2 border-accent/40 pl-4 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-top-1 sm:pl-5">
+                  {radar.limit && radioField("radarLimit", null, "sm:grid-cols-2")}
+                  {radar.plan && radioField("radarPlan", null, "grid-cols-2")}
+                  {radar.date && (
+                    <div className="mt-4">
+                      <label
+                        htmlFor={fieldId("radarDate")}
+                        className="mb-2 block text-sm font-medium text-foreground"
+                      >
+                        {content.radarPlan.dateLabel}
+                      </label>
+                      <input
+                        id={fieldId("radarDate")}
+                        name="radarDate"
+                        type="date"
+                        min={todayInputValue()}
+                        value={values.radarDate}
+                        onChange={(event) => update("radarDate", event.target.value)}
+                        aria-invalid={errors.radarDate ? true : undefined}
+                        aria-describedby={describedBy("radarDate")}
+                        className={cn(
+                          controlClassName,
+                          "block h-12 min-w-0 appearance-none text-left tabular-nums sm:max-w-60 [&::-webkit-date-and-time-value]:text-left",
+                        )}
+                      />
+                      {errorText("radarDate")}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
             <fieldset
               aria-invalid={errors.segments ? true : undefined}
               aria-describedby={[
@@ -379,7 +503,7 @@ export function LeadFormSection({ content }: LeadFormSectionProps) {
                 .join(" ")}
             >
               <legend className="text-sm font-medium leading-snug text-foreground">
-                <QuestionNumber>3</QuestionNumber>
+                <QuestionNumber>4</QuestionNumber>
                 {content.segments.label}
               </legend>
               <p
@@ -465,8 +589,8 @@ export function LeadFormSection({ content }: LeadFormSectionProps) {
               )}
             </fieldset>
 
-            {questionField("frequentPurchases", 4)}
-            {questionField("competitiveProduct", 5)}
+            {questionField("frequentPurchases", 5)}
+            {questionField("competitiveProduct", 6)}
           </div>
 
           <div className="mt-8 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">

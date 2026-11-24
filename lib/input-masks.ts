@@ -135,3 +135,10 @@ export function isValidPhone(value: string) {
   if (digits.length === 11) return digits[2] === "9";
   return digits.length === 10;
 }
+
+/** Data de hoje no formato do input de data (AAAA-MM-DD), no fuso local. */
+export function todayInputValue() {
+  const now = new Date();
+  const pad = (value: number) => String(value).padStart(2, "0");
+  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+}

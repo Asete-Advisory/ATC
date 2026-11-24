@@ -39,7 +39,11 @@ export default async function Page({ searchParams }: PageProps) {
         <AuthorityMediaSection content={content.authorityMedia} />
         <FaqSection content={content.faq} />
         <CtaSection content={content.cta} />
-        <LeadFormSection key={lang} content={content.leadForm} />
+        <LeadFormSection
+          key={lang}
+          content={content.leadForm}
+          messageCopy={content.leadMessage}
+        />
       </main>
       <SiteFooter content={content.footer} />
       <WhatsAppFab

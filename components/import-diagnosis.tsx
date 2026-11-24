@@ -17,7 +17,12 @@ import {
   resolveImporterProfile,
 } from "@/lib/import-diagnosis";
 import {
-  contactFields,
+  buildLeadMessage,
+  type LeadMessageLine,
+  type LeadMessageSection,
+} from "@/lib/lead-message";
+import { captureLeadSource } from "@/lib/lead-source";
+import {
   formatIntakeAnswer,
   type ContactValues,
   type IntakeAnswer,
@@ -26,9 +31,11 @@ import {
 import { cn } from "@/lib/utils";
 
 type DiagnosisContent = (typeof copy)[Language]["diagnosis"];
+type LeadMessageCopy = (typeof copy)[Language]["leadMessage"];
 
 type ImportDiagnosisProps = {
   content: DiagnosisContent;
+  messageCopy: LeadMessageCopy;
 };
 
 type Stage = "questions" | "analyzing" | "done";
@@ -44,6 +51,9 @@ const PROFILE_START = 1;
 // Exportação aparece como "Em breve" até as perguntas desse caminho chegarem.
 const EXPORT_OPTION = 1;
 
+// Ordem de `content.questions` (perguntas do perfil).
+const PROFILE_IDS = ["curiosity", "concern", "goal", "size"];
+
 /** Abertura, 4 perguntas do perfil (escolha única) e perguntas de dúvidas. */
 function buildQuestions(content: DiagnosisContent): IntakeQuestion[] {
   const path = content.pathQuestion;
@@ -51,6 +61,8 @@ function buildQuestions(content: DiagnosisContent): IntakeQuestion[] {
   return [
     {
       kind: "single",
+      id: "path",
+      label: content.messageLabels.path,
       question: path.question,
       options: path.options.map((option) => option.title),
       optionDetails: path.options.map((option) => option.description),
@@ -59,8 +71,10 @@ function buildQuestions(content: DiagnosisContent): IntakeQuestion[] {
       disabledBadge: path.soonLabel,
     },
     ...content.questions.map(
-      (item): IntakeQuestion => ({
+      (item, index): IntakeQuestion => ({
         kind: "single",
+        id: PROFILE_IDS[index],
+        label: content.messageLabels.profile[index],
         question: item.question,
         options: item.options,
       }),
@@ -69,57 +83,86 @@ function buildQuestions(content: DiagnosisContent): IntakeQuestion[] {
   ];
 }
 
+// Em qual seção da mensagem do WhatsApp cada resposta entra.
+const messageSectionById: Record<string, LeadMessageSection> = {
+  path: "interest",
+  importStatus: "interest",
+  radar: "interest",
+  radarLimit: "interest",
+  radarPlan: "interest",
+  product: "operation",
+  reference: "operation",
+  purpose: "operation",
+  currentPurchase: "operation",
+  frequency: "operation",
+  quantity: "operation",
+  requirement: "operation",
+  investment: "operation",
+  timing: "operation",
+  goal: "goal",
+  improvement: "goal",
+  curiosity: "doubt",
+  concern: "doubt",
+  clarify: "doubt",
+};
+
 function buildMessage(
   questions: IntakeQuestion[],
   answers: IntakeAnswer[],
   contact: ContactValues,
   profileAnswers: number[],
   content: DiagnosisContent,
+  messageCopy: LeadMessageCopy,
 ) {
   const profile = content.profiles[resolveImporterProfile(profileAnswers)];
-  const contactQuestion = questions.find((item) => item.kind === "contact");
+  const locale = content.intake.numberLocale;
 
-  const contactLines = contactFields
-    .filter((field) => contact[field].trim())
-    .map((field) => {
-      const label =
-        contactQuestion?.kind === "contact"
-          ? contactQuestion.fields[field].label
-          : field;
-      return `*${label}:* ${contact[field].trim()}`;
-    });
-
-  const contactIndex = questions.findIndex((item) => item.kind === "contact");
-  if (contactQuestion?.kind === "contact" && contactQuestion.optInLabel) {
-    const optIn = answers[contactIndex]?.optIn;
-    contactLines.push(
-      `*${content.prizeMessageLabel}:* ${optIn ? content.yesLabel : content.noLabel}`,
-    );
-  }
-
-  // Numeração contínua, sem a pergunta de contato (que já vai no bloco acima).
-  let number = 0;
-  const answerLines = questions.flatMap((item, index) => {
+  const lines: LeadMessageLine[] = questions.flatMap((item, index) => {
     if (item.kind === "contact") return [];
-    number += 1;
-    const text = formatIntakeAnswer(item, answers[index]);
-    return text ? [`*${number}. ${item.question}*\n${text}`] : [];
+    const value = formatIntakeAnswer(item, answers[index], locale);
+    if (!value) return [];
+    return [
+      {
+        section: messageSectionById[item.id ?? ""] ?? "other",
+        label: item.label ?? item.question,
+        value,
+      },
+    ];
   });
 
-  return [
-    content.messageIntro,
-    `*${content.profileMessageLabel}:* ${profile.name} (${profile.focus})`,
-    `*— ${content.contactMessageLabel} —*\n${contactLines.join("\n")}`,
-    `*— ${content.answersMessageLabel} —*`,
-    ...answerLines,
-  ].join("\n\n");
+  lines.push({ section: "profile", value: `${profile.name} (${profile.focus})` });
+
+  // Contato que não está na abertura: WhatsApp informado, e-mail e sorteio.
+  lines.push(
+    { section: "other", label: messageCopy.phone, value: contact.phone.trim() },
+    { section: "other", label: messageCopy.email, value: contact.email.trim() },
+  );
+  const contactIndex = questions.findIndex((item) => item.kind === "contact");
+  const contactQuestion = questions[contactIndex];
+  if (contactQuestion?.kind === "contact" && contactQuestion.optInLabel) {
+    lines.push({
+      section: "other",
+      label: content.prizeMessageLabel,
+      value: answers[contactIndex]?.optIn ? content.yesLabel : content.noLabel,
+    });
+  }
+
+  return buildLeadMessage({
+    copy: messageCopy,
+    origin: "diagnosis",
+    source: captureLeadSource(),
+    name: contact.name,
+    company: contact.company,
+    city: contact.city,
+    lines,
+  });
 }
 
 function prefersReducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-export function ImportDiagnosis({ content }: ImportDiagnosisProps) {
+export function ImportDiagnosis({ content, messageCopy }: ImportDiagnosisProps) {
   const baseId = useId();
   const containerRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -138,6 +181,11 @@ export function ImportDiagnosis({ content }: ImportDiagnosisProps) {
   const [prizeOptIn, setPrizeOptIn] = useState(false);
 
   const dialogTitleId = `${baseId}-result-title`;
+
+  // Guarda o anúncio/campanha da URL de entrada para a mensagem final.
+  useEffect(() => {
+    captureLeadSource();
+  }, []);
 
   // Ao sair do questionário: foco no novo título e card de volta à tela.
   useEffect(() => {
@@ -213,7 +261,14 @@ export function ImportDiagnosis({ content }: ImportDiagnosisProps) {
 
     setProfileAnswers(diagnosisAnswers);
     setMessage(
-      buildMessage(questions, answers, contact, diagnosisAnswers, content),
+      buildMessage(
+        questions,
+        answers,
+        contact,
+        diagnosisAnswers,
+        content,
+        messageCopy,
+      ),
     );
     setPrizeOptIn(Boolean(answers[contactIndex]?.optIn));
     setHighlight(null);

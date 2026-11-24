@@ -26,12 +26,15 @@ import {
   sanitizeCity,
   sanitizeEmail,
   sanitizePersonName,
+  todayInputValue,
 } from "@/lib/input-masks";
 import {
   contactFields,
   emptyContact,
   isOtherSelected,
+  isQuestionVisible,
   showsAmount,
+  showsDate,
   validateIntakeStep,
   type ContactField,
   type ContactValues,
@@ -112,9 +115,34 @@ export function DiagnosisQuestionnaire({
   // Há conteúdo abaixo da área visível da pergunta (mostra o degradê de "role").
   const [moreBelow, setMoreBelow] = useState(false);
 
+  // Perguntas condicionais (ex.: modalidade do RADAR) entram e saem conforme as respostas.
+  const visibleWith = (list: readonly IntakeAnswer[]) =>
+    questions.map((item) => isQuestionVisible(item, questions, list));
+  const nextVisibleStep = (list: readonly IntakeAnswer[]) => {
+    const visible = visibleWith(list);
+    for (let index = step + 1; index < total; index += 1) {
+      if (visible[index]) return index;
+    }
+    return -1;
+  };
+  const visible = visibleWith(answers);
+  const previousStep = step > 0 ? visible.lastIndexOf(true, step - 1) : -1;
+  const position = visible.slice(0, step + 1).filter(Boolean).length;
+  // Enquanto a pergunta que controla um desdobramento não foi respondida,
+  // o desdobramento já conta como 1 (o total não muda no meio do caminho).
+  const pendingBranches = new Set(
+    questions.flatMap((item) => {
+      const controller = item.showIf?.id;
+      if (!controller) return [];
+      const index = questions.findIndex((other) => other.id === controller);
+      return answers[index]?.choice === undefined ? [controller] : [];
+    }),
+  ).size;
+  const visibleTotal = visible.filter(Boolean).length + pendingBranches;
+
   const question = questions[step];
   const answer = answers[step];
-  const isLast = step === total - 1;
+  const isLast = nextVisibleStep(answers) === -1;
   const errorMessages = { ...intake, requiredError: content.requiredError };
   const id = (suffix: string) => `${baseId}-${step}-${suffix}`;
 
@@ -180,22 +208,31 @@ export function DiagnosisQuestionnaire({
       setErrors(currentErrors);
       const firstField = currentErrors.other
         ? id("other")
-        : question.kind === "contact"
+        : currentErrors.date
+          ? id("date")
+          : question.kind === "contact"
           ? id(contactFields.find((field) => currentErrors[field]) ?? "name")
           : id("main");
       document.getElementById(firstField)?.focus();
       return;
     }
 
-    if (isLast) {
+    const nextAnswers = answers.map((item, index) =>
+      index === step ? current : item,
+    );
+    const next = nextVisibleStep(nextAnswers);
+
+    if (next === -1) {
+      // Respostas de perguntas que ficaram ocultas não seguem na mensagem.
+      const finalVisible = visibleWith(nextAnswers);
       onComplete(
-        answers.map((item, index) => (index === step ? current : item)),
+        nextAnswers.map((item, index) => (finalVisible[index] ? item : {})),
         contact,
       );
       return;
     }
 
-    goTo(step + 1);
+    goTo(next);
   };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -210,7 +247,8 @@ export function DiagnosisQuestionnaire({
 
     const needsMore =
       (question.other && index === question.options.length - 1) ||
-      showsAmount(question, next);
+      showsAmount(question, next) ||
+      showsDate(question, next);
 
     if (needsMore) {
       // O campo extra aparece abaixo das opções.
@@ -242,8 +280,8 @@ export function DiagnosisQuestionnaire({
   };
 
   const progressLabel = content.progressLabel
-    .replace("{current}", String(step + 1))
-    .replace("{total}", String(total));
+    .replace("{current}", String(position))
+    .replace("{total}", String(visibleTotal));
   // Listas longas (9 opções curtas) em duas colunas no desktop, para caber no card.
   const optionsGridClassName = cn(
     "grid gap-2 outline-none",
@@ -256,12 +294,13 @@ export function DiagnosisQuestionnaire({
     isLast ||
     question.kind !== "single" ||
     isOtherSelected(question, answer) ||
-    showsAmount(question, answer);
+    showsAmount(question, answer) ||
+    showsDate(question, answer);
   const multiHint =
     question.kind === "multi" ? (question.hint ?? intake.multiHint) : undefined;
   const hint =
     question.kind === "single"
-      ? intake.singleHint
+      ? (question.hint ?? intake.singleHint)
       : question.kind === "multi"
         ? multiHint
         : question.hint;
@@ -313,10 +352,10 @@ export function DiagnosisQuestionnaire({
     <div ref={containerRef} className={diagnosisCardClassName}>
       <div className="flex min-h-11 items-center justify-between gap-4">
         <span className="text-sm text-muted-foreground">{progressLabel}</span>
-        {step > 0 && (
+        {previousStep !== -1 && (
           <button
             type="button"
-            onClick={() => goTo(step - 1)}
+            onClick={() => goTo(previousStep)}
             className="-mr-3 inline-flex min-h-11 items-center gap-1.5 rounded-full px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent/15"
           >
             <ArrowLeft className="size-3.5" aria-hidden />
@@ -329,12 +368,12 @@ export function DiagnosisQuestionnaire({
         role="progressbar"
         aria-label={progressLabel}
         aria-valuemin={0}
-        aria-valuemax={total}
-        aria-valuenow={step}
+        aria-valuemax={visibleTotal}
+        aria-valuenow={position - 1}
       >
         <div
           className="h-full rounded-full bg-accent transition-[width] duration-500 ease-out"
-          style={{ width: `${((step + 1) / total) * 100}%` }}
+          style={{ width: `${(position / visibleTotal) * 100}%` }}
         />
       </div>
 
@@ -472,6 +511,31 @@ export function DiagnosisQuestionnaire({
                       className={cn(diagnosisInputClassName, "h-12 pl-11 tabular-nums")}
                     />
                   </div>
+                </div>
+              )}
+              {showsDate(question, answer) && (
+                <div className="mt-4">
+                  <label
+                    htmlFor={id("date")}
+                    className="mb-1.5 block text-sm text-muted-foreground"
+                  >
+                    {question.dateLabel}
+                  </label>
+                  <input
+                    ref={otherRef}
+                    id={id("date")}
+                    type="date"
+                    min={todayInputValue()}
+                    value={answer.date ?? ""}
+                    onChange={(event) => updateAnswer({ date: event.target.value })}
+                    aria-invalid={errors.date ? true : undefined}
+                    aria-describedby={errors.date ? id("date-error") : undefined}
+                    className={cn(
+                      diagnosisInputClassName,
+                      "block h-12 min-w-0 appearance-none text-left tabular-nums [&::-webkit-date-and-time-value]:text-left",
+                    )}
+                  />
+                  {errorText("date")}
                 </div>
               )}
             </>

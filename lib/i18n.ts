@@ -350,7 +350,32 @@ export const copy = {
       privacyNote:
         "Nada fica salvo no site: suas respostas vão direto em mensagem que você envia ao WhatsApp.",
       submitLabel: "Enviar para nosso time e falar no WhatsApp",
-      messageIntro: "Olá, equipe ATC! Preenchi o formulário do site:",
+      radar: {
+        label: "A empresa já possui RADAR habilitado para importação?",
+        hint: "O RADAR é a habilitação da empresa no Siscomex, exigida para importar.",
+        options: ["Sim", "Não"],
+      },
+      radarLimit: {
+        label: "Qual é a modalidade e o limite atual do RADAR?",
+        options: ["Limitado — US$ 50 mil (em 6 meses)", "Limitado — US$ 150 mil (em 6 meses)", "Ilimitado", "Expressa", "Não sei informar"],
+      },
+      radarPlan: {
+        label: "Existe planejamento para iniciar a habilitação do RADAR?",
+        options: ["Sim", "Não"],
+        dateLabel: "Data prevista para iniciar a habilitação",
+        dateMessageLabel: "previsão",
+      },
+      dateError: "Informe a data prevista.",
+      messageLabels: {
+        importStatus: "Operações internacionais",
+        operationType: "Foco",
+        segments: "Segmentos de maior giro",
+        frequentPurchases: "Compra com mais frequência",
+        competitiveProduct: "Quer comprar com condições melhores",
+        radar: "RADAR habilitado",
+        radarLimit: "Modalidade do RADAR",
+        radarPlan: "Planeja habilitar o RADAR",
+      },
     },
     diagnosis: {
       title: {
@@ -511,11 +536,10 @@ export const copy = {
       openResultLabel: "Ver resultado e resgatar benefício",
       closeLabel: "Fechar",
       requiredError: "Preencha este campo.",
-      messageIntro:
-        "Olá, equipe ATC! Fiz o Diagnóstico de Importação e quero resgatar minha Sessão de Viabilidade.",
-      profileMessageLabel: "Perfil",
-      answersMessageLabel: "Respostas",
-      contactMessageLabel: "Contato",
+      messageLabels: {
+        path: "Interesse",
+        profile: ["Quer ver respondido primeiro", "Principal receio", "Meta para os próximos 12 meses", "Porte da operação"],
+      },
       prizeMessageLabel: "Concorrer aos R$ 10 mil",
       yesLabel: "Sim",
       noLabel: "Não",
@@ -534,9 +558,12 @@ export const copy = {
         maxError: "Selecione no máximo {max} opções.",
         phoneError: "Informe um WhatsApp com DDD.",
         emailError: "Informe um e-mail válido.",
+        dateError: "Informe a data prevista.",
         questions: [
           {
             kind: "multi",
+            id: "topics",
+            label: "Assuntos de interesse",
             question: "Quais outros assuntos você quer entender sobre importação?",
             options: [
               "Por onde começar.",
@@ -553,6 +580,8 @@ export const copy = {
           },
           {
             kind: "single",
+            id: "importStatus",
+            label: "Já importa",
             question: "Sua empresa já importa?",
             options: [
               "Ainda não, quero entender como funciona.",
@@ -562,7 +591,36 @@ export const copy = {
             ],
           },
           {
+            kind: "single",
+            id: "radar",
+            label: "RADAR habilitado",
+            question: "A empresa já possui RADAR habilitado para importação?",
+            hint: "O RADAR é a habilitação da empresa no Siscomex, exigida para importar.",
+            options: ["Sim", "Não"],
+          },
+          {
+            kind: "single",
+            id: "radarLimit",
+            label: "Modalidade do RADAR",
+            showIf: { id: "radar", choices: [0] },
+            question: "Qual é a modalidade e o limite atual do RADAR?",
+            options: ["Limitado — US$ 50 mil (em 6 meses)", "Limitado — US$ 150 mil (em 6 meses)", "Ilimitado", "Expressa", "Não sei informar"],
+          },
+          {
+            kind: "single",
+            id: "radarPlan",
+            label: "Planeja habilitar o RADAR",
+            showIf: { id: "radar", choices: [1] },
+            question: "Existe planejamento para iniciar a habilitação do RADAR?",
+            options: ["Sim", "Não"],
+            dateFor: [0],
+            dateLabel: "Data prevista para iniciar a habilitação",
+            dateMessageLabel: "previsão",
+          },
+          {
             kind: "multi",
+            id: "clarify",
+            label: "Falta esclarecer",
             question: "O que falta esclarecer para sua empresa dar o próximo passo?",
             options: [
               "Investimento necessário.",
@@ -579,18 +637,24 @@ export const copy = {
           },
           {
             kind: "text",
+            id: "product",
+            label: "Produto",
             question:
               "Qual produto ou insumo você gostaria de importar ou conhecer melhor?",
             unknownLabel: "Ainda não defini.",
           },
           {
             kind: "text",
+            id: "reference",
+            label: "Referência",
             question: "Você já tem alguma referência desse produto?",
             hint: "Pode enviar uma descrição, link, modelo ou especificação. Fotos você pode mandar depois pelo WhatsApp.",
             optional: true,
           },
           {
             kind: "single",
+            id: "purpose",
+            label: "Finalidade",
             question: "Qual é a finalidade desse produto?",
             options: [
               "Revenda.",
@@ -603,6 +667,8 @@ export const copy = {
           },
           {
             kind: "single",
+            id: "currentPurchase",
+            label: "Já compra o produto",
             question: "Hoje, sua empresa já compra esse produto?",
             options: [
               "Sim, de fornecedores no Brasil.",
@@ -613,6 +679,8 @@ export const copy = {
           },
           {
             kind: "single",
+            id: "frequency",
+            label: "Frequência de reposição",
             question: "Se já compra, com qual frequência costuma repor?",
             options: [
               "Semanalmente.",
@@ -625,6 +693,8 @@ export const copy = {
           },
           {
             kind: "quantity",
+            id: "quantity",
+            label: "Quantidade por compra",
             question: "Qual é a quantidade aproximada por compra?",
             hint: "Informe a quantidade e a unidade utilizada.",
             quantityPlaceholder: "Ex.: 500",
@@ -634,6 +704,8 @@ export const copy = {
           },
           {
             kind: "multi",
+            id: "improvement",
+            label: "Principal melhoria buscada",
             question: "Qual é a principal melhoria que você busca nessa compra?",
             hint: "Pode selecionar até duas opções.",
             options: [
@@ -651,12 +723,16 @@ export const copy = {
           },
           {
             kind: "text",
+            id: "requirement",
+            label: "Característica indispensável",
             question: "Existe alguma característica indispensável no produto?",
             hint: "Por exemplo: material, resistência, tamanho, desempenho, embalagem ou marca própria.",
             optional: true,
           },
           {
             kind: "single",
+            id: "investment",
+            label: "Investimento",
             question: "Você já definiu uma faixa de investimento para essa compra?",
             options: [
               "Ainda não; quero entender os custos primeiro.",
@@ -669,6 +745,8 @@ export const copy = {
           },
           {
             kind: "single",
+            id: "timing",
+            label: "Quando pretende comprar",
             question: "Quando você gostaria de realizar essa compra?",
             options: [
               "Assim que entender os custos e a viabilidade.",
@@ -680,6 +758,8 @@ export const copy = {
           },
           {
             kind: "single",
+            id: "role",
+            label: "Papel nas compras",
             question: "Qual é o seu papel nas compras da empresa?",
             options: [
               "Sou proprietário(a), sócio(a) ou responsável pela decisão.",
@@ -692,6 +772,7 @@ export const copy = {
           },
           {
             kind: "contact",
+            id: "contact",
             question: "Inscreva-se e concorra a R$ 10 mil para sua importação!",
             hint: "Preencha seus dados para participar.",
             optInLabel: "Quero concorrer aos R$ 10 mil para minha importação.",
@@ -706,6 +787,8 @@ export const copy = {
           },
           {
             kind: "single",
+            id: "feedback",
+            label: "Prefere o primeiro retorno por",
             question: "Como você prefere receber o primeiro retorno?",
             options: [
               "Mensagem pelo WhatsApp.",
@@ -716,6 +799,33 @@ export const copy = {
           },
         ],
       },
+    },
+    leadMessage: {
+      locale: "pt-BR",
+      greeting: "Olá, equipe ATC!",
+      withName: "Sou {name}, da {company}",
+      withoutName: "Sou da {company}",
+      city: ", em {city}",
+      diagnosis: {
+        ad: "Vim pelo anúncio {source}, concluí o diagnóstico e gostaria de conversar com um consultor.",
+        campaign: "Vim pela campanha {source}, concluí o diagnóstico e gostaria de conversar com um consultor.",
+        site: "Preenchi o diagnóstico no site e gostaria de conversar com um consultor sobre meu projeto.",
+      },
+      form: {
+        ad: "Vim pelo anúncio {source}, preenchi o formulário no site e gostaria de conversar com um consultor.",
+        campaign: "Vim pela campanha {source}, preenchi o formulário no site e gostaria de conversar com um consultor.",
+        site: "Preenchi o formulário no site e gostaria de conversar com um consultor sobre meu projeto.",
+      },
+      sections: {
+        interest: "Interesse e momento atual",
+        profile: "Meu perfil",
+        operation: "Produto e operação",
+        goal: "Meu objetivo",
+        doubt: "Minha principal dúvida",
+        other: "Outros pontos que quero conversar",
+      },
+      phone: "WhatsApp",
+      email: "E-mail",
     },
     footer: {
       description:
@@ -1059,7 +1169,32 @@ export const copy = {
       privacyNote:
         "Nothing is stored on the website: your answers go straight into a message you send on WhatsApp.",
       submitLabel: "Send to our team and chat on WhatsApp",
-      messageIntro: "Hello, ATC team! I filled in the form on your website:",
+      radar: {
+        label: "Does your company already have RADAR enabled for imports?",
+        hint: "RADAR is the company's Siscomex registration, required to import into Brazil.",
+        options: ["Yes", "No"],
+      },
+      radarLimit: {
+        label: "What is your RADAR type and current limit?",
+        options: ["Limited — US$ 50k (per 6 months)", "Limited — US$ 150k (per 6 months)", "Unlimited", "Express", "I don't know"],
+      },
+      radarPlan: {
+        label: "Do you plan to start the RADAR registration?",
+        options: ["Yes", "No"],
+        dateLabel: "Expected start date",
+        dateMessageLabel: "expected",
+      },
+      dateError: "Enter the expected date.",
+      messageLabels: {
+        importStatus: "International operations",
+        operationType: "Focus",
+        segments: "Best-selling segments",
+        frequentPurchases: "Buys most often",
+        competitiveProduct: "Wants better terms on",
+        radar: "RADAR enabled",
+        radarLimit: "RADAR type",
+        radarPlan: "Plans to enable RADAR",
+      },
     },
     diagnosis: {
       title: {
@@ -1219,11 +1354,10 @@ export const copy = {
       openResultLabel: "See result and claim benefit",
       closeLabel: "Close",
       requiredError: "Please fill in this field.",
-      messageIntro:
-        "Hello, ATC team! I took the Import Diagnosis and would like to claim my Feasibility Session.",
-      profileMessageLabel: "Profile",
-      answersMessageLabel: "Answers",
-      contactMessageLabel: "Contact",
+      messageLabels: {
+        path: "Interest",
+        profile: ["Wants answered first", "Main concern", "Goal for the next 12 months", "Operation size"],
+      },
       prizeMessageLabel: "Enter the R$ 10,000 draw",
       yesLabel: "Yes",
       noLabel: "No",
@@ -1242,9 +1376,12 @@ export const copy = {
         maxError: "Select up to {max} options.",
         phoneError: "Enter a WhatsApp number with area code.",
         emailError: "Enter a valid email.",
+        dateError: "Enter the expected date.",
         questions: [
           {
             kind: "multi",
+            id: "topics",
+            label: "Topics of interest",
             question: "What other topics would you like to understand about importing?",
             options: [
               "Where to start.",
@@ -1261,6 +1398,8 @@ export const copy = {
           },
           {
             kind: "single",
+            id: "importStatus",
+            label: "Already imports",
             question: "Does your company already import?",
             options: [
               "Not yet, I want to understand how it works.",
@@ -1270,7 +1409,36 @@ export const copy = {
             ],
           },
           {
+            kind: "single",
+            id: "radar",
+            label: "RADAR enabled",
+            question: "Does your company already have RADAR enabled for imports?",
+            hint: "RADAR is the company's Siscomex registration, required to import into Brazil.",
+            options: ["Yes", "No"],
+          },
+          {
+            kind: "single",
+            id: "radarLimit",
+            label: "RADAR type",
+            showIf: { id: "radar", choices: [0] },
+            question: "What is your RADAR type and current limit?",
+            options: ["Limited — US$ 50k (per 6 months)", "Limited — US$ 150k (per 6 months)", "Unlimited", "Express", "I don't know"],
+          },
+          {
+            kind: "single",
+            id: "radarPlan",
+            label: "Plans to enable RADAR",
+            showIf: { id: "radar", choices: [1] },
+            question: "Do you plan to start the RADAR registration?",
+            options: ["Yes", "No"],
+            dateFor: [0],
+            dateLabel: "Expected start date",
+            dateMessageLabel: "expected",
+          },
+          {
             kind: "multi",
+            id: "clarify",
+            label: "Still unclear",
             question: "What still needs to be clarified for your company to take the next step?",
             options: [
               "Required investment.",
@@ -1287,18 +1455,24 @@ export const copy = {
           },
           {
             kind: "text",
+            id: "product",
+            label: "Product",
             question:
               "Which product or input would you like to import or learn more about?",
             unknownLabel: "I haven't decided yet.",
           },
           {
             kind: "text",
+            id: "reference",
+            label: "Reference",
             question: "Do you already have a reference for this product?",
             hint: "You can send a description, link, model or specification. Photos can be sent later on WhatsApp.",
             optional: true,
           },
           {
             kind: "single",
+            id: "purpose",
+            label: "Purpose",
             question: "What is this product for?",
             options: [
               "Resale.",
@@ -1311,6 +1485,8 @@ export const copy = {
           },
           {
             kind: "single",
+            id: "currentPurchase",
+            label: "Already buys this product",
             question: "Does your company already buy this product today?",
             options: [
               "Yes, from suppliers in Brazil.",
@@ -1321,6 +1497,8 @@ export const copy = {
           },
           {
             kind: "single",
+            id: "frequency",
+            label: "Restock frequency",
             question: "If you already buy it, how often do you restock?",
             options: [
               "Weekly.",
@@ -1333,6 +1511,8 @@ export const copy = {
           },
           {
             kind: "quantity",
+            id: "quantity",
+            label: "Quantity per purchase",
             question: "What is the approximate quantity per purchase?",
             hint: "Enter the quantity and the unit you use.",
             quantityPlaceholder: "E.g. 500",
@@ -1342,6 +1522,8 @@ export const copy = {
           },
           {
             kind: "multi",
+            id: "improvement",
+            label: "Main improvement sought",
             question: "What is the main improvement you are looking for in this purchase?",
             hint: "You can select up to two options.",
             options: [
@@ -1359,12 +1541,16 @@ export const copy = {
           },
           {
             kind: "text",
+            id: "requirement",
+            label: "Must-have feature",
             question: "Is there any must-have characteristic for the product?",
             hint: "For example: material, strength, size, performance, packaging or own brand.",
             optional: true,
           },
           {
             kind: "single",
+            id: "investment",
+            label: "Investment",
             question: "Have you set an investment range for this purchase?",
             options: [
               "Not yet; I want to understand the costs first.",
@@ -1377,6 +1563,8 @@ export const copy = {
           },
           {
             kind: "single",
+            id: "timing",
+            label: "Purchase timing",
             question: "When would you like to make this purchase?",
             options: [
               "As soon as I understand the costs and feasibility.",
@@ -1388,6 +1576,8 @@ export const copy = {
           },
           {
             kind: "single",
+            id: "role",
+            label: "Role in purchasing",
             question: "What is your role in the company's purchasing?",
             options: [
               "I'm the owner, a partner or the decision maker.",
@@ -1400,6 +1590,7 @@ export const copy = {
           },
           {
             kind: "contact",
+            id: "contact",
             question: "Sign up and enter to win R$ 10,000 for your import!",
             hint: "Fill in your details to take part.",
             optInLabel: "I want to enter to win R$ 10,000 for my import.",
@@ -1414,6 +1605,8 @@ export const copy = {
           },
           {
             kind: "single",
+            id: "feedback",
+            label: "Preferred first contact",
             question: "How would you prefer to receive our first reply?",
             options: [
               "WhatsApp message.",
@@ -1424,6 +1617,33 @@ export const copy = {
           },
         ],
       },
+    },
+    leadMessage: {
+      locale: "en-US",
+      greeting: "Hello, ATC team!",
+      withName: "I'm {name}, from {company}",
+      withoutName: "I'm from {company}",
+      city: ", in {city}",
+      diagnosis: {
+        ad: "I came from the ad {source}, completed the diagnosis and would like to talk to a consultant.",
+        campaign: "I came from the campaign {source}, completed the diagnosis and would like to talk to a consultant.",
+        site: "I completed the diagnosis on the website and would like to talk to a consultant about my project.",
+      },
+      form: {
+        ad: "I came from the ad {source}, filled in the form on the website and would like to talk to a consultant.",
+        campaign: "I came from the campaign {source}, filled in the form on the website and would like to talk to a consultant.",
+        site: "I filled in the form on the website and would like to talk to a consultant about my project.",
+      },
+      sections: {
+        interest: "Interest and current stage",
+        profile: "My profile",
+        operation: "Product and operation",
+        goal: "My goal",
+        doubt: "My main question",
+        other: "Other points I'd like to discuss",
+      },
+      phone: "WhatsApp",
+      email: "Email",
     },
     footer: {
       description: "International import, export and sourcing solutions.",
@@ -1747,7 +1967,32 @@ export const copy = {
       privacyNote:
         "网站不会保存任何数据：您的回答将直接生成一条由您通过 WhatsApp 发送的消息。",
       submitLabel: "发送给我们的团队并在 WhatsApp 沟通",
-      messageIntro: "您好，ATC 团队！我在网站上填写了表单：",
+      radar: {
+        label: "贵公司是否已开通用于进口的 RADAR 资质？",
+        hint: "RADAR 是企业在巴西 Siscomex 系统中的外贸资质，进口必须具备。",
+        options: ["是", "否"],
+      },
+      radarLimit: {
+        label: "RADAR 的类型和当前额度是？",
+        options: ["有限额 — 5 万美元（每 6 个月）", "有限额 — 15 万美元（每 6 个月）", "无限额", "快速类（Expressa）", "不清楚"],
+      },
+      radarPlan: {
+        label: "是否计划开始办理 RADAR？",
+        options: ["是", "否"],
+        dateLabel: "预计开始办理日期",
+        dateMessageLabel: "预计",
+      },
+      dateError: "请填写预计日期。",
+      messageLabels: {
+        importStatus: "国际业务",
+        operationType: "重点",
+        segments: "畅销品类",
+        frequentPurchases: "最常采购",
+        competitiveProduct: "希望以更好条件采购",
+        radar: "已开通 RADAR",
+        radarLimit: "RADAR 类型",
+        radarPlan: "计划办理 RADAR",
+      },
     },
     diagnosis: {
       title: {
@@ -1906,10 +2151,10 @@ export const copy = {
       openResultLabel: "查看结果并领取权益",
       closeLabel: "关闭",
       requiredError: "请填写此项。",
-      messageIntro: "您好，ATC 团队！我完成了进口诊断，想领取可行性评估会议。",
-      profileMessageLabel: "画像",
-      answersMessageLabel: "回答",
-      contactMessageLabel: "联系方式",
+      messageLabels: {
+        path: "意向",
+        profile: ["最想先了解", "主要顾虑", "未来 12 个月目标", "业务规模"],
+      },
       prizeMessageLabel: "参与 1 万雷亚尔进口资金抽奖",
       yesLabel: "是",
       noLabel: "否",
@@ -1928,9 +2173,12 @@ export const copy = {
         maxError: "最多可选择 {max} 项。",
         phoneError: "请输入含区号的 WhatsApp 号码。",
         emailError: "请输入有效的电子邮件。",
+        dateError: "请填写预计日期。",
         questions: [
           {
             kind: "multi",
+            id: "topics",
+            label: "感兴趣的话题",
             question: "关于进口，您还想了解哪些主题？",
             options: [
               "从哪里开始。",
@@ -1947,6 +2195,8 @@ export const copy = {
           },
           {
             kind: "single",
+            id: "importStatus",
+            label: "是否已进口",
             question: "贵公司目前是否已在进口？",
             options: [
               "还没有，想了解如何运作。",
@@ -1956,7 +2206,36 @@ export const copy = {
             ],
           },
           {
+            kind: "single",
+            id: "radar",
+            label: "已开通 RADAR",
+            question: "贵公司是否已开通用于进口的 RADAR 资质？",
+            hint: "RADAR 是企业在巴西 Siscomex 系统中的外贸资质，进口必须具备。",
+            options: ["是", "否"],
+          },
+          {
+            kind: "single",
+            id: "radarLimit",
+            label: "RADAR 类型",
+            showIf: { id: "radar", choices: [0] },
+            question: "RADAR 的类型和当前额度是？",
+            options: ["有限额 — 5 万美元（每 6 个月）", "有限额 — 15 万美元（每 6 个月）", "无限额", "快速类（Expressa）", "不清楚"],
+          },
+          {
+            kind: "single",
+            id: "radarPlan",
+            label: "计划办理 RADAR",
+            showIf: { id: "radar", choices: [1] },
+            question: "是否计划开始办理 RADAR？",
+            options: ["是", "否"],
+            dateFor: [0],
+            dateLabel: "预计开始办理日期",
+            dateMessageLabel: "预计",
+          },
+          {
             kind: "multi",
+            id: "clarify",
+            label: "尚待明确",
             question: "贵公司迈出下一步还需要弄清哪些方面？",
             options: [
               "所需投资。",
@@ -1973,17 +2252,23 @@ export const copy = {
           },
           {
             kind: "text",
+            id: "product",
+            label: "产品",
             question: "您想进口或进一步了解哪种产品或原材料？",
             unknownLabel: "尚未确定。",
           },
           {
             kind: "text",
+            id: "reference",
+            label: "参考资料",
             question: "您是否已有该产品的参考？",
             hint: "可提供描述、链接、型号或规格。照片可稍后通过 WhatsApp 发送。",
             optional: true,
           },
           {
             kind: "single",
+            id: "purpose",
+            label: "用途",
             question: "该产品的用途是什么？",
             options: [
               "转售。",
@@ -1996,6 +2281,8 @@ export const copy = {
           },
           {
             kind: "single",
+            id: "currentPurchase",
+            label: "目前是否采购该产品",
             question: "贵公司目前是否已在采购该产品？",
             options: [
               "是，从巴西供应商采购。",
@@ -2006,6 +2293,8 @@ export const copy = {
           },
           {
             kind: "single",
+            id: "frequency",
+            label: "补货频率",
             question: "如已采购，通常多久补货一次？",
             options: [
               "每周。",
@@ -2018,6 +2307,8 @@ export const copy = {
           },
           {
             kind: "quantity",
+            id: "quantity",
+            label: "每次采购数量",
             question: "每次采购的大致数量是多少？",
             hint: "请填写数量及使用的单位。",
             quantityPlaceholder: "例如：500",
@@ -2027,6 +2318,8 @@ export const copy = {
           },
           {
             kind: "multi",
+            id: "improvement",
+            label: "希望改善的方面",
             question: "您希望这次采购带来的主要改善是什么？",
             hint: "最多可选择两项。",
             options: [
@@ -2044,12 +2337,16 @@ export const copy = {
           },
           {
             kind: "text",
+            id: "requirement",
+            label: "必备特性",
             question: "产品是否有必须具备的特性？",
             hint: "例如：材质、强度、尺寸、性能、包装或自有品牌。",
             optional: true,
           },
           {
             kind: "single",
+            id: "investment",
+            label: "投资",
             question: "您是否已为这次采购确定投资范围？",
             options: [
               "尚未确定；想先了解成本。",
@@ -2062,6 +2359,8 @@ export const copy = {
           },
           {
             kind: "single",
+            id: "timing",
+            label: "采购时间",
             question: "您希望何时进行这次采购？",
             options: [
               "了解成本和可行性后立即进行。",
@@ -2073,6 +2372,8 @@ export const copy = {
           },
           {
             kind: "single",
+            id: "role",
+            label: "采购中的角色",
             question: "您在公司采购中担任什么角色？",
             options: [
               "我是所有者、合伙人或决策人。",
@@ -2085,6 +2386,7 @@ export const copy = {
           },
           {
             kind: "contact",
+            id: "contact",
             question: "报名参加，有机会赢取 1 万雷亚尔进口资金！",
             hint: "填写您的信息即可参与。",
             optInLabel: "我想参与赢取 1 万雷亚尔进口资金。",
@@ -2099,6 +2401,8 @@ export const copy = {
           },
           {
             kind: "single",
+            id: "feedback",
+            label: "首次回复方式",
             question: "您希望以何种方式接收首次回复？",
             options: [
               "WhatsApp 文字消息。",
@@ -2109,6 +2413,33 @@ export const copy = {
           },
         ],
       },
+    },
+    leadMessage: {
+      locale: "zh-CN",
+      greeting: "您好，ATC 团队！",
+      withName: "我是{company}的{name}",
+      withoutName: "我来自{company}",
+      city: "，位于{city}",
+      diagnosis: {
+        ad: "我通过广告 {source} 来到这里，已完成诊断，希望与顾问沟通。",
+        campaign: "我通过推广活动 {source} 来到这里，已完成诊断，希望与顾问沟通。",
+        site: "我在网站上完成了诊断，希望与顾问沟通我的项目。",
+      },
+      form: {
+        ad: "我通过广告 {source} 来到这里，已在网站填写表单，希望与顾问沟通。",
+        campaign: "我通过推广活动 {source} 来到这里，已在网站填写表单，希望与顾问沟通。",
+        site: "我在网站上填写了表单，希望与顾问沟通我的项目。",
+      },
+      sections: {
+        interest: "意向与当前阶段",
+        profile: "我的画像",
+        operation: "产品与业务",
+        goal: "我的目标",
+        doubt: "我的主要疑问",
+        other: "其他想沟通的内容",
+      },
+      phone: "WhatsApp",
+      email: "电子邮箱",
     },
     footer: {
       description: "国际进口、出口与采购解决方案。",

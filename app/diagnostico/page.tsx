@@ -92,7 +92,11 @@ export default async function DiagnosisPage({
               id={QUIZ_ANCHOR}
               className="grid scroll-mt-6"
             >
-              <ImportDiagnosis key={lang} content={diagnosis} />
+              <ImportDiagnosis
+                key={lang}
+                content={diagnosis}
+                messageCopy={content.leadMessage}
+              />
             </div>
           </div>
         </section>
