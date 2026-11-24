@@ -1,5 +1,5 @@
-export const WHATSAPP_NUMBER = "5547996135427";
-export const WHATSAPP_DISPLAY = "+55 (47) 99613-5427";
+export const WHATSAPP_NUMBER = "554788657820";
+export const WHATSAPP_DISPLAY = "+55 (47) 8865-7820";
 export const CONTACT_EMAIL = "contato@atcchinabrasil.com";
 
 export function buildWhatsAppUrl(message: string) {
