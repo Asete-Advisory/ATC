@@ -4,6 +4,8 @@
  *
  * Nos anúncios, configure os parâmetros de URL. No Meta Ads, por exemplo:
  *   utm_source=meta&utm_campaign={{campaign.name}}&utm_content={{ad.name}}
+ * Também dá para escrever o nome direto no link: /diagnostico?anuncio=Video-BF-01
+ * (e ?campanha=... para a campanha). Hífens e "_" viram espaço na mensagem.
  * A origem fica guardada na sessão do navegador, então continua valendo se a
  * pessoa navegar pelo site antes de preencher o formulário.
  */
@@ -13,13 +15,17 @@ export type LeadSource =
   | { kind: "campaign"; name: string }
   | { kind: "site" };
 
-const AD_PARAMS = ["utm_content", "ad_name", "adname"];
-const CAMPAIGN_PARAMS = ["utm_campaign", "campaign_name", "campaign"];
+const AD_PARAMS = ["anuncio", "utm_content", "ad_name", "adname"];
+const CAMPAIGN_PARAMS = ["campanha", "utm_campaign", "campaign_name", "campaign"];
 const STORAGE_KEY = "atc-lead-source";
 
 function firstParam(params: URLSearchParams, keys: string[]) {
   for (const key of keys) {
-    const value = params.get(key)?.replace(/\s+/g, " ").trim();
+    const value = params
+      .get(key)
+      ?.replace(/[-_]+/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
     // Ignora macros não substituídas, como "{{ad.name}}".
     if (value && !/^\{\{.*\}\}$/.test(value)) return value.slice(0, 120);
   }
