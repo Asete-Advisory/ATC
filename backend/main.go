@@ -59,12 +59,14 @@ func ensureAdmin(app core.App) error {
 	email := strings.ToLower(strings.TrimSpace(os.Getenv("ATC_ADMIN_EMAIL")))
 	password := os.Getenv("ATC_ADMIN_PASSWORD")
 	if email == "" || password == "" {
+		log.Printf("[painel] ATC_ADMIN_EMAIL ou ATC_ADMIN_PASSWORD não chegou ao container (e-mail definido: %t, senha definida: %t)", email != "", password != "")
 		return nil
 	}
 
 	record, err := app.FindAuthRecordByEmail("admins", email)
 	if err == nil {
 		if record.ValidatePassword(password) {
+			log.Printf("[painel] Admin %s conferido: a senha já confere", email)
 			return nil
 		}
 	} else {
@@ -81,13 +83,13 @@ func ensureAdmin(app core.App) error {
 
 	if err := app.Save(record); err != nil {
 		// Ex.: senha com menos de 8 caracteres ou e-mail inválido.
-		app.Logger().Error("Não foi possível salvar o admin do painel (ATC_ADMIN_EMAIL/ATC_ADMIN_PASSWORD)", "email", email, "error", err)
+		log.Printf("[painel] Não foi possível salvar o admin %s (senha precisa de 8+ caracteres): %v", email, err)
 		return nil
 	}
 	if created {
-		app.Logger().Info("Admin do painel criado", "email", email)
+		log.Printf("[painel] Admin %s criado", email)
 	} else {
-		app.Logger().Info("Senha do admin do painel atualizada", "email", email)
+		log.Printf("[painel] Senha do admin %s atualizada", email)
 	}
 	return nil
 }
