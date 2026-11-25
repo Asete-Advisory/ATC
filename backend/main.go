@@ -51,30 +51,43 @@ func main() {
 	}
 }
 
-// ensureAdmin cria o primeiro acesso ao painel a partir de ATC_ADMIN_EMAIL e
-// ATC_ADMIN_PASSWORD. Não altera a senha de um admin que já existe.
+// ensureAdmin garante o acesso ao painel com ATC_ADMIN_EMAIL e
+// ATC_ADMIN_PASSWORD: cria o admin se não existir e, se já existir, aplica a
+// senha atual da variável (para trocar a senha, basta mudar e reiniciar).
+// Erros só vão para o log; o backend sobe mesmo assim.
 func ensureAdmin(app core.App) error {
-	email := strings.TrimSpace(os.Getenv("ATC_ADMIN_EMAIL"))
+	email := strings.ToLower(strings.TrimSpace(os.Getenv("ATC_ADMIN_EMAIL")))
 	password := os.Getenv("ATC_ADMIN_PASSWORD")
 	if email == "" || password == "" {
 		return nil
 	}
 
-	if _, err := app.FindAuthRecordByEmail("admins", email); err == nil {
+	record, err := app.FindAuthRecordByEmail("admins", email)
+	if err == nil {
+		if record.ValidatePassword(password) {
+			return nil
+		}
+	} else {
+		collection, err := app.FindCollectionByNameOrId("admins")
+		if err != nil {
+			return err
+		}
+		record = core.NewRecord(collection)
+		record.SetEmail(email)
+		record.SetVerified(true)
+	}
+	created := record.IsNew()
+	record.SetPassword(password)
+
+	if err := app.Save(record); err != nil {
+		// Ex.: senha com menos de 8 caracteres ou e-mail inválido.
+		app.Logger().Error("Não foi possível salvar o admin do painel (ATC_ADMIN_EMAIL/ATC_ADMIN_PASSWORD)", "email", email, "error", err)
 		return nil
 	}
-
-	collection, err := app.FindCollectionByNameOrId("admins")
-	if err != nil {
-		return err
+	if created {
+		app.Logger().Info("Admin do painel criado", "email", email)
+	} else {
+		app.Logger().Info("Senha do admin do painel atualizada", "email", email)
 	}
-	record := core.NewRecord(collection)
-	record.SetEmail(email)
-	record.SetPassword(password)
-	record.SetVerified(true)
-	if err := app.Save(record); err != nil {
-		return err
-	}
-	app.Logger().Info("Admin do painel criado", "email", email)
 	return nil
 }

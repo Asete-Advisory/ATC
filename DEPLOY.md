@@ -28,7 +28,7 @@ O serviço `pocketbase` (pasta `backend/`, Go + PocketBase) guarda as visitas e 
 - **Mais usuários ou nova senha:** no terminal do container `pocketbase`, rode `/pb/atc-backend superuser upsert EMAIL SENHA` para um superusuário. Para usar a interface do PocketBase (`/_/`), exponha o serviço temporariamente por um domínio no Dokploy e remova depois.
 - **Migrações** ficam em Go (`backend/migrations/`) e rodam sozinhas ao iniciar.
 
-Para desenvolver localmente, rode `pnpm dev:backend` (porta 8090, dados em `backend/pb_data/`) e `pnpm dev`. Sem o backend no ar, o site funciona normalmente; apenas visitas e leads não são gravados.
+Para desenvolver localmente, rode `make dev`: sobe o site (porta 3000) e o backend (porta 8090, dados em `backend/pb_data/`) juntos, e Ctrl+C encerra os dois. Os outros comandos estão no topo do `Makefile`. Sem o backend no ar, o site funciona normalmente; apenas visitas e leads não são gravados.
 
 ## Instalação de dependências e cancelamentos
 
