@@ -251,12 +251,14 @@ func handleStats(e *core.RequestEvent) error {
 		return err
 	}
 
+	// Origem: utm_source do link ou, sem ele, o site que enviou a visita.
 	var referrers []labelRow
 	if err := db.NewQuery(`
-		SELECT referrer AS label, COUNT(DISTINCT visitor) AS visitors
+		SELECT LOWER(COALESCE(NULLIF(utm_source, ''), referrer)) AS label,
+		       COUNT(DISTINCT visitor) AS visitors
 		FROM pageviews
-		WHERE created >= {:from} AND created < {:to} AND referrer != ''
-		GROUP BY referrer ORDER BY visitors DESC LIMIT 10
+		WHERE created >= {:from} AND created < {:to} AND (utm_source != '' OR referrer != '')
+		GROUP BY 1 ORDER BY visitors DESC LIMIT 10
 	`).Bind(params).All(&referrers); err != nil {
 		return err
 	}

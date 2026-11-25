@@ -211,9 +211,12 @@ export default async function DashboardPage({ searchParams }: PageProps) {
             }))}
           />
         </Card>
-        <Card title="Sites de origem" description="Visitantes que chegaram por um link.">
+        <Card
+          title="Origens"
+          description="utm_source do link ou, sem ele, o site de onde a pessoa veio."
+        >
           <BarList
-            empty="Nenhum site de origem no período."
+            empty="Nenhuma origem identificada no período."
             rows={stats.referrers.map((row) => ({
               key: row.label,
               label: row.label,
