@@ -17,7 +17,18 @@ A configuração pressupõe os nomes padrão do Dokploy: rede externa `dokploy-n
 
 O Traefik existente recebe as conexões nas portas 80/443, redireciona HTTP para HTTPS e encaminha o tráfego pela rede Docker para a porta interna 3000, definida na label `traefik.http.services.atcchinabrasil.loadbalancer.server.port`. O Compose não usa `ports` ou `expose`, e o Dockerfile não declara `EXPOSE`; a porta 3000 não é publicada no host.
 
-O build usa `pnpm-lock.yaml` com `--frozen-lockfile`. Não são necessárias variáveis de ambiente adicionais para a implementação atual. Notícias e cotações precisam de acesso de saída à internet. Os caches do Next.js ficam no container e são recriados em novos deploys.
+O build usa `pnpm-lock.yaml` com `--frozen-lockfile`. As únicas variáveis de ambiente são as do primeiro acesso ao painel (veja abaixo). Notícias e cotações precisam de acesso de saída à internet. Os caches do Next.js ficam no container e são recriados em novos deploys.
+
+## Backend do painel (PocketBase)
+
+O serviço `pocketbase` (pasta `backend/`, Go + PocketBase) guarda as visitas e os leads mostrados em **https://atcchinabrasil.com/admin**. Ele fica só na rede interna `internal` do Compose: não tem domínio, `ports` nem `expose`. O site fala com ele por `POCKETBASE_URL=http://pocketbase:8090`, e o navegador nunca o acessa direto.
+
+- **Dados:** volume `pocketbase-data` (SQLite em `/pb/pb_data`). Inclua esse volume nos backups do Dokploy; apagar o volume apaga visitas e leads.
+- **Primeiro acesso:** na aba **Environment** do serviço Compose, defina `ATC_ADMIN_EMAIL` e `ATC_ADMIN_PASSWORD` e faça o deploy. O admin é criado só se ainda não existir; a senha não é sobrescrita em deploys seguintes. O painel também aceita superusuários do PocketBase.
+- **Mais usuários ou nova senha:** no terminal do container `pocketbase`, rode `/pb/atc-backend superuser upsert EMAIL SENHA` para um superusuário. Para usar a interface do PocketBase (`/_/`), exponha o serviço temporariamente por um domínio no Dokploy e remova depois.
+- **Migrações** ficam em Go (`backend/migrations/`) e rodam sozinhas ao iniciar.
+
+Para desenvolver localmente, rode `pnpm dev:backend` (porta 8090, dados em `backend/pb_data/`) e `pnpm dev`. Sem o backend no ar, o site funciona normalmente; apenas visitas e leads não são gravados.
 
 ## Instalação de dependências e cancelamentos
 

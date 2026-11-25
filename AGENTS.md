@@ -10,6 +10,15 @@
   ignorar erros de tipos no build. O ESLint ainda não está configurado.
 - Use `app/globals.css`, importado pelo layout, para estilos globais.
 
+## Painel `/admin` e backend na `main`
+
+- `backend/` é um app Go com PocketBase (v0.40+); migrações em Go em `backend/migrations/`.
+  Rode `go vet ./...` e `go build ./...` em `backend/` ao alterá-lo.
+- O navegador fala só com `/api/site/*` do Next.js, que repassa ao PocketBase
+  (`POCKETBASE_URL`). O PocketBase não é exposto publicamente.
+- Analytics sem cookies e sem IP: visitante e sessão são ids aleatórios no navegador.
+  `/admin` e `/show` não contam visitas.
+
 ## Build Docker na `main`
 
 - O pnpm usa cache BuildKit próprio da ATC, 8 requisições simultâneas, timeout

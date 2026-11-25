@@ -22,6 +22,7 @@ import {
   type LeadMessageSection,
 } from "@/lib/lead-message";
 import { captureLeadSource } from "@/lib/lead-source";
+import { markLeadWhatsApp, newLeadId, sendLead } from "@/lib/site-analytics";
 import {
   formatIntakeAnswer,
   type ContactValues,
@@ -147,7 +148,7 @@ function buildMessage(
     });
   }
 
-  return buildLeadMessage({
+  const message = buildLeadMessage({
     copy: messageCopy,
     origin: "diagnosis",
     source: captureLeadSource(),
@@ -156,6 +157,8 @@ function buildMessage(
     city: contact.city,
     lines,
   });
+
+  return { message, lines, profile: `${profile.name} (${profile.focus})` };
 }
 
 function prefersReducedMotion() {
@@ -174,6 +177,7 @@ export function ImportDiagnosis({ content, messageCopy }: ImportDiagnosisProps) 
   const [stage, setStage] = useState<Stage>("questions");
   const [profileAnswers, setProfileAnswers] = useState<number[]>([]);
   const [message, setMessage] = useState("");
+  const [leadId, setLeadId] = useState("");
   const [highlight, setHighlight] = useState<number | null>(null);
   const [resultOpen, setResultOpen] = useState(false);
   const [confettiKey, setConfettiKey] = useState(0);
@@ -259,17 +263,37 @@ export function ImportDiagnosis({ content, messageCopy }: ImportDiagnosisProps) 
       .map((item) => item.choice ?? 0);
     const contactIndex = questions.findIndex((item) => item.kind === "contact");
 
-    setProfileAnswers(diagnosisAnswers);
-    setMessage(
-      buildMessage(
-        questions,
-        answers,
-        contact,
-        diagnosisAnswers,
-        content,
-        messageCopy,
-      ),
+    const result = buildMessage(
+      questions,
+      answers,
+      contact,
+      diagnosisAnswers,
+      content,
+      messageCopy,
     );
+    // Salva o lead já ao concluir, mesmo que a pessoa não abra o WhatsApp.
+    const id = newLeadId();
+    sendLead({
+      id,
+      origin: "diagnosis",
+      name: contact.name,
+      company: contact.company,
+      email: contact.email,
+      phone: contact.phone,
+      city: contact.city,
+      profile: result.profile,
+      locale: messageCopy.locale,
+      // Telefone e e-mail já vão em campos próprios.
+      answers: result.lines.filter(
+        (line) => line.label !== messageCopy.phone && line.label !== messageCopy.email,
+      ),
+      message: result.message,
+      whatsapp: false,
+    });
+
+    setLeadId(id);
+    setProfileAnswers(diagnosisAnswers);
+    setMessage(result.message);
     setPrizeOptIn(Boolean(answers[contactIndex]?.optIn));
     setHighlight(null);
     setSent(false);
@@ -293,6 +317,7 @@ export function ImportDiagnosis({ content, messageCopy }: ImportDiagnosisProps) 
 
   const sendAnswers = () => {
     openWhatsAppMessage(message);
+    if (leadId) markLeadWhatsApp(leadId);
     setSent(true);
   };
 

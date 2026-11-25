@@ -20,3 +20,7 @@ v10
 public/**/*.mov
 public/video/video_media.mov
 codex.txt
+
+# PocketBase local
+backend/pb_data/
+backend/atc-backend

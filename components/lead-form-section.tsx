@@ -29,6 +29,7 @@ import {
 import { formatDateValue } from "@/lib/import-intake";
 import { buildLeadMessage, type LeadMessageLine } from "@/lib/lead-message";
 import { captureLeadSource } from "@/lib/lead-source";
+import { newLeadId, sendLead } from "@/lib/site-analytics";
 import { cn } from "@/lib/utils";
 
 type LeadFormContent = (typeof copy)[Language]["leadForm"];
@@ -201,7 +202,7 @@ function buildMessage(
     { section: "other", label: messageCopy.email, value: values.email.trim() },
   ];
 
-  return buildLeadMessage({
+  const message = buildLeadMessage({
     copy: messageCopy,
     origin: "form",
     source: captureLeadSource(),
@@ -209,6 +210,8 @@ function buildMessage(
     company: values.company,
     lines,
   });
+
+  return { message, lines };
 }
 
 const controlClassName =
@@ -272,7 +275,23 @@ export function LeadFormSection({ content, messageCopy }: LeadFormSectionProps) 
       return;
     }
 
-    openWhatsAppMessage(buildMessage(values, content, messageCopy));
+    const { message, lines } = buildMessage(values, content, messageCopy);
+    openWhatsAppMessage(message);
+    sendLead({
+      id: newLeadId(),
+      origin: "form",
+      name: values.name,
+      company: values.company,
+      email: values.email,
+      phone: values.phone,
+      locale: messageCopy.locale,
+      // Telefone e e-mail já vão em campos próprios.
+      answers: lines.filter(
+        (line) => line.label !== messageCopy.phone && line.label !== messageCopy.email,
+      ),
+      message,
+      whatsapp: true,
+    });
   };
 
   const errorText = (field: FieldName) =>

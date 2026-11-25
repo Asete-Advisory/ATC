@@ -21,3 +21,4 @@ docker-compose*.yml
 docker-compose*.yaml
 DEPLOY.md
 public/**/*.mov
+backend

@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "dev:clean": "rm -rf .next/dev && next dev",
+    "dev:backend": "cd backend && go run . serve",
     "build": "next build",
     "start": "next start",
     "test:show": "node --experimental-strip-types --test tests/showcase.test.mjs",

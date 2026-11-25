@@ -7,8 +7,13 @@ services:
     restart: unless-stopped
     init: true
     stop_grace_period: 30s
+    environment:
+      POCKETBASE_URL: http://pocketbase:8090
+    depends_on:
+      - pocketbase
     networks:
       - dokploy-network
+      - internal
     labels:
       traefik.enable: "true"
       traefik.docker.network: dokploy-network
@@ -27,6 +32,27 @@ services:
       traefik.http.routers.atcchinabrasil-https.service: atcchinabrasil
       traefik.http.services.atcchinabrasil.loadbalancer.server.port: "3000"
 
+  # Analytics e leads do painel /admin. Só acessível pela rede interna.
+  pocketbase:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    init: true
+    stop_grace_period: 30s
+    environment:
+      # Primeiro acesso ao painel /admin (criado só se ainda não existir).
+      ATC_ADMIN_EMAIL: ${ATC_ADMIN_EMAIL:-}
+      ATC_ADMIN_PASSWORD: ${ATC_ADMIN_PASSWORD:-}
+    volumes:
+      - pocketbase-data:/pb/pb_data
+    networks:
+      - internal
+
 networks:
   dokploy-network:
     external: true
+  internal: {}
+
+volumes:
+  pocketbase-data: {}
